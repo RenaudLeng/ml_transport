@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chauffeurs | ML TRANSPORT</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <!-- Feuille de style -->
+  <style>
+    .money-input {
+      background-color: #f8f9fa;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2328a745' viewBox='0 0 16 16'%3E%3Cpath d='M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 35px;
+    }
+    .bus-badge {
+      font-size: 0.8rem;
+      background-color: #0d6efd;
+    }
+    .driver-id {
+      font-size: 0.7rem;
+      color: #6c757d;
+      font-family: monospace;
+    }
+    .action-btns {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <i class="ph ph-steering-wheel fs-3 me-2 text-primary"></i>
+        <span class="fw-bold">ML TRANSPORT</span>
+      </a>
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="ph ph-house"></i> Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html#recettes-tab"><i class="ph ph-wallet"></i> Recettes</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html#depenses-tab"><i class="ph ph-bank"></i> Dépenses</a></li>
+          <li class="nav-item"><a class="nav-link" href="maintenance.html"><i class="ph ph-wrench"></i> Maintenance</a></li>
+          <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="ph ph-calendar-check"></i> Agenda</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-steering-wheel"></i> Chauffeurs</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <main class="container mt-5 pt-5">
+    <h2 class="text-center my-4 text-primary">
+      <i class="ph ph-steering-wheel fs-2"></i> Gestion des Chauffeurs
+    </h2>
+
+    <!-- Formulaire d'ajout/modification -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h5><i class="ph ph-plus-circle" id="formIcon"></i> <span id="formTitle">Ajouter</span> un Chauffeur</h5>
+      </div>
+      <div class="card-body">
+        <form id="chauffeurForm">
+          <input type="hidden" id="chauffeurId">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Nom complet</label>
+              <input type="text" class="form-control" id="nom" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Téléphone</label>
+              <input type="tel" class="form-control" id="telephone" inputmode="numeric" pattern="[0-9]*" required />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Date de naissance</label>
+              <input type="date" class="form-control" id="dateNaissance" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Lieu de naissance</label>
+              <input type="text" class="form-control" id="lieuNaissance" />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Quartier</label>
+            <input type="text" class="form-control" id="quartier" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Bus assigné</label>
+            <select class="form-select" id="busAssigne">
+              <option value="">Aucun bus assigné</option>
+              <!-- Les options seront ajoutées dynamiquement -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Salaire (XAF)</label>
+            <input type="number" class="form-control money-input" id="salaire" inputmode="numeric" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Commentaires</label>
+            <textarea class="form-control" id="commentaires" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitBtn"><i class="ph ph-plus" id="submitIcon"></i> <span id="submitText">Ajouter</span></button>
+          <button type="button" class="btn btn-secondary ms-2" id="cancelBtn" style="display: none;">Annuler</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Liste des chauffeurs -->
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5><i class="ph ph-list"></i> Liste des Chauffeurs</h5>
+        <span class="badge bg-primary">Total: <span id="totalChauffeurs">0</span></span>
+      </div>
+      <div class="card-body" id="listeChauffeurs">
+        <p class="text-muted">Aucun chauffeur enregistré.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOUTON MODE -->
+  <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle" title="Changer de thème">
+    <i class="ph ph-moon-stars fs-4"></i>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-3 bg-dark text-white fixed-bottom">
+    Powered by Forever/&gt;Inc
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="theme.js"></script>
+  <script>
+    const form = document.getElementById("chauffeurForm");
+    const listeDiv = document.getElementById("listeChauffeurs");
+    const totalSpan = document.getElementById("totalChauffeurs");
+    const busSelect = document.getElementById("busAssigne");
+    const formTitle = document.getElementById("formTitle");
+    const formIcon = document.getElementById("formIcon");
+    const submitBtn = document.getElementById("submitBtn");
+    const submitText = document.getElementById("submitText");
+    const submitIcon = document.getElementById("submitIcon");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const chauffeurIdInput = document.getElementById("chauffeurId");
+
+    // Liste des bus disponibles (peut être chargée depuis une API ou autre source)
+    let busDisponibles = [
+      { id: "BUS001", numero: "BUS-001" },
+      { id: "BUS002", numero: "BUS-002" },
+      { id: "BUS003", numero: "BUS-003" },
+      { id: "BUS004", numero: "BUS-004" },
+      { id: "BUS005", numero: "BUS-005" }
+    ];
+
+    // Charger les données depuis le localStorage
+    let chauffeurs = JSON.parse(localStorage.getItem("chauffeursList")) || [];
+    let busAssignes = JSON.parse(localStorage.getItem("busAssignes")) || {};
+
+    // Générer un matricule unique pour le chauffeur
+    const genererMatricule = (nom) => {
+      const prefixe = "ML-";
+      const lettresNom = nom.replace(/\s+/g, '').substring(0, 3).toUpperCase();
+      const randomNum = Math.floor(100 + Math.random() * 900);
+      return `${prefixe}${lettresNom}${randomNum}`;
+    };
+
+    // Mettre à jour la liste des bus disponibles dans le select
+    const updateBusSelect = (currentBusId = null) => {
+      busSelect.innerHTML = '<option value="">Aucun bus assigné</option>';
+      
+      busDisponibles.forEach(bus => {
+        // Afficher le bus s'il n'est pas assigné ou s'il est assigné au chauffeur en cours d'édition
+        if (!busAssignes[bus.id] || busAssignes[bus.id] === currentBusId) {
+          const option = document.createElement("option");
+          option.value = bus.id;
+          option.textContent = bus.numero;
+          busSelect.appendChild(option);
+        }
+      });
+    };
+
+    // Afficher la liste des chauffeurs
+    const renderChauffeurs = () => {
+      listeDiv.innerHTML = "";
+      totalSpan.textContent = chauffeurs.length;
+      
+      if (chauffeurs.length === 0) {
+        listeDiv.innerHTML = "<p class='text-muted'>Aucun chauffeur enregistré.</p>";
+        return;
+      }
+
+      // Créer un tableau pour un affichage plus structuré
+      const table = document.createElement("table");
+      table.className = "table table-hover";
+      
+      // En-tête du tableau
+      const thead = document.createElement("thead");
+      thead.innerHTML = `
+        <tr>
+          <th>Matricule</th>
+          <th>Nom complet</th>
+          <th>Téléphone</th>
+          <th>Bus assigné</th>
+          <th>Actions</th>
+        </tr>
+      `;
+      table.appendChild(thead);
+      
+      // Corps du tableau
+      const tbody = document.createElement("tbody");
+      
+      chauffeurs.forEach((c, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="driver-id">${c.matricule}</span>
+          </td>
+          <td>${c.nom}</td>
+          <td>${c.telephone}</td>
+          <td>
+            ${c.busAssigne ? `<span class="badge bus-badge">${c.busAssigne}</span>` : 'Non assigné'}
+          </td>
+          <td class="action-btns">
+            <button class="btn btn-sm btn-warning me-2" onclick="editerChauffeur(${i})">
+              <i class="ph ph-pencil-simple-line"></i> Modifier
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="supprimerChauffeur(${i})">
+              <i class="ph ph-trash"></i> Supprimer
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      
+      table.appendChild(tbody);
+      listeDiv.appendChild(table);
+    };
+
+    // Supprimer un chauffeur
+    const supprimerChauffeur = (index) => {
+      if (confirm("Supprimer ce chauffeur ?")) {
+        // Libérer le bus assigné si nécessaire
+        const chauffeur = chauffeurs[index];
+        if (chauffeur.busId && busAssignes[chauffeur.busId]) {
+          delete busAssignes[chauffeur.busId];
+          localStorage.setItem("busAssignes", JSON.stringify(busAssignes));
+        }
+        
+        chauffeurs.splice(index, 1);
+        localStorage.setItem("chauffeursList", JSON.stringify(chauffeurs));
+        renderChauffeurs();
+        updateBusSelect();
+      }
+    };
+
+    // Editer un chauffeur
+    const editerChauffeur = (index) => {
+      const chauffeur = chauffeurs[index];
+      
+      // Remplir le formulaire
+      document.getElementById("nom").value = chauffeur.nom;
+      document.getElementById("telephone").value = chauffeur.telephone;
+      document.getElementById("dateNaissance").value = chauffeur.dateNaissance;
+      document.getElementById("lieuNaissance").value = chauffeur.lieuNaissance;
+      document.getElementById("quartier").value = chauffeur.quartier;
+      document.getElementById("salaire").value = chauffeur.salaire;
+      document.getElementById("commentaires").value = chauffeur.commentaires;
+      chauffeurIdInput.value = index;
+      
+      // Mettre à jour le formulaire en mode édition
+      formTitle.textContent = "Modifier";
+      formIcon.className = "ph ph-pencil-simple-line";
+      submitText.textContent = "Modifier";
+      submitIcon.className = "ph ph-pencil-simple-line";
+      cancelBtn.style.display = "inline-block";
+      
+      // Mettre à jour la sélection du bus
+      updateBusSelect(chauffeur.matricule);
+      if (chauffeur.busId) {
+        busSelect.value = chauffeur.busId;
+      } else {
+        busSelect.value = "";
+      }
+      
+      // Faire défiler vers le formulaire
+      form.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Annuler l'édition
+    cancelBtn.addEventListener("click", () => {
+      form.reset();
+      resetFormMode();
+      updateBusSelect();
+    });
+
+    // Réinitialiser le formulaire en mode ajout
+    const resetFormMode = () => {
+      formTitle.textContent = "Ajouter";
+      formIcon.className = "ph ph-plus-circle";
+      submitText.textContent = "Ajouter";
+      submitIcon.className = "ph ph-plus";
+      cancelBtn.style.display = "none";
+      chauffeurIdInput.value = "";
+    };
+
+    // Soumission du formulaire (ajout ou modification)
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      const busSelectionne = busSelect.value;
+      const busNumero = busSelectionne ? busDisponibles.find(b => b.id === busSelectionne)?.numero : null;
+      const isEditMode = chauffeurIdInput.value !== "";
+      
+      // Vérifier si le bus est déjà assigné à un autre chauffeur (sauf en mode édition)
+      if (busSelectionne && busAssignes[busSelectionne] && 
+          (!isEditMode || busAssignes[busSelectionne] !== chauffeurs[chauffeurIdInput.value]?.matricule)) {
+        alert("Ce bus est déjà assigné à un autre chauffeur !");
+        return;
+      }
+      
+      const chauffeurData = {
+        matricule: isEditMode ? chauffeurs[chauffeurIdInput.value].matricule : genererMatricule(document.getElementById("nom").value),
+        nom: document.getElementById("nom").value,
+        telephone: document.getElementById("telephone").value,
+        dateNaissance: document.getElementById("dateNaissance").value,
+        lieuNaissance: document.getElementById("lieuNaissance").value,
+        quartier: document.getElementById("quartier").value,
+        busAssigne: busNumero,
+        busId: busSelectionne,
+        salaire: parseInt(document.getElementById("salaire").value) || 0,
+        commentaires: document.getElementById("commentaires").value,
+      };
+      
+      if (isEditMode) {
+        // Mode édition - libérer l'ancien bus si changé
+        const ancienBusId = chauffeurs[chauffeurIdInput.value].busId;
+        if (ancienBusId && ancienBusId !== busSelectionne) {
+          delete busAssignes[ancienBusId];
+        }
+        
+        // Mettre à jour le chauffeur
+        chauffeurs[chauffeurIdInput.value] = chauffeurData;
+      } else {
+        // Mode ajout - ajouter le nouveau chauffeur
+        chauffeurs.push(chauffeurData);
+      }
+      
+      // Mettre à jour l'assignation du bus
+      if (busSelectionne) {
+        busAssignes[busSelectionne] = chauffeurData.matricule;
+      } else if (isEditMode && chauffeurs[chauffeurIdInput.value].busId) {
+        // Si on a enlevé l'assignation du bus
+        delete busAssignes[chauffeurs[chauffeurIdInput.value].busId];
+      }
+      
+      // Sauvegarder les données
+      localStorage.setItem("chauffeursList", JSON.stringify(chauffeurs));
+      localStorage.setItem("busAssignes", JSON.stringify(busAssignes));
+      
+      // Réinitialiser le formulaire
+      form.reset();
+      resetFormMode();
+      renderChauffeurs();
+      updateBusSelect();
+    });
+
+    // Initialiser l'affichage
+    renderChauffeurs();
+    updateBusSelect();
+  </script>
+</body>
+</html>

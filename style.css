@@ -1,0 +1,125 @@
+
+/* BASE */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  padding-bottom: 80px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+}
+
+/* MODE SOMBRE */
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark-mode .navbar,
+body.dark-mode .card,
+body.dark-mode .card-header {
+  background-color: #1e1e1e !important;
+  color: #fff;
+}
+
+body.dark-mode .card-body,
+body.dark-mode .card-title,
+body.dark-mode .card-text {
+  color: #e0e0e0;
+}
+
+body.dark-mode .navbar a,
+body.dark-mode .nav-link,
+body.dark-mode .navbar-brand {
+  color: #f1f1f1 !important;
+}
+
+body.dark-mode .btn-outline-success,
+body.dark-mode .btn-outline-danger,
+body.dark-mode .btn-outline-warning,
+body.dark-mode .btn-outline-info,
+body.dark-mode .btn-outline-primary,
+body.dark-mode .btn-outline-dark {
+  border-color: #ccc;
+  color: #ccc;
+}
+
+body.dark-mode .btn-outline-success:hover,
+body.dark-mode .btn-outline-danger:hover,
+body.dark-mode .btn-outline-warning:hover,
+body.dark-mode .btn-outline-info:hover,
+body.dark-mode .btn-outline-primary:hover,
+body.dark-mode .btn-outline-dark:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+body.dark-mode footer {
+  background-color: #000;
+  color: #f1f1f1;
+}
+
+/* HEADER GRADIENT */
+header {
+  color: white;
+}
+
+/* ICONES ANIMÉES */
+.animate__animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.animate__bounceInLeft {
+  animation-name: bounceInLeft;
+}
+
+@keyframes bounceInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-300px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(25px);
+  }
+  80% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* NAVBAR ACTIVE */
+.nav-link.active {
+  font-weight: bold;
+  color: #0d6efd !important;
+}
+
+/* CITATION */
+blockquote {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+body.dark-mode blockquote {
+  color: #bbb;
+}
+
+/* BUTTON CUSTOM */
+#toggleTheme {
+  background-color: #0d6efd;
+  color: white;
+}
+#toggleTheme:hover {
+  background-color: #0056b3;
+}

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tableau de bord | ML TRANSPORT</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/phosphor-icons"></script>
+  
+  <!-- Style personnalisé -->
+  <style>
+    :root {
+      --gradient-primary: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%);
+      --gradient-success: linear-gradient(135deg, #198754 0%, #20c997 100%);
+      --gradient-danger: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+      --gradient-warning: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+      --gradient-info: linear-gradient(135deg, #0dcaf0 0%, #20c997 100%);
+      --gradient-dark: linear-gradient(135deg, #212529 0%, #495057 100%);
+      --gradient-purple: linear-gradient(135deg, #6f42c1 0%, #d63384 100%);
+      --gradient-secondary: linear-gradient(135deg, #6c757d 0%, #adb5bd 100%);
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f8f9fa;
+      padding-top: 70px;
+    }
+    
+    .dashboard-card {
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      height: 100%;
+      color: white;
+      position: relative;
+      z-index: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card-gradient);
+      z-index: -1;
+      opacity: 0.9;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard-card:hover::before {
+      opacity: 1;
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .card-icon {
+      font-size: 1.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .card-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .card-description {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      line-height: 1.5;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+    
+    .card-footer {
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+    
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      color: white;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+    
+    .card-link:hover {
+      opacity: 0.8;
+      transform: translateX(3px);
+    }
+    
+    .dashboard-header {
+      position: relative;
+      padding-bottom: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .dashboard-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(90deg, #0d6efd, #6f42c1);
+      border-radius: 2px;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+    }
+    
+    .nav-link.active {
+      font-weight: 600;
+    }
+    
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 3px;
+      background: #0d6efd;
+      border-radius: 3px 3px 0 0;
+    }
+    
+    .theme-toggle {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    footer {
+      background: linear-gradient(90deg, #212529, #495057);
+    }
+    
+    .user-session {
+      display: flex;
+      align-items: center;
+      color: white;
+      margin-left: auto;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+    }
+    
+    .user-session i {
+      margin-right: 8px;
+    }
+    
+    .logout-btn {
+      margin-left: 10px;
+    }
+
+    /* Style pour la citation */
+    .quote-card {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(111, 66, 193, 0.1) 100%);
+      border-left: 4px solid #0d6efd;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .quote-icon {
+      color: #0d6efd;
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .dashboard-card {
+        padding: 1rem;
+      }
+      
+      .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+      }
+      
+      .card-title {
+        font-size: 1rem;
+      }
+
+      .quote-card {
+        padding: 1rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="ph ph-bus fs-3 me-2"></i>
+        <span>ML TRANSPORT</span>
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <i class="ph ph-list"></i>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-gauge me-2"></i> Tableau de bord</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html"><i class="ph ph-currency-circle-dollar me-2"></i> Finance</a></li>
+          <li class="nav-item"><a class="nav-link" href="maintenance.html"><i class="ph ph-gear me-2"></i> Maintenance</a></li>
+          <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="ph ph-calendar-blank me-2"></i> Agenda</a></li>
+          <li class="nav-item"><a class="nav-link" href="statistiques.html"><i class="ph ph-chart-line-up me-2"></i> Statistiques</a></li>
+          <li class="nav-item"><a class="nav-link" href="historique.html"><i class="ph ph-clock-counter-clockwise me-2"></i> Historique</a></li>
+          <li class="nav-item"><a class="nav-link" href="bus.html"><i class="ph ph-truck me-2"></i> Flotte</a></li>
+          <li class="nav-item"><a class="nav-link" href="chauffeurs.html"><i class="ph ph-users me-2"></i> Équipe</a></li>
+          <li class="nav-item"><a class="nav-link" href="parametres.html"><i class="ph ph-gear-six me-2"></i> Paramètres</a></li>
+        </ul>
+        
+        <!-- Barre de session utilisateur -->
+        <div class="user-session">
+          <i class="ph ph-user-circle"></i>
+          <span id="usernameDisplay">Invité</span>
+          <button class="btn btn-sm btn-outline-light logout-btn" id="logoutBtn">
+            <i class="ph ph-sign-out"></i> Déconnexion
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <main class="container mt-5 pt-5 pb-5">
+    <div class="text-center mb-5 dashboard-header">
+      <h1 class="text-dark"><i class="ph ph-gauge me-2"></i> Tableau de bord</h1>
+      <p class="text-muted">Gestion complète de votre flotte de transport</p>
+      
+      <!-- Citation motivante -->
+      <div class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+          <div class="quote-card p-4 mb-4">
+            <div class="d-flex align-items-start">
+              <i class="ph ph-quote quote-icon"></i>
+              <div>
+                <p class="mb-3 fst-italic fs-5">
+                  "Le transport n'est pas simplement un métier, c'est un lien vital qui connecte les personnes, 
+                  les marchandises et les opportunités. Chaque kilomètre parcouru est une promesse tenue, 
+                  chaque livraison est une relation consolidée. Votre engagement fait rouler l'économie 
+                  et rapproche les communautés."
+                </p>
+                <footer class="blockquote-footer mt-2">
+                  <cite title="Source Title">ML Transport - Forever United </cite>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Carte Finance -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="finance.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-success)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-currency-circle-dollar"></i>
+              </div>
+              <h3 class="card-title">Finance</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Gestion complète des recettes et dépenses avec analyse des bénéfices
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Accéder au module
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Maintenance -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="maintenance.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-warning)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-gear"></i>
+              </div>
+              <h3 class="card-title">Maintenance</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Suivi des interventions et planning des révisions techniques
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Voir le planning
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Agenda -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="agenda.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-info)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-calendar-blank"></i>
+              </div>
+              <h3 class="card-title">Agenda</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Organisation des trajets, rendez-vous et événements importants
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Voir calendrier
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Statistiques -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="statistiques.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-primary)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-chart-line-up"></i>
+              </div>
+              <h3 class="card-title">Statistiques</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Analyse des performances et indicateurs clés de l'entreprise
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Voir analyses
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Historique -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="historique.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-dark)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-clock-counter-clockwise"></i>
+              </div>
+              <h3 class="card-title">Historique</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Consultation des archives et historique des activités
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Voir archives
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Flotte -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="bus.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-purple)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-truck"></i>
+              </div>
+              <h3 class="card-title">Flotte</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Gestion des véhicules, état du parc et disponibilités
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Gérer la flotte
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Équipe -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="chauffeurs.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-info)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-users"></i>
+              </div>
+              <h3 class="card-title">Équipe</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Gestion des chauffeurs, planning et disponibilités
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Gérer l'équipe
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Carte Paramètres -->
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="parametres.html" class="text-decoration-none">
+          <div class="dashboard-card" style="--card-gradient: var(--gradient-secondary)">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="ph ph-gear-six"></i>
+              </div>
+              <h3 class="card-title">Paramètres</h3>
+            </div>
+            <div class="card-body">
+              <p class="card-description">
+                Configuration du système et préférences utilisateur
+              </p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">
+                Configurer
+                <i class="ph ph-arrow-right ms-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOUTON MODE -->
+  <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle position-fixed" title="Changer de thème" style="bottom: 20px; right: 20px;">
+    <i class="ph ph-moon-stars fs-4"></i>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-3 text-white mt-5">
+    <div class="container">
+      <div class="d-flex justify-content-center align-items-center">
+        <i class="ph ph-bus me-2"></i>
+        <span class="small">ML TRANSPORT &copy; 2023 - Powered by Forever/&gt;Inc</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Gestion de la session utilisateur
+    document.addEventListener('DOMContentLoaded', function() {
+      // Afficher le nom d'utilisateur
+      const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+      if (currentUser.username) {
+        document.getElementById('usernameDisplay').textContent = currentUser.username;
+      }
+
+      // Gestion de la déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+      });
+
+      // Protection de la page
+      if (!localStorage.getItem('isLoggedIn')) {
+        window.location.href = 'login.html';
+      }
+
+      // Animation pour la citation
+      const quoteCard = document.querySelector('.quote-card');
+      if (quoteCard) {
+        quoteCard.style.opacity = '0';
+        quoteCard.style.transform = 'translateY(20px)';
+        quoteCard.style.transition = 'all 0.5s ease-out';
+        
+        setTimeout(() => {
+          quoteCard.style.opacity = '1';
+          quoteCard.style.transform = 'translateY(0)';
+        }, 300);
+      }
+    });
+  </script>
+</body>
+</html>

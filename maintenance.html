@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maintenance | ML TRANSPORT</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://unpkg.com/phosphor-icons"></script>
+  <!-- Chart.js pour les rapports -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #6c757d;
+      --success-color: #198754;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #0dcaf0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f5f7fa;
+      color: #212529;
+    }
+    
+    /* Navigation améliorée */
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      color: #495057;
+    }
+    
+    .nav-link.active {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 3px 3px 0 0;
+    }
+    
+    /* Formulaire moderne */
+    .form-section {
+      background-color: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .form-section h5 {
+      color: var(--primary-color);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-floating label {
+      padding-left: 2.5rem;
+      color: #6c757d;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 0.375rem;
+      padding-left: 2.5rem;
+      border: 1px solid #dee2e6;
+      transition: all 0.2s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .form-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      z-index: 5;
+    }
+    
+    /* Tableau amélioré */
+    .table-responsive {
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      border-bottom: none;
+    }
+    
+    .table-hover tbody tr:hover {
+      background-color: rgba(13, 110, 253, 0.05);
+    }
+    
+    /* Badges de priorité */
+    .badge {
+      font-weight: 500;
+      padding: 0.35em 0.65em;
+      border-radius: 0.25rem;
+    }
+    
+    .priority-urgent { background-color: var(--danger-color); color: white; }
+    .priority-haute { background-color: var(--warning-color); color: var(--dark-color); }
+    .priority-moyenne { background-color: #fd7e14; color: white; }
+    .priority-basse { background-color: var(--success-color); color: white; }
+    
+    /* Boutons et interactions */
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .btn-success {
+      transition: all 0.3s ease;
+    }
+    
+    /* Layout */
+    main {
+      padding-top: 5rem;
+      padding-bottom: 4rem;
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--dark-color);
+      color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      border: none;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    /* États vides */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+    
+    /* Animation de chargement */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    /* Styles pour les nouvelles sections */
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    
+    .nav-pills .nav-link.active {
+      background-color: var(--primary-color);
+    }
+    
+    .tab-content {
+      padding: 1.5rem 0;
+    }
+    
+    .maintenance-card {
+      border-left: 4px solid var(--primary-color);
+      transition: all 0.2s;
+    }
+    
+    .maintenance-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .maintenance-card.urgent {
+      border-left-color: var(--danger-color);
+    }
+    
+    .maintenance-card.high {
+      border-left-color: var(--warning-color);
+    }
+    
+    .maintenance-card.medium {
+      border-left-color: #fd7e14;
+    }
+    
+    .maintenance-card.low {
+      border-left-color: var(--success-color);
+    }
+    
+    .progress {
+      height: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .chart-container {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <i class="ph ph-bus fs-3 me-2 text-primary"></i>
+        <span class="fw-bold">ML TRANSPORT</span>
+      </a>
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="ph ph-house me-1"></i> Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html"><i class="ph ph-currency-circle-dollar me-1"></i> Finance</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-wrench me-1"></i> Maintenance</a></li>
+          <li class="nav-item"><a class="nav-link" href="statistiques.html"><i class="ph ph-chart-bar me-1"></i> Statistiques</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenu principal -->
+  <main class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h2 class="text-center my-4 text-primary">
+          <i class="ph ph-wrench fs-2 me-2"></i> Gestion de Maintenance
+        </h2>
+        
+        <!-- Onglets -->
+        <ul class="nav nav-pills mb-4 justify-content-center" id="maintenanceTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="enregistrement-tab" data-bs-toggle="pill" data-bs-target="#enregistrement" type="button" role="tab">
+              <i class="ph ph-plus-circle me-1"></i> Enregistrement
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="historique-tab" data-bs-toggle="pill" data-bs-target="#historique" type="button" role="tab">
+              <i class="ph ph-list me-1"></i> Historique
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="planification-tab" data-bs-toggle="pill" data-bs-target="#planification" type="button" role="tab">
+              <i class="ph ph-calendar-check me-1"></i> Planification
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="rapports-tab" data-bs-toggle="pill" data-bs-target="#rapports" type="button" role="tab">
+              <i class="ph ph-chart-bar me-1"></i> Rapports
+            </button>
+          </li>
+        </ul>
+
+        <!-- Contenu des onglets -->
+        <div class="tab-content" id="maintenanceTabsContent">
+          <!-- Onglet Enregistrement -->
+          <div class="tab-pane fade show active" id="enregistrement" role="tabpanel">
+            <!-- Formulaire de maintenance -->
+            <form id="maintenanceForm" class="mb-5 fade-in">
+              <div class="form-section">
+                <h5><i class="ph ph-identification-card"></i> Identification</h5>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-calendar form-icon"></i>
+                      <input type="date" class="form-control" id="dateMaintenance" required>
+                      <label for="dateMaintenance">Date de maintenance</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-bus form-icon"></i>
+                      <select class="form-select" id="busMaintenance" required>
+                        <option value="">-- Choisir un bus --</option>
+                      </select>
+                      <label for="busMaintenance">Bus concerné</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h5><i class="ph ph-wrench"></i> Détails de la maintenance</h5>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-folder form-icon"></i>
+                      <select class="form-select" id="categorieMaintenance" required>
+                        <option value="">-- Sélectionnez --</option>
+                        <option value="Moteur">Moteur</option>
+                        <option value="Transmission">Transmission</option>
+                        <option value="Freinage">Système de freinage</option>
+                        <option value="Pneumatique">Pneumatique</option>
+                        <option value="Electricite">Électricité</option>
+                        <option value="Carrosserie">Carrosserie</option>
+                        <option value="Autre">Autre</option>
+                      </select>
+                      <label for="categorieMaintenance">Catégorie</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-list-checks form-icon"></i>
+                      <select class="form-select" id="sousMotifMaintenance" required>
+                        <option value="">-- Sélectionnez --</option>
+                      </select>
+                      <label for="sousMotifMaintenance">Motif Spécifique</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="commentaireMotif" class="mb-3 d-none">
+                  <div class="form-floating">
+                    <i class="ph ph-note form-icon"></i>
+                    <textarea class="form-control" id="commentaire" rows="2" style="height:auto; padding-left: 2.5rem;"></textarea>
+                    <label for="commentaire">Commentaire (si autre)</label>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-map-pin form-icon"></i>
+                      <input type="text" class="form-control" id="lieuMaintenance">
+                      <label for="lieuMaintenance">Lieu de maintenance</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-user form-icon"></i>
+                      <input type="text" class="form-control" id="technicien">
+                      <label for="technicien">Nom du technicien</label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-phone form-icon"></i>
+                      <input type="tel" class="form-control" id="telephoneTechnicien" placeholder="6XX XXX XXX">
+                      <label for="telephoneTechnicien">Téléphone technicien</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-currency-circle-dollar form-icon"></i>
+                      <input type="number" class="form-control" id="montantMaintenance" required>
+                      <label for="montantMaintenance">Montant (XAF)</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h5><i class="ph ph-clipboard-text"></i> Statut et priorité</h5>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-flag form-icon"></i>
+                      <select class="form-select" id="prioriteMaintenance" required>
+                        <option value="">-- Choisir la priorité --</option>
+                        <option value="Urgent">Urgent</option>
+                        <option value="Haute">Haute</option>
+                        <option value="Moyenne">Moyenne</option>
+                        <option value="Basse">Basse</option>
+                      </select>
+                      <label for="prioriteMaintenance">Priorité</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                      <i class="ph ph-info form-icon"></i>
+                      <select class="form-select" id="statutMaintenance" required>
+                        <option value="">-- Choisir le statut --</option>
+                        <option value="En cours">En cours</option>
+                        <option value="Terminée">Terminée</option>
+                        <option value="Planifiée">Planifiée</option>
+                      </select>
+                      <label for="statutMaintenance">Statut</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 py-3">
+                <i class="ph ph-check-circle me-2"></i> Enregistrer la maintenance
+              </button>
+            </form>
+          </div>
+
+          <!-- Onglet Historique -->
+          <div class="tab-pane fade" id="historique" role="tabpanel">
+            <!-- Filtres -->
+            <div class="card mb-4 fade-in">
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="ph ph-magnifying-glass"></i></span>
+                      <input type="text" id="searchMaintenance" class="form-control" placeholder="Rechercher...">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <select id="filterBus" class="form-select">
+                      <option value="">Tous les bus</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <select id="filterStatut" class="form-select">
+                      <option value="">Tous les statuts</option>
+                      <option value="Terminée">Terminée</option>
+                      <option value="En cours">En cours</option>
+                      <option value="Planifiée">Planifiée</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tableau des maintenances -->
+            <div class="card fade-in">
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-primary">
+                      <tr>
+                        <th><i class="ph ph-calendar me-1"></i> Date</th>
+                        <th><i class="ph ph-bus me-1"></i> Bus</th>
+                        <th><i class="ph ph-folder me-1"></i> Catégorie</th>
+                        <th><i class="ph ph-wrench me-1"></i> Motif</th>
+                        <th><i class="ph ph-flag me-1"></i> Priorité</th>
+                        <th><i class="ph ph-currency-circle-dollar me-1"></i> Montant</th>
+                        <th><i class="ph ph-info me-1"></i> Statut</th>
+                        <th><i class="ph ph-gear me-1"></i> Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="listeMaintenance">
+                      <!-- Les données seront insérées ici par JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onglet Planification -->
+          <div class="tab-pane fade" id="planification" role="tabpanel">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-clock me-2"></i> Planification Préventive</h5>
+                    <p class="card-text">Configurez les maintenances préventives basées sur le kilométrage ou la périodicité.</p>
+                    
+                    <form id="preventiveForm" class="mt-4">
+                      <div class="mb-3">
+                        <label for="preventiveBus" class="form-label">Bus</label>
+                        <select class="form-select" id="preventiveBus" required>
+                          <option value="">-- Sélectionner un bus --</option>
+                        </select>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label for="preventiveType" class="form-label">Type de maintenance</label>
+                        <select class="form-select" id="preventiveType" required>
+                          <option value="">-- Sélectionner --</option>
+                          <option value="Vidange">Vidange</option>
+                          <option value="Révision">Révision générale</option>
+                          <option value="Freinage">Contrôle freinage</option>
+                          <option value="Pneumatique">Rotation pneus</option>
+                          <option value="Autre">Autre</option>
+                        </select>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label class="form-label">Déclencheur</label>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="triggerType" id="triggerKm" value="km" checked>
+                          <label class="form-check-label" for="triggerKm">
+                            Kilométrage (tous les X km)
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="triggerType" id="triggerTime" value="time">
+                          <label class="form-check-label" for="triggerTime">
+                            Périodicité (tous les X jours)
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3" id="kmTriggerGroup">
+                        <label for="kmInterval" class="form-label">Intervalle (km)</label>
+                        <input type="number" class="form-control" id="kmInterval" value="5000" min="1000" step="500">
+                      </div>
+                      
+                      <div class="mb-3 d-none" id="timeTriggerGroup">
+                        <label for="dayInterval" class="form-label">Intervalle (jours)</label>
+                        <input type="number" class="form-control" id="dayInterval" value="30" min="7" step="1">
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label for="lastDone" class="form-label">Dernière réalisation</label>
+                        <input type="date" class="form-control" id="lastDone">
+                      </div>
+                      
+                      <button type="submit" class="btn btn-primary w-100">
+                        <i class="ph ph-calendar-plus me-2"></i> Planifier
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-bell-ringing me-2"></i> Maintenances à venir</h5>
+                    <p class="card-text">Liste des maintenances préventives programmées.</p>
+                    
+                    <div id="upcomingMaintenanceList" class="mt-3">
+                      <!-- Les maintenances planifiées seront ajoutées ici -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card mt-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="ph ph-truck me-2"></i> Suivi Kilométrique</h5>
+                <p class="card-text">Suivez le kilométrage de vos bus pour anticiper les maintenances.</p>
+                
+                <div class="table-responsive mt-3">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Bus</th>
+                        <th>Kilométrage actuel</th>
+                        <th>Dernière vidange</th>
+                        <th>Prochaine vidange</th>
+                        <th>Progression</th>
+                      </tr>
+                    </thead>
+                    <tbody id="mileageTracker">
+                      <!-- Données kilométriques seront ajoutées ici -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Onglet Rapports -->
+          <div class="tab-pane fade" id="rapports" role="tabpanel">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-chart-pie me-2"></i> Répartition par catégorie</h5>
+                    <div class="chart-container">
+                      <canvas id="categoryChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-chart-bar me-2"></i> Coûts mensuels</h5>
+                    <div class="chart-container">
+                      <canvas id="monthlyCostChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-bus me-2"></i> Coûts par bus</h5>
+                    <div class="chart-container">
+                      <canvas id="busCostChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="ph ph-flag me-2"></i> Répartition par priorité</h5>
+                    <div class="chart-container">
+                      <canvas id="priorityChart"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card mt-4">
+              <div class="card-body">
+                <h5 class="card-title"><i class="ph ph-file-text me-2"></i> Générer un rapport</h5>
+                <form id="reportForm" class="row g-3">
+                  <div class="col-md-4">
+                    <label for="reportType" class="form-label">Type de rapport</label>
+                    <select class="form-select" id="reportType">
+                      <option value="monthly">Mensuel</option>
+                      <option value="quarterly">Trimestriel</option>
+                      <option value="yearly">Annuel</option>
+                      <option value="custom">Période personnalisée</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <label for="reportMonth" class="form-label">Mois</label>
+                    <select class="form-select" id="reportMonth">
+                      <option value="01">Janvier</option>
+                      <option value="02">Février</option>
+                      <option value="03">Mars</option>
+                      <option value="04">Avril</option>
+                      <option value="05">Mai</option>
+                      <option value="06">Juin</option>
+                      <option value="07">Juillet</option>
+                      <option value="08">Août</option>
+                      <option value="09">Septembre</option>
+                      <option value="10">Octobre</option>
+                      <option value="11">Novembre</option>
+                      <option value="12">Décembre</option>
+                    </select>
+                  </div>
+                  
+              <div class="col-md-4">
+                    <label for="reportYear" class="form-label">Année</label>
+                    <select class="form-select" id="reportYear">
+                      <option value="2023">2023</option>
+                      <option value="2024">2024</option>
+                      <option value="2025" selected>2025</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-12 d-none" id="customDateGroup">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label for="reportStartDate" class="form-label">Date de début</label>
+                        <input type="date" class="form-control" id="reportStartDate">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="reportEndDate" class="form-label">Date de fin</label>
+                        <input type="date" class="form-control" id="reportEndDate">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                      <i class="ph ph-file-pdf me-2"></i> Générer PDF
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary ms-2">
+                      <i class="ph ph-file-csv me-2"></i> Exporter CSV
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bouton de changement de thème -->
+  <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle" title="Changer de thème">
+    <i class="ph ph-moon-stars fs-4"></i>
+  </button>
+
+  <!-- Pied de page -->
+  <footer class="text-center py-3 bg-dark text-white">
+    <div class="container">
+      <span>ML TRANSPORT &copy; <span id="currentYear"></span> - Powered by Forever/&gt;Inc</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Initialisation des données
+    const categorieSelect = document.getElementById("categorieMaintenance");
+    const sousMotifSelect = document.getElementById("sousMotifMaintenance");
+    const commentaireMotif = document.getElementById("commentaireMotif");
+    const maintenanceForm = document.getElementById("maintenanceForm");
+    const listeMaintenance = document.getElementById("listeMaintenance");
+    const busMaintenance = document.getElementById("busMaintenance");
+    const filterBus = document.getElementById("filterBus");
+    const filterStatut = document.getElementById("filterStatut");
+    const searchMaintenance = document.getElementById("searchMaintenance");
+    const prioriteMaintenance = document.getElementById("prioriteMaintenance");
+    const maintenances = JSON.parse(localStorage.getItem("maintenances")) || [];
+    const preventiveMaintenances = JSON.parse(localStorage.getItem("preventiveMaintenances")) || [];
+    const busMileages = JSON.parse(localStorage.getItem("busMileages")) || [];
+    const currentYear = document.getElementById("currentYear");
+
+    // Graphiques
+    let categoryChart, monthlyCostChart, busCostChart, priorityChart;
+
+    // Définir l'année courante
+    currentYear.textContent = new Date().getFullYear();
+
+    // Configuration des motifs par catégorie
+    const motifsParCategorie = {
+      "Moteur": ["Vidange", "Remplacement filtre à huile", "Remplacement filtre à air", "Réparation culasse", "Autre"],
+      "Transmission": ["Remplacement embrayage", "Réparation boîte de vitesses", "Remplacement cardan", "Autre"],
+      "Freinage": ["Remplacement plaquettes de frein", "Remplacement disques de frein", "Purge du liquide de frein", "Autre"],
+      "Pneumatique": ["Remplacement pneu", "Réparation crevaison", "Équilibrage", "Parallélisme", "Autre"],
+      "Electricite": ["Remplacement batterie", "Réparation démarreur", "Réparation alternateur", "Problème d'éclairage", "Autre"],
+      "Carrosserie": ["Réparation pare-chocs", "Réparation peinture", "Remplacement rétroviseur", "Autre"],
+      "Autre": []
+    };
+
+    // Récupérer la liste des bus depuis le localStorage ou une autre source
+    function getBusList() {
+      const storedBusList = JSON.parse(localStorage.getItem("busList")) || [];
+      return storedBusList.length ? storedBusList : [
+        { matricule: "AK678AA", nom: "Bus A", mileage: 125000 },
+        { matricule: "GH345BB", nom: "Bus B", mileage: 87000 },
+        { matricule: "KL901CC", nom: "Bus C", mileage: 156000 }
+      ];
+    }
+
+    // Charger la liste des bus
+    function chargerBus() {
+      const busList = getBusList();
+      busMaintenance.innerHTML = '<option value="">-- Choisir un bus --</option>';
+      filterBus.innerHTML = '<option value="">Tous les bus</option>';
+      document.getElementById("preventiveBus").innerHTML = '<option value="">-- Sélectionner un bus --</option>';
+      
+      busList.forEach(bus => {
+        const opt = document.createElement("option");
+        opt.value = bus.matricule;
+        opt.textContent = bus.matricule;
+        busMaintenance.appendChild(opt.cloneNode(true));
+        filterBus.appendChild(opt.cloneNode(true));
+        document.getElementById("preventiveBus").appendChild(opt);
+      });
+    }
+
+    // Gestion du champ commentaire pour "Autre" motif
+    categorieSelect.addEventListener("change", () => {
+      sousMotifSelect.innerHTML = '<option value="">-- Sélectionnez --</option>';
+      const categorieChoisie = categorieSelect.value;
+      
+      if (motifsParCategorie[categorieChoisie]) {
+        motifsParCategorie[categorieChoisie].forEach(motif => {
+          const option = document.createElement("option");
+          option.value = motif;
+          option.textContent = motif;
+          sousMotifSelect.appendChild(option);
+        });
+      }
+      
+      const isAutreCategorie = categorieChoisie === "Autre";
+      const isAutreSousMotif = sousMotifSelect.value === "Autre";
+      commentaireMotif.classList.toggle("d-none", !(isAutreCategorie || isAutreSousMotif));
+    });
+
+    sousMotifSelect.addEventListener("change", () => {
+      commentaireMotif.classList.toggle("d-none", !(categorieSelect.value === "Autre" || sousMotifSelect.value === "Autre"));
+    });
+
+    // Soumission du formulaire
+    maintenanceForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const montant = document.getElementById("montantMaintenance").value;
+      if (montant <= 0) {
+        alert("Le montant doit être supérieur à 0");
+        return;
+      }
+
+      const nouvelleMaintenance = {
+        id: Date.now(),
+        date: document.getElementById("dateMaintenance").value,
+        bus: document.getElementById("busMaintenance").value,
+        categorie: categorieSelect.value,
+        sousMotif: sousMotifSelect.value,
+        commentaire: document.getElementById("commentaire").value,
+        lieu: document.getElementById("lieuMaintenance").value,
+        technicien: document.getElementById("technicien").value,
+        telephoneTechnicien: document.getElementById("telephoneTechnicien").value,
+        montant: montant,
+        priorite: prioriteMaintenance.value,
+        statut: document.getElementById("statutMaintenance").value,
+        createdAt: new Date().toISOString()
+      };
+
+      maintenances.push(nouvelleMaintenance);
+      localStorage.setItem("maintenances", JSON.stringify(maintenances));
+      
+      // Réinitialiser le formulaire
+      maintenanceForm.reset();
+      
+      // Afficher un message de succès
+      alert("Maintenance enregistrée avec succès!");
+      
+      // Si on est dans l'onglet Historique, actualiser la liste
+      if (document.querySelector('#historique-tab').classList.contains('active')) {
+        afficherMaintenances();
+      }
+    });
+
+    // Afficher les maintenances dans le tableau
+    function afficherMaintenances(filtre = '') {
+      listeMaintenance.innerHTML = '';
+      
+      let maintenancesFiltrees = [...maintenances];
+      
+      // Filtrer par bus si sélectionné
+      const busFiltre = filterBus.value;
+      if (busFiltre) {
+        maintenancesFiltrees = maintenancesFiltrees.filter(m => m.bus === busFiltre);
+      }
+      
+      // Filtrer par statut si sélectionné
+      const statutFiltre = filterStatut.value;
+      if (statutFiltre) {
+        maintenancesFiltrees = maintenancesFiltrees.filter(m => m.statut === statutFiltre);
+      }
+      
+      // Filtrer par recherche textuelle
+      if (filtre) {
+        const termeRecherche = filtre.toLowerCase();
+        maintenancesFiltrees = maintenancesFiltrees.filter(m => 
+          m.bus.toLowerCase().includes(termeRecherche) || 
+          m.categorie.toLowerCase().includes(termeRecherche) ||
+          m.sousMotif.toLowerCase().includes(termeRecherche) ||
+          m.technicien.toLowerCase().includes(termeRecherche)
+        );
+      }
+      
+      // Trier par date (plus récent en premier)
+      maintenancesFiltrees.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      if (maintenancesFiltrees.length === 0) {
+        listeMaintenance.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-4">
+              <i class="ph ph-magnifying-glass fs-1 text-muted"></i>
+              <h5 class="mt-2">Aucune maintenance trouvée</h5>
+              <p class="text-muted">Essayez de modifier vos critères de recherche</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      maintenancesFiltrees.forEach(maintenance => {
+        const tr = document.createElement('tr');
+        tr.className = 'align-middle';
+        
+        // Déterminer la classe de badge en fonction de la priorité
+        let badgeClass = '';
+        switch(maintenance.priorite) {
+          case 'Urgent': badgeClass = 'priority-urgent'; break;
+          case 'Haute': badgeClass = 'priority-haute'; break;
+          case 'Moyenne': badgeClass = 'priority-moyenne'; break;
+          case 'Basse': badgeClass = 'priority-basse'; break;
+        }
+        
+        tr.innerHTML = `
+          <td>${new Date(maintenance.date).toLocaleDateString()}</td>
+          <td>${maintenance.bus}</td>
+          <td>${maintenance.categorie}</td>
+          <td>${maintenance.sousMotif}${maintenance.commentaire ? ' (' + maintenance.commentaire + ')' : ''}</td>
+          <td><span class="badge ${badgeClass}">${maintenance.priorite}</span></td>
+          <td>${Number(maintenance.montant).toLocaleString()} XAF</td>
+          <td>${maintenance.statut}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1 edit-btn" data-id="${maintenance.id}">
+              <i class="ph ph-pencil-simple"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${maintenance.id}">
+              <i class="ph ph-trash"></i>
+            </button>
+          </td>
+        `;
+        
+        listeMaintenance.appendChild(tr);
+      });
+      
+      // Ajouter les gestionnaires d'événements pour les boutons
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.currentTarget.getAttribute('data-id'));
+          editerMaintenance(id);
+        });
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = parseInt(e.currentTarget.getAttribute('data-id'));
+          supprimerMaintenance(id);
+        });
+      });
+    }
+    
+    // Éditer une maintenance
+    function editerMaintenance(id) {
+      const maintenance = maintenances.find(m => m.id === id);
+      if (!maintenance) return;
+      
+      // Remplir le formulaire avec les données de la maintenance
+      document.getElementById('dateMaintenance').value = maintenance.date;
+      document.getElementById('busMaintenance').value = maintenance.bus;
+      document.getElementById('categorieMaintenance').value = maintenance.categorie;
+      
+      // Déclencher l'événement change pour charger les sous-motifs
+      const event = new Event('change');
+      categorieSelect.dispatchEvent(event);
+      
+      // Après un court délai pour permettre le chargement des sous-motifs
+      setTimeout(() => {
+        document.getElementById('sousMotifMaintenance').value = maintenance.sousMotif;
+        document.getElementById('commentaire').value = maintenance.commentaire || '';
+        document.getElementById('lieuMaintenance').value = maintenance.lieu || '';
+        document.getElementById('technicien').value = maintenance.technicien || '';
+        document.getElementById('telephoneTechnicien').value = maintenance.telephoneTechnicien || '';
+        document.getElementById('montantMaintenance').value = maintenance.montant;
+        document.getElementById('prioriteMaintenance').value = maintenance.priorite;
+        document.getElementById('statutMaintenance').value = maintenance.statut;
+        
+        // Faire défiler jusqu'au formulaire
+        document.querySelector('#enregistrement-tab').click();
+        window.scrollTo({
+          top: document.getElementById('maintenanceForm').offsetTop - 100,
+          behavior: 'smooth'
+        });
+        
+        // Supprimer cette maintenance de la liste
+        const index = maintenances.findIndex(m => m.id === id);
+        if (index !== -1) {
+          maintenances.splice(index, 1);
+          localStorage.setItem("maintenances", JSON.stringify(maintenances));
+        }
+      }, 100);
+    }
+    
+    // Supprimer une maintenance
+    function supprimerMaintenance(id) {
+      if (!confirm('Voulez-vous vraiment supprimer cette maintenance ?')) return;
+      
+      const index = maintenances.findIndex(m => m.id === id);
+      if (index !== -1) {
+        maintenances.splice(index, 1);
+        localStorage.setItem("maintenances", JSON.stringify(maintenances));
+        afficherMaintenances();
+      }
+    }
+    
+    // Gestion des filtres
+    filterBus.addEventListener('change', () => afficherMaintenances());
+    filterStatut.addEventListener('change', () => afficherMaintenances());
+    searchMaintenance.addEventListener('input', (e) => afficherMaintenances(e.target.value));
+    
+    // Gestion du changement de thème
+    const toggleTheme = document.getElementById('toggleTheme');
+    const html = document.documentElement;
+    
+    // Vérifier le thème stocké ou utiliser le préférence système
+    const savedTheme = localStorage.getItem('theme') || 
+                      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    // Appliquer le thème sauvegardé
+    html.setAttribute('data-bs-theme', savedTheme);
+    toggleTheme.innerHTML = savedTheme === 'dark' ? '<i class="ph ph-sun fs-4"></i>' : '<i class="ph ph-moon-stars fs-4"></i>';
+    
+    // Basculer entre les thèmes
+    toggleTheme.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-bs-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      html.setAttribute('data-bs-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      toggleTheme.innerHTML = newTheme === 'dark' ? '<i class="ph ph-sun fs-4"></i>' : '<i class="ph ph-moon-stars fs-4"></i>';
+    });
+    
+    // Gestion des déclencheurs de maintenance préventive
+    document.querySelectorAll('input[name="triggerType"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        document.getElementById('kmTriggerGroup').classList.toggle('d-none', e.target.value !== 'km');
+        document.getElementById('timeTriggerGroup').classList.toggle('d-none', e.target.value !== 'time');
+      });
+    });
+    
+    // Soumission du formulaire de maintenance préventive
+    document.getElementById('preventiveForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const newPreventive = {
+        id: Date.now(),
+        bus: document.getElementById('preventiveBus').value,
+        type: document.getElementById('preventiveType').value,
+        triggerType: document.querySelector('input[name="triggerType"]:checked').value,
+        interval: document.querySelector('input[name="triggerType"]:checked').value === 'km' 
+                 ? document.getElementById('kmInterval').value 
+                 : document.getElementById('dayInterval').value,
+        lastDone: document.getElementById('lastDone').value,
+        createdAt: new Date().toISOString()
+      };
+      
+      preventiveMaintenances.push(newPreventive);
+      localStorage.setItem('preventiveMaintenances', JSON.stringify(preventiveMaintenances));
+      
+      alert('Maintenance préventive planifiée avec succès!');
+      e.target.reset();
+      afficherMaintenancesPreventives();
+    });
+    
+    // Afficher les maintenances préventives
+    function afficherMaintenancesPreventives() {
+      const upcomingList = document.getElementById('upcomingMaintenanceList');
+      upcomingList.innerHTML = '';
+      
+      if (preventiveMaintenances.length === 0) {
+        upcomingList.innerHTML = `
+          <div class="alert alert-info">
+            <i class="ph ph-info me-2"></i>
+            Aucune maintenance préventive planifiée
+          </div>
+        `;
+        return;
+      }
+      
+      preventiveMaintenances.forEach(item => {
+        const bus = getBusList().find(b => b.matricule === item.bus);
+        const busName = bus ? `${bus.matricule} (${bus.nom})` : item.bus;
+        
+        const card = document.createElement('div');
+        card.className = 'card maintenance-card mb-2';
+        
+        let nextDue = '';
+        if (item.triggerType === 'km' && bus) {
+          const nextKm = parseInt(bus.mileage) + parseInt(item.interval);
+          nextDue = `Prochaine à ${nextKm.toLocaleString()} km`;
+        } else if (item.triggerType === 'time' && item.lastDone) {
+          const nextDate = new Date(item.lastDone);
+          nextDate.setDate(nextDate.getDate() + parseInt(item.interval));
+          nextDue = `Prochaine le ${nextDate.toLocaleDateString()}`;
+        }
+        
+        card.innerHTML = `
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="mb-1">${busName}</h6>
+                <small class="text-muted">${item.type} - ${item.triggerType === 'km' ? 'Kilométrage' : 'Périodicité'}</small>
+              </div>
+              <div class="text-end">
+                <div class="fw-bold">${nextDue}</div>
+                <small class="text-muted">Dernière: ${item.lastDone || 'Non spécifiée'}</small>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        upcomingList.appendChild(card);
+      });
+    }
+    
+    // Afficher le suivi kilométrique
+    function afficherSuiviKilometrique() {
+      const mileageTable = document.getElementById('mileageTracker');
+      mileageTable.innerHTML = '';
+      
+      const busList = getBusList();
+      
+      busList.forEach(bus => {
+        const vidange = preventiveMaintenances.find(p => 
+          p.bus === bus.matricule && p.type === 'Vidange' && p.triggerType === 'km'
+        );
+        
+        const nextOilChange = vidange ? parseInt(bus.mileage) + parseInt(vidange.interval) : 0;
+        const progress = vidange ? Math.min(100, Math.round((bus.mileage / nextOilChange) * 100)) : 0;
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${bus.matricule} (${bus.nom})</td>
+          <td>${bus.mileage.toLocaleString()} km</td>
+          <td>${vidange?.lastDone || 'Non spécifiée'}</td>
+          <td>${vidange ? nextOilChange.toLocaleString() + ' km' : 'Non planifiée'}</td>
+          <td>
+            ${vidange ? `
+            <div class="progress">
+              <div class="progress-bar ${progress > 90 ? 'bg-danger' : progress > 70 ? 'bg-warning' : 'bg-success'}" 
+                   role="progressbar" style="width: ${progress}%" 
+                   aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
+                ${progress}%
+              </div>
+            </div>
+            ` : '-'}
+          </td>
+        `;
+        
+        mileageTable.appendChild(tr);
+      });
+    }
+    
+    // Initialiser les graphiques
+    function initCharts() {
+      // Données factices pour les graphiques (à remplacer par vos données réelles)
+      const categories = ['Moteur', 'Transmission', 'Freinage', 'Pneumatique', 'Electricite', 'Carrosserie', 'Autre'];
+      const categoryCounts = [15, 8, 12, 20, 9, 5, 3];
+      const monthlyCosts = [450000, 620000, 380000, 550000, 490000, 710000];
+      const busCosts = [1250000, 980000, 1560000];
+      const busLabels = getBusList().map(b => b.matricule);
+      const priorityCounts = [5, 8, 12, 10];
+      
+      // Graphique par catégorie
+      const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+      categoryChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: categories,
+          datasets: [{
+            data: categoryCounts,
+            backgroundColor: [
+              '#0d6efd', '#6c757d', '#198754', '#fd7e14', '#0dcaf0', '#ffc107', '#dc3545'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right'
+            }
+          }
+        }
+      });
+      
+      // Graphique des coûts mensuels
+      const monthlyCostCtx = document.getElementById('monthlyCostChart').getContext('2d');
+      monthlyCostChart = new Chart(monthlyCostCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun'],
+          datasets: [{
+            label: 'Coûts (XAF)',
+            data: monthlyCosts,
+            backgroundColor: '#0d6efd',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return value.toLocaleString() + ' XAF';
+                }
+              }
+            }
+          }
+        }
+      });
+      
+      // Graphique des coûts par bus
+      const busCostCtx = document.getElementById('busCostChart').getContext('2d');
+      busCostChart = new Chart(busCostCtx, {
+        type: 'bar',
+        data: {
+          labels: busLabels,
+          datasets: [{
+            label: 'Coûts totaux (XAF)',
+            data: busCosts,
+            backgroundColor: ['#0d6efd', '#6c757d', '#198754'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return value.toLocaleString() + ' XAF';
+                }
+              }
+            }
+          }
+        }
+      });
+      
+      // Graphique par priorité
+      const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+      priorityChart = new Chart(priorityCtx, {
+        type: 'pie',
+        data: {
+          labels: ['Urgent', 'Haute', 'Moyenne', 'Basse'],
+          datasets: [{
+            data: priorityCounts,
+            backgroundColor: [
+              '#dc3545', '#ffc107', '#fd7e14', '#198754'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right'
+            }
+          }
+        }
+      });
+    }
+    
+    // Gestion du formulaire de rapport
+    document.getElementById('reportType').addEventListener('change', (e) => {
+      document.getElementById('customDateGroup').classList.toggle('d-none', e.target.value !== 'custom');
+    });
+    
+    // Initialisation au chargement de la page
+    document.addEventListener('DOMContentLoaded', () => {
+      chargerBus();
+      afficherMaintenances();
+      afficherMaintenancesPreventives();
+      afficherSuiviKilometrique();
+      initCharts();
+      
+      // Activer les tooltips Bootstrap
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>
+</body>
+</html>

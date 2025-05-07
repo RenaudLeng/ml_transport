@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda | ML TRANSPORT</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet"/>
+
+  <!-- Style amélioré -->
+  <style>
+    .event-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid #0d6efd;
+    }
+    
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .event-type-badge {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+    
+    .event-meeting { background-color: #d1e7dd; color: #0f5132; }
+    .event-maintenance { background-color: #fff3cd; color: #664d03; }
+    .event-payment { background-color: #cfe2ff; color: #084298; }
+    .event-other { background-color: #e2e3e5; color: #41464b; }
+    
+    .calendar-container {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .fc .fc-toolbar-title {
+      font-size: 1.25rem;
+      color: #0d6efd;
+    }
+    
+    .fc .fc-button {
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+    
+    .fc-event {
+      cursor: pointer;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <i class="ph ph-bus fs-3 me-2 text-primary"></i>
+        <span class="fw-bold">ML TRANSPORT</span>
+      </a>
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="ph ph-house"></i> Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="recettes.html"><i class="ph ph-wallet"></i> Recettes</a></li>
+          <li class="nav-item"><a class="nav-link" href="depenses.html"><i class="ph ph-bank"></i> Dépenses</a></li>
+          <li class="nav-item"><a class="nav-link" href="maintenance.html"><i class="ph ph-wrench"></i> Maintenance</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-calendar-check"></i> Agenda</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <main class="container mt-5 pt-5 pb-5">
+    <h2 class="text-center my-4 text-primary">
+      <i class="ph ph-calendar-check fs-2"></i> Agenda de l'entreprise
+    </h2>
+
+    <div class="calendar-container mb-4">
+      <div id="calendar"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <i class="ph ph-calendar-plus"></i> Ajouter un événement
+          </div>
+          <div class="card-body">
+            <form id="agendaForm">
+              <div class="mb-3">
+                <label for="agendaDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="agendaDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="agendaHeure" class="form-label">Heure (facultatif)</label>
+                <input type="time" class="form-control" id="agendaHeure">
+              </div>
+              <div class="mb-3">
+                <label for="agendaTitre" class="form-label">Titre de l'événement</label>
+                <input type="text" class="form-control" id="agendaTitre" required>
+              </div>
+              <div class="mb-3">
+                <label for="agendaType" class="form-label">Type d'événement</label>
+                <select class="form-select" id="agendaType">
+                  <option value="meeting">Réunion</option>
+                  <option value="maintenance">Maintenance</option>
+                  <option value="payment">Paiement</option>
+                  <option value="other">Autre</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="agendaDetails" class="form-label">Détails</label>
+                <textarea class="form-control" id="agendaDetails" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-success w-100">
+                <i class="ph ph-calendar-plus"></i> Ajouter à l'agenda
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span><i class="ph ph-list-bullets"></i> Événements programmés</span>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="ph ph-funnel"></i> Filtrer
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item filter-option active" href="#" data-filter="all">Tous</a></li>
+                <li><a class="dropdown-item filter-option" href="#" data-filter="meeting">Réunions</a></li>
+                <li><a class="dropdown-item filter-option" href="#" data-filter="maintenance">Maintenances</a></li>
+                <li><a class="dropdown-item filter-option" href="#" data-filter="payment">Paiements</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="listeAgenda">
+              <!-- État vide -->
+              <div class="empty-state" id="emptyState">
+                <i class="ph ph-calendar-blank"></i>
+                <h5>Aucun événement programmé</h5>
+                <p>Commencez par ajouter votre premier événement</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOUTON MODE -->
+  <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle" title="Changer de thème">
+    <i class="ph ph-moon-stars fs-4"></i>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-3 bg-dark text-white">
+    Powered by Forever/&gt;Inc
+  </footer>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.min.js"></script>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="theme.js"></script>
+  <script>
+    // Initialisation des données
+    let agenda = JSON.parse(localStorage.getItem("agendaList")) || [];
+    let currentFilter = "all";
+    let calendar; // Variable globale pour le calendrier
+
+    // Éléments DOM
+    const agendaForm = document.getElementById("agendaForm");
+    const listeAgenda = document.getElementById("listeAgenda");
+    const emptyState = document.getElementById("emptyState");
+
+    // Initialiser le calendrier
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: [],
+        eventClick: function(info) {
+          alert(`${info.event.title}\n\n${info.event.extendedProps.details || 'Aucun détail'}`);
+        }
+      });
+      calendar.render();
+      refreshCalendarEvents(); // Charger les événements après initialisation
+    });
+
+    // Fonction pour rafraîchir les événements du calendrier
+    function refreshCalendarEvents() {
+      // Supprimer tous les événements existants
+      calendar.getEvents().forEach(event => event.remove());
+      
+      // Ajouter les événements actuels
+      agenda.forEach(event => {
+        calendar.addEvent({
+          title: event.titre,
+          start: event.heure ? `${event.date}T${event.heure}:00` : event.date,
+          extendedProps: {
+            details: event.details,
+            type: event.type
+          },
+          color: getEventColor(event.type)
+        });
+      });
+    }
+
+    // Fonction pour obtenir la couleur selon le type d'événement
+    function getEventColor(type) {
+      switch(type) {
+        case 'meeting': return '#198754';
+        case 'maintenance': return '#ffc107';
+        case 'payment': return '#0d6efd';
+        default: return '#6c757d';
+      }
+    }
+
+    // Fonction pour obtenir la classe CSS du badge selon le type
+    function getEventBadgeClass(type) {
+      switch(type) {
+        case 'meeting': return 'event-meeting';
+        case 'maintenance': return 'event-maintenance';
+        case 'payment': return 'event-payment';
+        default: return 'event-other';
+      }
+    }
+
+    // Fonction pour obtenir l'icône selon le type
+    function getEventIcon(type) {
+      switch(type) {
+        case 'meeting': return 'ph-users';
+        case 'maintenance': return 'ph-wrench';
+        case 'payment': return 'ph-currency-circle-dollar';
+        default: return 'ph-calendar-blank';
+      }
+    }
+
+    // Afficher l'agenda
+    function afficherAgenda() {
+      listeAgenda.innerHTML = '';
+      
+      // Filtrer les événements
+      const filteredAgenda = agenda.filter(event => {
+        if (currentFilter === 'all') return true;
+        return event.type === currentFilter;
+      });
+      
+      // Trier par date (le plus récent en premier)
+      filteredAgenda.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      if (filteredAgenda.length === 0) {
+        emptyState.classList.remove('d-none');
+        listeAgenda.appendChild(emptyState);
+        return;
+      }
+      
+      emptyState.classList.add('d-none');
+      
+      filteredAgenda.forEach((event, index) => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'card mb-3 event-card';
+        
+        const badgeClass = getEventBadgeClass(event.type);
+        const eventIcon = getEventIcon(event.type);
+        
+        eventElement.innerHTML = `
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="badge ${badgeClass} event-type-badge mb-2">
+                  <i class="ph ${eventIcon} me-1"></i>
+                  ${event.type === 'meeting' ? 'Réunion' : 
+                   event.type === 'maintenance' ? 'Maintenance' : 
+                   event.type === 'payment' ? 'Paiement' : 'Autre'}
+                </span>
+                <h5 class="card-title mb-1">${event.titre}</h5>
+              </div>
+              <button class="btn btn-sm btn-outline-danger" onclick="supprimerEvenement(${index})">
+                <i class="ph ph-trash"></i>
+              </button>
+            </div>
+            
+            <div class="d-flex align-items-center text-muted mb-2">
+              <i class="ph ph-calendar me-2"></i>
+              <span>${formatDate(event.date)}</span>
+              ${event.heure ? `<span class="ms-3"><i class="ph ph-clock me-2"></i>${event.heure}</span>` : ''}
+            </div>
+            
+            ${event.details ? `
+              <div class="alert alert-light mt-2 mb-0">
+                <i class="ph ph-note-pencil"></i> ${event.details}
+              </div>
+            ` : ''}
+          </div>
+        `;
+        
+        listeAgenda.appendChild(eventElement);
+      });
+      
+      // Mettre à jour le calendrier sans recharger la page
+      refreshCalendarEvents();
+    }
+
+    // Formater la date
+    function formatDate(dateString) {
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('fr-FR', options);
+    }
+
+    // Supprimer un événement
+    function supprimerEvenement(index) {
+      if (confirm("Voulez-vous vraiment supprimer cet événement ?")) {
+        agenda.splice(index, 1);
+        localStorage.setItem("agendaList", JSON.stringify(agenda));
+        afficherAgenda();
+        showNotification('Événement supprimé avec succès', 'danger');
+      }
+    }
+
+    // Afficher une notification
+    function showNotification(message, type = 'success') {
+      const notification = document.createElement('div');
+      notification.className = 'position-fixed bottom-0 end-0 p-3';
+      notification.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Ajouter un nouvel événement
+    agendaForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      
+      // Validation de la date
+      const dateInput = document.getElementById("agendaDate");
+      if (!dateInput.value) {
+        showNotification('Veuillez sélectionner une date', 'warning');
+        return;
+      }
+      
+      const event = {
+        date: dateInput.value,
+        heure: document.getElementById("agendaHeure").value || "",
+        titre: document.getElementById("agendaTitre").value.trim(),
+        type: document.getElementById("agendaType").value,
+        details: document.getElementById("agendaDetails").value.trim()
+      };
+      
+      // Validation du titre
+      if (!event.titre) {
+        showNotification('Veuillez saisir un titre pour l\'événement', 'warning');
+        return;
+      }
+      
+      agenda.push(event);
+      localStorage.setItem("agendaList", JSON.stringify(agenda));
+      agendaForm.reset();
+      
+      // Définir la date du jour par défaut
+      document.getElementById("agendaDate").valueAsDate = new Date();
+      
+      afficherAgenda();
+      showNotification('Événement ajouté avec succès');
+    });
+
+    // Gestion des filtres
+    document.querySelectorAll('.filter-option').forEach(option => {
+      option.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.filter-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        this.classList.add('active');
+        currentFilter = this.dataset.filter;
+        afficherAgenda();
+      });
+    });
+
+    // Initialisation
+    document.getElementById("agendaDate").valueAsDate = new Date();
+    afficherAgenda();
+  </script>
+</body>
+</html>

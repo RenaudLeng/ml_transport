@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Statistiques | ML TRANSPORT</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --card-border-radius: 12px;
+      --card-padding: 1.25rem;
+      --transition-speed: 0.3s;
+    }
+    
+    .stat-card {
+      border-radius: var(--card-border-radius);
+      padding: var(--card-padding);
+      transition: all var(--transition-speed) ease;
+      height: 100%;
+    }
+    
+    .stat-card-primary {
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.2) 100%);
+      border-left: 4px solid #0d6efd;
+    }
+    
+    .stat-card-success {
+      background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.2) 100%);
+      border-left: 4px solid #198754;
+    }
+    
+    .stat-card-danger {
+      background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.2) 100%);
+      border-left: 4px solid #dc3545;
+    }
+    
+    .stat-card-warning {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.2) 100%);
+      border-left: 4px solid #ffc107;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+    
+    .suggestion-item {
+      border-left: 3px solid #0d6efd;
+      padding-left: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .suggestion-item.warning {
+      border-left-color: #ffc107;
+    }
+    
+    .suggestion-item.danger {
+      border-left-color: #dc3545;
+    }
+    
+    .suggestion-item.success {
+      border-left-color: #198754;
+    }
+
+    @media (max-width: 768px) {
+      .chart-container {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body class="light-mode">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <i class="ph ph-bus fs-3 me-2 text-primary"></i>
+        <span class="fw-bold">ML TRANSPORT</span>
+      </a>
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="ph ph-house"></i> Accueil</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html"><i class="ph ph-currency-circle-dollar"></i> Finance</a></li>
+          <li class="nav-item"><a class="nav-link" href="maintenance.html"><i class="ph ph-wrench"></i> Maintenance</a></li>
+          <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="ph ph-calendar-check"></i> Agenda</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-chart-bar"></i> Statistiques</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <main class="container mt-5 pt-5 pb-5">
+    <h2 class="text-center my-4 text-primary">
+      <i class="ph ph-chart-bar fs-2"></i> Tableau de bord statistique
+    </h2>
+
+    <!-- Cartes de synthèse -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="stat-card stat-card-primary">
+          <div class="stat-value text-primary" id="totalRecettes">0 XAF</div>
+          <div class="stat-label">Recettes totales</div>
+          <small class="text-muted">30 derniers jours</small>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="stat-card stat-card-danger">
+          <div class="stat-value text-danger" id="totalDepenses">0 XAF</div>
+          <div class="stat-label">Dépenses totales</div>
+          <small class="text-muted">30 derniers jours</small>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="stat-card stat-card-success">
+          <div class="stat-value text-success" id="totalProfit">0 XAF</div>
+          <div class="stat-label">Bénéfice net</div>
+          <small class="text-muted">30 derniers jours</small>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="stat-card stat-card-warning">
+          <div class="stat-value text-warning" id="avgDailyProfit">0 XAF</div>
+          <div class="stat-label">Bénéfice moyen/jour</div>
+          <small class="text-muted">30 derniers jours</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="periodSelect" class="form-label">Période</label>
+            <select class="form-select" id="periodSelect">
+              <option value="7">7 derniers jours</option>
+              <option value="30" selected>30 derniers jours</option>
+              <option value="90">3 derniers mois</option>
+              <option value="365">12 derniers mois</option>
+              <option value="custom">Période personnalisée</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3 d-none" id="customStartDateContainer">
+            <label for="customStartDate" class="form-label">Date de début</label>
+            <input type="date" class="form-control" id="customStartDate">
+          </div>
+          <div class="col-md-4 mb-3 d-none" id="customEndDateContainer">
+            <label for="customEndDate" class="form-label">Date de fin</label>
+            <input type="date" class="form-control" id="customEndDate">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="busFilter" class="form-label">Filtrer par bus</label>
+            <select class="form-select" id="busFilter">
+              <option value="">Tous les bus</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header">
+            <h5><i class="ph ph-trend-up"></i> Évolution des recettes et dépenses</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header">
+            <h5><i class="ph ph-chart-pie"></i> Répartition des dépenses</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="expensePieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Détails par bus -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-header">
+            <h5><i class="ph ph-bus"></i> Performance par bus</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="busPerformanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyse et suggestions -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h5><i class="ph ph-lightbulb"></i> Analyse et suggestions</h5>
+      </div>
+      <div class="card-body">
+        <div id="suggestionsContainer">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-2">Analyse des données en cours...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOUTON MODE -->
+  <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle no-print" title="Changer de thème">
+    <i class="ph ph-moon-stars fs-4"></i>
+  </button>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-3 bg-dark text-white">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Powered by Forever/&gt;Inc</span>
+        <span class="small">Dernière mise à jour: <span id="lastUpdate"></span></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Données et configuration
+    let trendChart, expensePieChart, busPerformanceChart;
+    let allRecettes = [], allDepenses = [], allBuses = [], allMaintenance = [];
+    
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      setupEventListeners();
+      updateLastModified();
+      
+      // Définir la période par défaut (30 derniers jours)
+      updateCharts(30);
+    });
+    
+    // Charger les données depuis le localStorage
+    function loadData() {
+      allRecettes = JSON.parse(localStorage.getItem('recettes')) || [];
+      allDepenses = JSON.parse(localStorage.getItem('depenses')) || [];
+      allBuses = JSON.parse(localStorage.getItem('busList')) || [];
+      allMaintenance = JSON.parse(localStorage.getItem('maintenances')) || [];
+      
+      // Peupler le filtre des bus
+      populateBusFilter();
+    }
+    
+    // Configurer les écouteurs d'événements
+    function setupEventListeners() {
+      document.getElementById('periodSelect').addEventListener('change', function() {
+        if (this.value === 'custom') {
+          document.getElementById('customStartDateContainer').classList.remove('d-none');
+          document.getElementById('customEndDateContainer').classList.remove('d-none');
+          
+          // Définir les dates par défaut (30 derniers jours)
+          const endDate = new Date();
+          const startDate = new Date();
+          startDate.setDate(startDate.getDate() - 30);
+          
+          document.getElementById('customStartDate').valueAsDate = startDate;
+          document.getElementById('customEndDate').valueAsDate = endDate;
+        } else {
+          document.getElementById('customStartDateContainer').classList.add('d-none');
+          document.getElementById('customEndDateContainer').classList.add('d-none');
+          updateCharts(parseInt(this.value));
+        }
+      });
+      
+      document.getElementById('customStartDate').addEventListener('change', updateCustomDateRange);
+      document.getElementById('customEndDate').addEventListener('change', updateCustomDateRange);
+      document.getElementById('busFilter').addEventListener('change', function() {
+        updateCharts(getSelectedPeriod());
+      });
+    }
+    
+    // Peupler le filtre des bus
+    function populateBusFilter() {
+      const busFilter = document.getElementById('busFilter');
+      busFilter.innerHTML = '<option value="">Tous les bus</option>';
+      
+      allBuses.forEach(bus => {
+        const option = document.createElement('option');
+        option.value = bus.matricule;
+        option.textContent = `${bus.matricule} - ${bus.nom}`;
+        busFilter.appendChild(option);
+      });
+    }
+    
+    // Mettre à jour les graphiques en fonction de la période sélectionnée
+    function updateCharts(days) {
+      let startDate, endDate = new Date();
+      
+      if (typeof days === 'number') {
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+      } else if (days === 'custom') {
+        startDate = new Date(document.getElementById('customStartDate').value);
+        endDate = new Date(document.getElementById('customEndDate').value);
+      }
+      
+      // Filtrer les données par période
+      const filteredRecettes = filterDataByDate(allRecettes, startDate, endDate);
+      const filteredDepenses = filterDataByDate(allDepenses, startDate, endDate);
+      
+      // Filtrer par bus si sélectionné
+      const selectedBus = document.getElementById('busFilter').value;
+      const busFilteredRecettes = selectedBus ? 
+        filteredRecettes.filter(r => r.matricule === selectedBus) : filteredRecettes;
+      const busFilteredDepenses = selectedBus ? 
+        filteredDepenses.filter(d => d.bus === selectedBus) : filteredDepenses;
+      
+      // Mettre à jour les cartes de synthèse
+      updateSummaryCards(busFilteredRecettes, busFilteredDepenses, startDate, endDate);
+      
+      // Mettre à jour les graphiques
+      updateTrendChart(busFilteredRecettes, busFilteredDepenses, startDate, endDate);
+      updateExpensePieChart(busFilteredDepenses);
+      updateBusPerformanceChart(filteredRecettes, filteredDepenses);
+      
+      // Mettre à jour les suggestions
+      updateSuggestions(busFilteredRecettes, busFilteredDepenses);
+    }
+    
+    // Filtrer les données par date
+    function filterDataByDate(data, startDate, endDate) {
+      return data.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    }
+    
+    // Mettre à jour les cartes de synthèse
+    function updateSummaryCards(recettes, depenses, startDate, endDate) {
+      // Calculer les totaux
+      const totalRecettes = recettes.reduce((sum, r) => sum + (r.montant || 0), 0);
+      const totalDepenses = depenses.reduce((sum, d) => sum + (d.montant || 0), 0);
+      const totalProfit = totalRecettes - totalDepenses;
+      
+      // Calculer le nombre de jours dans la période
+      const daysInPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
+      const avgDailyProfit = totalProfit / daysInPeriod;
+      
+      // Mettre à jour l'interface
+      document.getElementById('totalRecettes').textContent = formatCurrency(totalRecettes);
+      document.getElementById('totalDepenses').textContent = formatCurrency(totalDepenses);
+      document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+      document.getElementById('avgDailyProfit').textContent = formatCurrency(avgDailyProfit);
+    }
+    
+    // Mettre à jour le graphique d'évolution
+    function updateTrendChart(recettes, depenses, startDate, endDate) {
+      // Grouper les données par jour/semaine/mois selon la période
+      const daysInPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      let groupBy;
+      
+      if (daysInPeriod <= 14) groupBy = 'day';
+      else if (daysInPeriod <= 60) groupBy = 'week';
+      else groupBy = 'month';
+      
+      // Préparer les données groupées
+      const labels = [];
+      const recettesData = [];
+      const depensesData = [];
+      
+      // Créer les intervalles de temps
+      const currentDate = new Date(startDate);
+      
+      while (currentDate <= endDate) {
+        let label;
+        const periodStart = new Date(currentDate);
+        
+        if (groupBy === 'day') {
+          label = currentDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+          currentDate.setDate(currentDate.getDate() + 1);
+        } else if (groupBy === 'week') {
+          const weekEnd = new Date(currentDate);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+          label = `${currentDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} - ${weekEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
+          currentDate.setDate(currentDate.getDate() + 7);
+        } else {
+          label = currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+          currentDate.setMonth(currentDate.getMonth() + 1);
+        }
+        
+        labels.push(label);
+        
+        // Calculer les totaux pour la période
+        const periodRecettes = recettes.filter(r => {
+          const rDate = new Date(r.date);
+          return rDate >= periodStart && rDate < currentDate;
+        }).reduce((sum, r) => sum + (r.montant || 0), 0);
+        
+        const periodDepenses = depenses.filter(d => {
+          const dDate = new Date(d.date);
+          return dDate >= periodStart && dDate < currentDate;
+        }).reduce((sum, d) => sum + (d.montant || 0), 0);
+        
+        recettesData.push(periodRecettes);
+        depensesData.push(periodDepenses);
+      }
+      
+      // Créer ou mettre à jour le graphique
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      
+      if (trendChart) {
+        trendChart.data.labels = labels;
+        trendChart.data.datasets[0].data = recettesData;
+        trendChart.data.datasets[1].data = depensesData;
+        trendChart.update();
+      } else {
+        trendChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Recettes',
+                data: recettesData,
+                borderColor: '#198754',
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                tension: 0.3,
+                fill: true
+              },
+              {
+                label: 'Dépenses',
+                data: depensesData,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                tension: 0.3,
+                fill: true
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return formatCurrency(value);
+                  }
+                }
+              }
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+    
+    // Mettre à jour le graphique circulaire des dépenses
+    function updateExpensePieChart(depenses) {
+      // Grouper les dépenses par type
+      const expenseTypes = {};
+      
+      depenses.forEach(d => {
+        const type = d.type === 'bus' ? 'Bus' : 'Entreprise';
+        if (!expenseTypes[type]) expenseTypes[type] = 0;
+        expenseTypes[type] += d.montant || 0;
+      });
+      
+      const labels = Object.keys(expenseTypes);
+      const data = Object.values(expenseTypes);
+      
+      // Créer ou mettre à jour le graphique
+      const ctx = document.getElementById('expensePieChart').getContext('2d');
+      
+      if (expensePieChart) {
+        expensePieChart.data.labels = labels;
+        expensePieChart.data.datasets[0].data = data;
+        expensePieChart.update();
+      } else {
+        expensePieChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: [
+                '#fd7e14',
+                '#6f42c1',
+                '#20c997',
+                '#ffc107',
+                '#0dcaf0'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = Math.round((context.raw / total) * 100);
+                    return `${context.label}: ${formatCurrency(context.raw)} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+    
+    // Mettre à jour le graphique de performance par bus
+    function updateBusPerformanceChart(recettes, depenses) {
+      // Grouper les données par bus
+      const busPerformance = {};
+      
+      allBuses.forEach(bus => {
+        busPerformance[bus.matricule] = {
+          nom: bus.nom,
+          recettes: 0,
+          depenses: 0
+        };
+      });
+      
+      // Calculer les recettes par bus
+      recettes.forEach(r => {
+        if (busPerformance[r.matricule]) {
+          busPerformance[r.matricule].recettes += r.montant || 0;
+        }
+      });
+      
+      // Calculer les dépenses par bus
+      depenses.forEach(d => {
+        if (d.bus && busPerformance[d.bus]) {
+          busPerformance[d.bus].depenses += d.montant || 0;
+        }
+      });
+      
+      // Préparer les données pour le graphique
+      const labels = [];
+      const profitData = [];
+      
+      Object.entries(busPerformance).forEach(([matricule, data]) => {
+        const profit = data.recettes - data.depenses;
+        if (data.recettes > 0 || data.depenses > 0) {
+          labels.push(`${matricule} (${data.nom})`);
+          profitData.push(profit);
+        }
+      });
+      
+      // Créer ou mettre à jour le graphique
+      const ctx = document.getElementById('busPerformanceChart').getContext('2d');
+      
+      if (busPerformanceChart) {
+        busPerformanceChart.data.labels = labels;
+        busPerformanceChart.data.datasets[0].data = profitData;
+        busPerformanceChart.update();
+      } else {
+        busPerformanceChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Bénéfice (Recettes - Dépenses)',
+              data: profitData,
+              backgroundColor: function(context) {
+                return context.raw >= 0 ? 'rgba(25, 135, 84, 0.7)' : 'rgba(220, 53, 69, 0.7)';
+              },
+              borderColor: function(context) {
+                return context.raw >= 0 ? 'rgba(25, 135, 84, 1)' : 'rgba(220, 53, 69, 1)';
+              },
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: false,
+                ticks: {
+                  callback: function(value) {
+                    return formatCurrency(value);
+                  }
+                }
+              }
+            },
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+    
+    // Mettre à jour les suggestions
+    function updateSuggestions(recettes, depenses) {
+      const container = document.getElementById('suggestionsContainer');
+      const totalRecettes = recettes.reduce((sum, r) => sum + (r.montant || 0), 0);
+      const totalDepenses = depenses.reduce((sum, d) => sum + (d.montant || 0), 0);
+      const profit = totalRecettes - totalDepenses;
+      const profitMargin = totalRecettes > 0 ? (profit / totalRecettes) * 100 : 0;
+      
+      let suggestions = [];
+      
+      // Analyser la rentabilité
+      if (profitMargin > 20) {
+        suggestions.push({
+          type: 'success',
+          title: 'Excellente rentabilité',
+          content: `Votre marge bénéficiaire est de ${profitMargin.toFixed(1)}%. Pensez à investir dans l'expansion de votre flotte ou à améliorer vos services.`
+        });
+      } else if (profitMargin > 0) {
+        suggestions.push({
+          type: 'warning',
+          title: 'Rentabilité modérée',
+          content: `Votre marge bénéficiaire est de ${profitMargin.toFixed(1)}%. Analysez vos dépenses pour identifier des opportunités d'optimisation.`
+        });
+      } else {
+        suggestions.push({
+          type: 'danger',
+          title: 'Rentabilité négative',
+          content: `Vous êtes en déficit de ${formatCurrency(Math.abs(profit))}. Revoyez immédiatement votre stratégie tarifaire et vos coûts opérationnels.`
+        });
+      }
+      
+      // Analyser les dépenses
+      const busDepenses = depenses.filter(d => d.type === 'bus').reduce((sum, d) => sum + (d.montant || 0), 0);
+      const entrepriseDepenses = depenses.filter(d => d.type === 'entreprise').reduce((sum, d) => sum + (d.montant || 0), 0);
+      
+      if (busDepenses > entrepriseDepenses * 2) {
+        suggestions.push({
+          type: 'warning',
+          title: 'Dépenses bus élevées',
+          content: `Les dépenses liées aux bus représentent ${(busDepenses / totalDepenses * 100).toFixed(1)}% du total. Vérifiez les coûts de carburant et de maintenance.`
+        });
+      }
+      
+      // Analyser les recettes par bus
+      const recettesParBus = {};
+      recettes.forEach(r => {
+        if (!recettesParBus[r.matricule]) recettesParBus[r.matricule] = 0;
+        recettesParBus[r.matricule] += r.montant || 0;
+      });
+      
+      const busEntries = Object.entries(recettesParBus);
+      if (busEntries.length > 0) {
+        busEntries.sort((a, b) => b[1] - a[1]);
+        const bestBus = busEntries[0];
+        const worstBus = busEntries[busEntries.length - 1];
+        
+        if (bestBus[1] > worstBus[1] * 3) {
+          suggestions.push({
+            type: 'warning',
+            title: 'Disparité de performance',
+            content: `Le bus ${bestBus[0]} génère ${formatCurrency(bestBus[1])} contre ${formatCurrency(worstBus[1])} pour le bus ${worstBus[0]}. Rééquilibrez les trajets si possible.`
+          });
+        }
+      }
+      
+      // Afficher les suggestions
+      container.innerHTML = suggestions.map(s => `
+        <div class="suggestion-item ${s.type}">
+          <h6><i class="ph ph-lightbulb"></i> ${s.title}</h6>
+          <p class="mb-0">${s.content}</p>
+        </div>
+      `).join('');
+      
+      if (suggestions.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4">
+            <i class="ph ph-check-circle fs-1 text-success"></i>
+            <p class="mt-2">Aucun problème critique détecté. Votre entreprise semble bien gérée.</p>
+          </div>
+        `;
+      }
+    }
+    
+    // Gérer la période personnalisée
+    function updateCustomDateRange() {
+      const startDate = document.getElementById('customStartDate').value;
+      const endDate = document.getElementById('customEndDate').value;
+      
+      if (startDate && endDate) {
+        updateCharts('custom');
+      }
+    }
+    
+    // Obtenir la période sélectionnée
+    function getSelectedPeriod() {
+      const periodSelect = document.getElementById('periodSelect');
+      return periodSelect.value === 'custom' ? 'custom' : parseInt(periodSelect.value);
+    }
+    
+    // Formater une valeur monétaire
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'XAF' }).format(value);
+    }
+    
+    // Mettre à jour la date de dernière modification
+    function updateLastModified() {
+      const now = new Date();
+      const options = { 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit' 
+      };
+      document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', options);
+    }
+  </script>
+</body>
+</html>

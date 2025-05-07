@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres | ML TRANSPORT</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/phosphor-icons"></script>
+  <style>
+    body {
+      background: #f8f9fa;
+      padding-top: 70px;
+      padding-bottom: 100px;
+    }
+    .card {
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .card-header {
+      background: #0d6efd;
+      color: white;
+      font-weight: 600;
+      border-radius: 10px 10px 0 0 !important;
+    }
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    .footer {
+      background: #343a40;
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .action-buttons {
+      background: white;
+      padding: 15px;
+      border-top: 1px solid #eee;
+      position: sticky;
+      bottom: 60px;
+      z-index: 10;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+    #saveBtn {
+      transition: all 0.2s ease;
+      min-width: 200px;
+    }
+    #saveBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    }
+    .password-toggle {
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .password-toggle:hover {
+      background-color: #e9ecef;
+    }
+    .hamburger {
+      border: none;
+      background: none;
+      color: white;
+      font-size: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .hamburger:hover {
+      transform: scale(1.1);
+    }
+    .offcanvas {
+      background-color: #f8f9fa;
+      transition: transform 0.3s ease-in-out;
+    }
+    .form-section {
+      margin-bottom: 30px;
+    }
+    .example-text {
+      font-size: 0.8rem;
+      color: #6c757d;
+      font-style: italic;
+    }
+    .reset-password-link {
+      cursor: pointer;
+      color: #0d6efd;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .reset-password-link:hover {
+      color: #0b5ed7;
+    }
+    .backup-history-item {
+      transition: all 0.2s;
+    }
+    .backup-history-item:hover {
+      background-color: #f8f9fa;
+      transform: translateX(2px);
+    }
+    #backupHistoryList {
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #0d6efd #f8f9fa;
+    }
+    #backupHistoryList::-webkit-scrollbar {
+      width: 8px;
+    }
+    #backupHistoryList::-webkit-scrollbar-track {
+      background: #f8f9fa;
+    }
+    #backupHistoryList::-webkit-scrollbar-thumb {
+      background-color: #0d6efd;
+      border-radius: 10px;
+    }
+    .app-logo {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+      object-fit: contain;
+    }
+    .form-control, .form-select {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .input-group-text {
+      transition: background-color 0.2s;
+    }
+    .nav-link {
+      transition: color 0.2s;
+    }
+    .nav-link:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .alert {
+      transition: opacity 0.3s ease;
+    }
+    .btn-outline-primary:hover {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .progress {
+      height: 8px;
+      margin-top: 5px;
+    }
+    .progress-bar {
+      transition: width 0.6s ease;
+    }
+    .password-strength {
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+    .strength-weak {
+      color: #dc3545;
+    }
+    .strength-medium {
+      color: #fd7e14;
+    }
+    .strength-strong {
+      color: #28a745;
+    }
+    .tooltip-inner {
+      max-width: 300px;
+    }
+    .preview-logo {
+      max-width: 100px;
+      max-height: 100px;
+      margin-top: 10px;
+      display: none;
+      border-radius: 5px;
+      border: 1px solid #dee2e6;
+    }
+    .logo-upload-container {
+      position: relative;
+    }
+    .logo-clear-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .logo-clear-btn:hover {
+      background: rgba(0,0,0,0.7);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSJ3aGl0ZSIgZD0iTTQ0OCAwSDE2QzcuMiAwIDAgNy4yIDAgMTZ2NDgwYzAgOC44IDcuMiAxNiAxNiAxNmg0MzJjOC44IDAgMTYtNy4yIDE2LTE2VjE2YzAtOC44LTcuMi0xNi0xNi0xNnptLTk2IDM1MmMwIDguOC03LjIgMTYtMTYgMTZoLTMyYy04LjggMC0xNi03LjItMTYtMTZ2LTk2YzAtOC44IDcuMi0xNiAxNi0xNmgzMmM4LjggMCAxNiA3LjIgMTYgMTZ2OTZ6bTAgLTIyNGMwIDguOC03LjIgMTYtMTYgMTZoLTMyYy04LjggMC0xNi03LjItMTYtMTZ2LTMyYzAtOC44IDcuMi0xNiAxNi0xNmgzMmM4LjggMCAxNiA3LjIgMTYgMTZ2MzJ6bS05NiAxMjhjMCA4LjgtNy4yIDE2LTE2IDE2aC0zMmMtOC44IDAtMTYtNy4yLTE2LTE2di0zMmMwLTguOCA3LjItMTYgMTYtMTZoMzJjOC44IDAgMTYgNy4yIDE2IDE2djMyem0wIC0xNjBjMCA4LjgtNy4yIDE2LTE2IDE2aC0zMmMtOC44IDAtMTYtNy4yLTE2LTE2VjY0YzAtOC44IDcuMi0xNiAxNi0xNmgzMmM4LjggMCAxNiA3LjIgMTYgMTZ2OTZ6Ii8+PC9zdmc+" alt="Logo" class="app-logo">
+        ML TRANSPORT
+      </a>
+      <button class="hamburger d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-label="Menu">
+        <i class="ph ph-list"></i>
+      </button>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html"><i class="ph ph-house me-1"></i> Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="parametres.html"><i class="ph ph-gear me-1"></i> Paramètres</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="profil.html"><i class="ph ph-user me-1"></i> Profil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="logoutBtn"><i class="ph ph-sign-out me-1"></i> Déconnexion</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Menu Hamburger pour mobile -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjMDA3YmZmIiBkPSJNNDQ4IDBIMTZDNy4yIDAgMCA3LjIgMCAxNnY0ODBjMCA4LjggNy4yIDE2IDE2IDE2aDQzMmM4LjggMCAxNi03LjIgMTYtMTZWMTZjMC04LjgtNy4yLTE2LTE2LTE2em0tOTYgMzUyYzAgOC44LTcuMiAxNi0xNiAxNmgtMzJjLTguOCAwLTE2LTcuMi0xNi0xNnYtOTZjMC04LjggNy4yLTE2IDE2LTE2aDMyYzguOCAwIDE2IDcuMiAxNiAxNnY5NnptMCAtMjI0YzAgOC44LTcuMiAxNi0xNiAxNmgtMzJjLTguOCAwLTE2LTcuMi0xNi0xNnYtMzJjMC04LjggNy4yLTE2IDE2LTE2aDMyYzguOCAwIDE2IDcuMiAxNiAxNnYzMnptLTk2IDEyOGMwIDguOC03LjIgMTYtMTYgMTZoLTMyYy04LjggMC0xNi03LjItMTYtMTZ2LTMyYzAtOC44IDcuMi0xNiAxNi0xNmgzMmM4LjggMCAxNiA3LjIgMTYgMTZ2MzJ6bTAgLTE2MGMwIDguOC03LjIgMTYtMTYgMTZoLTMyYy04LjggMC0xNi03LjItMTYtMTZWNjRjMC04LjggNy4yLTE2IDE2LTE2aDMyYzguOCAwIDE2IDcuMiAxNiAxNnY5NnoiLz48L3N2Zz4=" alt="Logo" class="app-logo">
+        ML TRANSPORT
+      </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><i class="ph ph-house me-1"></i> Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="parametres.html"><i class="ph ph-gear me-1"></i> Paramètres</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profil.html"><i class="ph ph-user me-1"></i> Profil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="mobileLogoutBtn"><i class="ph ph-sign-out me-1"></i> Déconnexion</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container mt-4">
+    <h2 class="mb-4"><i class="ph ph-gear me-2"></i> Paramètres de l'application</h2>
+
+    <!-- Section Informations Entreprise -->
+    <div class="card">
+      <div class="card-header">
+        <i class="ph ph-buildings me-2"></i> Informations entreprise
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Nom de l'entreprise</label>
+              <input type="text" class="form-control" id="companyName" required placeholder="Ex: ML Transport SARL">
+              <div class="example-text">Ex: ML Transport SARL</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Slogan</label>
+              <input type="text" class="form-control" id="slogan" placeholder="Ex: Votre partenaire de confiance">
+              <div class="example-text">Ex: Votre partenaire de confiance</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label required-field">Numéro de téléphone</label>
+              <input type="tel" class="form-control" id="phone" required placeholder="Ex: +241 01 23 45 67">
+              <div class="example-text">Ex: +241 01 23 45 67</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Adresse email</label>
+              <input type="email" class="form-control" id="email" placeholder="Ex: contact@mltransport.ga">
+              <div class="example-text">Ex: contact@mltransport.ga</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Site web</label>
+              <input type="url" class="form-control" id="website" placeholder="Ex: https://www.mltransport.ga">
+              <div class="example-text">Ex: https://www.mltransport.ga</div>
+            </div>
+            <div class="mb-3 logo-upload-container">
+              <label class="form-label">Logo</label>
+              <input type="file" class="form-control" id="logo" accept="image/*">
+              <img id="logoPreview" class="preview-logo" src="#" alt="Aperçu du logo">
+              <button class="logo-clear-btn" id="clearLogoBtn" title="Supprimer le logo">
+                <i class="ph ph-x"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label required-field">Adresse</label>
+          <input type="text" class="form-control" id="address" required placeholder="Ex: Rue de la Paix, Quartier Louis">
+          <div class="example-text">Ex: Rue de la Paix, Quartier Louis</div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label required-field">Ville</label>
+              <input type="text" class="form-control" id="city" required placeholder="Ex: Libreville">
+              <div class="example-text">Ex: Libreville</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label required-field">Code postal</label>
+              <input type="text" class="form-control" id="postalCode" required placeholder="Ex: BP 1234">
+              <div class="example-text">Ex: BP 1234</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label required-field">Pays</label>
+              <select class="form-select" id="country" required>
+                <option value="">Sélectionnez...</option>
+                <option value="FR">France</option>
+                <option value="BE">Belgique</option>
+                <option value="CH">Suisse</option>
+                <option value="CA">Canada</option>
+                <option value="GA" selected>Gabon</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description de l'entreprise</label>
+          <textarea class="form-control" id="description" rows="3" placeholder="Décrivez votre entreprise en quelques mots..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Situation de l'entreprise</label>
+          <textarea class="form-control" id="situation" rows="3" placeholder="Décrivez la situation actuelle de votre entreprise"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Compte Administrateur -->
+    <div class="card">
+      <div class="card-header">
+        <i class="ph ph-user-circle me-2"></i> Compte administrateur
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Nom complet</label>
+              <input type="text" class="form-control" id="adminFullName" required placeholder="Ex: Jean Dupont">
+              <div class="example-text">Ex: Jean Dupont</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label required-field">Nom d'utilisateur</label>
+              <input type="text" class="form-control" id="adminUsername" required placeholder="Ex: admin.mltransport">
+              <div class="example-text">Ex: admin.mltransport</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Adresse email</label>
+              <input type="email" class="form-control" id="adminEmail" placeholder="Ex: admin@mltransport.ga">
+              <div class="example-text">Ex: admin@mltransport.ga</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label required-field">Numéro de téléphone</label>
+              <input type="tel" class="form-control" id="adminPhone" required placeholder="Ex: +241 07 89 01 23">
+              <div class="example-text">Ex: +241 07 89 01 23</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Mot de passe</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="adminPassword" required minlength="8" placeholder="••••••••">
+                <span class="input-group-text password-toggle">
+                  <i class="ph ph-eye"></i>
+                </span>
+              </div>
+              <div class="progress mt-2">
+                <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+              </div>
+              <div id="passwordStrengthText" class="password-strength"></div>
+              <div class="form-text">Minimum 8 caractères</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Confirmer mot de passe</label>
+              <div class="input-group">
+                <input type="password" class="form-control" id="confirmPassword" required placeholder="••••••••">
+                <span class="input-group-text password-toggle">
+                  <i class="ph ph-eye"></i>
+                </span>
+              </div>
+              <div id="passwordMatchIndicator" class="mt-2" style="display: none;">
+                <i class="ph ph-check-circle text-success"></i> <span class="text-success">Les mots de passe correspondent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end">
+          <span class="reset-password-link" id="resetPasswordLink" data-bs-toggle="tooltip" data-bs-placement="left" title="Un lien sera envoyé à l'email de l'administrateur">
+            <i class="ph ph-key me-1"></i> Réinitialiser le mot de passe
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Paramètres Système -->
+    <div class="card">
+      <div class="card-header">
+        <i class="ph ph-gear me-2"></i> Paramètres système
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Devise</label>
+              <select class="form-select" id="currency" required>
+                <option value="EUR">Euro (€)</option>
+                <option value="USD">Dollar US ($)</option>
+                <option value="CAD">Dollar Canadien ($)</option>
+                <option value="XOF">Franc CFA (FCFA)</option>
+                <option value="XAF" selected>Franc CFA (XAF)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label required-field">Fuseau horaire</label>
+              <select class="form-select" id="timezone" required>
+                <option value="Europe/Paris">Paris (UTC+1)</option>
+                <option value="America/Montreal">Montréal (UTC-5)</option>
+                <option value="Africa/Abidjan">Abidjan (UTC+0)</option>
+                <option value="Africa/Libreville" selected>Libreville (UTC+1)</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label required-field">Langue</label>
+              <select class="form-select" id="language" required>
+                <option value="fr" selected>Français</option>
+                <option value="en">Anglais</option>
+                <option value="es">Espagnol</option>
+              </select>
+            </div>
+            <div class="mb-3 form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="maintenanceMode">
+              <label class="form-check-label" for="maintenanceMode">Mode maintenance</label>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Thème de l'application</label>
+              <select class="form-select" id="appTheme">
+                <option value="light" selected>Clair</option>
+                <option value="dark">Sombre</option>
+                <option value="auto">Automatique (selon le système)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Sauvegarde des Données -->
+    <div class="card">
+      <div class="card-header">
+        <i class="ph ph-cloud-arrow-down me-2"></i> Sauvegarde des données
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Sauvegarde manuelle</label>
+              <button id="manualBackupBtn" class="btn btn-outline-primary w-100">
+                <i class="ph ph-download-simple me-1"></i> Exporter toutes les données
+              </button>
+              <div class="form-text">Génère un fichier JSON avec toutes les données</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label class="form-label">Sauvegarde automatique</label>
+              <select class="form-select" id="autoBackupFrequency">
+                <option value="none">Désactivée</option>
+                <option value="daily">Quotidienne</option>
+                <option value="weekly">Hebdomadaire</option>
+                <option value="monthly">Mensuelle</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Historique des sauvegardes</label>
+          <div class="list-group" id="backupHistoryList">
+            <div class="text-center text-muted py-3">Aucune sauvegarde disponible</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Restaurer des données</label>
+          <div class="input-group">
+            <input type="file" class="form-control" id="restoreFile" accept=".json">
+            <button id="restoreBtn" class="btn btn-outline-secondary" type="button">
+              <i class="ph ph-upload-simple me-1"></i> Restaurer
+            </button>
+          </div>
+          <div class="form-text">Sélectionnez un fichier JSON précédemment exporté</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone des boutons d'action -->
+    <div class="action-buttons rounded">
+      <div class="d-flex justify-content-between">
+        <button id="cancelBtn" class="btn btn-outline-secondary">
+          <i class="ph ph-x me-1"></i> Annuler
+        </button>
+        <button id="saveBtn" class="btn btn-primary">
+          <i class="ph ph-floppy-disk me-1"></i> Enregistrer les paramètres
+        </button>
+      </div>
+    </div>
+
+    <div id="alertContainer" class="mt-3"></div>
+  </div>
+
+  <footer class="footer text-center">
+    <div class="container">
+      <span>ML TRANSPORT &copy; <span id="currentYear"></span> - Powered by Forever/>Inc</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialiser les tooltips Bootstrap
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltips = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // Vérifier si l'utilisateur est connecté
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      if (!isLoggedIn) {
+        window.location.href = 'login.html'; // Rediriger vers la page de connexion si non connecté
+      }
+
+      // Définir l'année courante dans le footer
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      // Charger les paramètres existants
+      const savedSettings = JSON.parse(localStorage.getItem('appSettings')) || {};
+      if (savedSettings) {
+        // Informations entreprise
+        document.getElementById('companyName').value = savedSettings.companyName || '';
+        document.getElementById('slogan').value = savedSettings.slogan || '';
+        document.getElementById('phone').value = savedSettings.phone || '';
+        document.getElementById('email').value = savedSettings.email || '';
+        document.getElementById('website').value = savedSettings.website || '';
+        document.getElementById('address').value = savedSettings.address || '';
+        document.getElementById('city').value = savedSettings.city || '';
+        document.getElementById('postalCode').value = savedSettings.postalCode || '';
+        document.getElementById('country').value = savedSettings.country || 'GA';
+        document.getElementById('description').value = savedSettings.description || '';
+        document.getElementById('situation').value = savedSettings.situation || '';
+
+        // Compte administrateur
+        document.getElementById('adminFullName').value = savedSettings.adminFullName || '';
+        document.getElementById('adminUsername').value = savedSettings.adminUsername || '';
+        document.getElementById('adminEmail').value = savedSettings.adminEmail || '';
+        document.getElementById('adminPhone').value = savedSettings.adminPhone || '';
+        document.getElementById('adminPassword').value = savedSettings.adminPassword || '';
+        document.getElementById('confirmPassword').value = savedSettings.adminPassword || '';
+
+        // Paramètres système
+        document.getElementById('currency').value = savedSettings.currency || 'XAF';
+        document.getElementById('timezone').value = savedSettings.timezone || 'Africa/Libreville';
+        document.getElementById('language').value = savedSettings.language || 'fr';
+        document.getElementById('maintenanceMode').checked = savedSettings.maintenanceMode === 'true';
+        document.getElementById('appTheme').value = savedSettings.appTheme || 'light';
+
+        // Logo de l'entreprise
+        if (savedSettings.companyLogo) {
+          document.getElementById('logoPreview').src = savedSettings.companyLogo;
+          document.getElementById('logoPreview').style.display = 'block';
+          document.getElementById('clearLogoBtn').style.display = 'flex';
+        }
+      }
+
+      // Gestionnaire d'événement pour le bouton d'enregistrement
+      document.getElementById('saveBtn').addEventListener('click', function() {
+        // Validation des champs requis
+        const requiredFields = [
+          'companyName', 'phone', 'address', 'city',
+          'postalCode', 'country', 'adminFullName', 'adminUsername',
+          'adminPhone', 'adminPassword', 'confirmPassword'
+        ];
+
+        let isValid = true;
+        requiredFields.forEach(fieldId => {
+          const field = document.getElementById(fieldId);
+          if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            field.classList.remove('is-invalid');
+          }
+        });
+
+        // Validation mot de passe
+        const password = document.getElementById('adminPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+
+        if (password.length < 8) {
+          showAlert('Le mot de passe doit contenir au moins 8 caractères', 'danger');
+          document.getElementById('adminPassword').classList.add('is-invalid');
+          isValid = false;
+        }
+
+        if (password !== confirmPass) {
+          showAlert('Les mots de passe ne correspondent pas', 'danger');
+          document.getElementById('confirmPassword').classList.add('is-invalid');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          showAlert('Veuillez corriger les erreurs dans le formulaire', 'danger');
+          return;
+        }
+
+        // Sauvegarder les paramètres
+        const settings = {
+          // Informations entreprise
+          companyName: document.getElementById('companyName').value.trim(),
+          slogan: document.getElementById('slogan').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          website: document.getElementById('website').value.trim(),
+          address: document.getElementById('address').value.trim(),
+          city: document.getElementById('city').value.trim(),
+          postalCode: document.getElementById('postalCode').value.trim(),
+          country: document.getElementById('country').value,
+          description: document.getElementById('description').value.trim(),
+          situation: document.getElementById('situation').value.trim(),
+          companyLogo: document.getElementById('logoPreview').src || '',
+
+          // Compte administrateur
+          adminFullName: document.getElementById('adminFullName').value.trim(),
+          adminUsername: document.getElementById('adminUsername').value.trim(),
+          username: document.getElementById('adminUsername').value.trim(), // Ajout pour la connexion
+          adminEmail: document.getElementById('adminEmail').value.trim(),
+          adminPhone: document.getElementById('adminPhone').value.trim(),
+          adminPassword: password,
+          password: password, // Ajout pour la connexion
+
+          // Paramètres système
+          currency: document.getElementById('currency').value,
+          timezone: document.getElementById('timezone').value,
+          language: document.getElementById('language').value,
+          maintenanceMode: document.getElementById('maintenanceMode').checked.toString(),
+          appTheme: document.getElementById('appTheme').value
+        };
+
+        // Vérifier si le stockage local est disponible
+        try {
+          localStorage.setItem('appSettings', JSON.stringify(settings));
+          localStorage.setItem('isConfigured', 'true');
+          
+          // Appliquer le thème sélectionné
+          applyTheme(settings.appTheme);
+          
+          showAlert('Paramètres enregistrés avec succès !', 'success');
+
+          // Redirection après 2 secondes
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } catch (e) {
+          showAlert('Erreur lors de l\'enregistrement des paramètres. Vérifiez que le stockage local est disponible.', 'danger');
+          console.error('Erreur de stockage local:', e);
+        }
+      });
+
+      // Fonction pour appliquer le thème
+      function applyTheme(theme) {
+        if (theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-bs-theme', 'light');
+        }
+      }
+
+      // Bouton Annuler
+      document.getElementById('cancelBtn').addEventListener('click', function() {
+        if(confirm('Voulez-vous vraiment annuler les modifications ? Les changements non enregistrés seront perdus.')) {
+          window.location.href = 'index.html';
+        }
+      });
+
+      // Déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        logout();
+      });
+
+      document.getElementById('mobileLogoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        logout();
+      });
+
+      function logout() {
+        if(confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('currentUser');
+          window.location.href = 'login.html';
+        }
+      }
+
+      // Fonction pour afficher les alertes
+      function showAlert(message, type) {
+        const alertContainer = document.getElementById('alertContainer');
+        alertContainer.innerHTML = `
+          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+          </div>
+        `;
+
+        // Masquer l'alerte après 5 secondes
+        setTimeout(() => {
+          const alert = alertContainer.querySelector('.alert');
+          if (alert) {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 150);
+          }
+        }, 5000);
+      }
+
+      // Basculer la visibilité du mot de passe
+      document.querySelectorAll('.password-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+          const input = this.parentElement.querySelector('input');
+          const icon = this.querySelector('i');
+          if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('ph-eye');
+            icon.classList.add('ph-eye-slash');
+          } else {
+            input.type = 'password';
+            icon.classList.remove('ph-eye-slash');
+            icon.classList.add('ph-eye');
+          }
+        });
+      });
+
+      // Gestion de la réinitialisation du mot de passe
+      document.getElementById('resetPasswordLink').addEventListener('click', function() {
+        const adminEmail = document.getElementById('adminEmail').value.trim();
+
+        if (!adminEmail) {
+          showAlert('Veuillez d\'abord saisir une adresse email pour l\'administrateur', 'warning');
+          document.getElementById('adminEmail').focus();
+          return;
+        }
+
+        if (confirm(`Envoyer un lien de réinitialisation à ${adminEmail} ?`)) {
+          // Simuler l'envoi d'email (en production, utiliser un service d'email)
+          showAlert(`Un lien de réinitialisation a été envoyé à ${adminEmail}`, 'success');
+
+          // Enregistrer le token de réinitialisation dans le localStorage
+          const resetToken = generateToken();
+          const resetData = {
+            email: adminEmail,
+            token: resetToken,
+            expires: Date.now() + 3600000 // 1 heure
+          };
+
+          localStorage.setItem('passwordReset', JSON.stringify(resetData));
+        }
+      });
+
+      // Fonction pour générer un token aléatoire
+      function generateToken() {
+        return Math.random().toString(36).substring(2, 15) +
+               Math.random().toString(36).substring(2, 15);
+      }
+
+      // =============================================
+      // FONCTIONNALITÉS DE SAUVEGARDE ET RESTAURATION
+      // =============================================
+
+      // Fonction pour collecter toutes les données de l'application
+      function collectAllAppData() {
+        const appData = {
+          settings: JSON.parse(localStorage.getItem('appSettings')) || {},
+          userData: JSON.parse(localStorage.getItem('currentUser')) || {},
+          backupHistory: JSON.parse(localStorage.getItem('backupHistory')) || [],
+          lastBackup: new Date().toISOString(),
+          version: '1.0'
+        };
+        return appData;
+      }
+
+      // Fonction pour exporter les données
+      function exportAppData() {
+        try {
+          const appData = collectAllAppData();
+          const dataStr = JSON.stringify(appData, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          const url = URL.createObjectURL(dataBlob);
+          
+          const exportName = `MLTransport_Backup_${new Date().toISOString().slice(0,10)}.json`;
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = exportName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          // Enregistrer l'historique
+          saveBackupHistory(exportName);
+          showAlert('Sauvegarde exportée avec succès!', 'success');
+        } catch (e) {
+          showAlert('Erreur lors de l\'export des données: ' + e.message, 'danger');
+          console.error('Erreur d\'export:', e);
+        }
+      }
+
+      // Fonction pour gérer l'historique des sauvegardes
+      function saveBackupHistory(filename) {
+        try {
+          let history = JSON.parse(localStorage.getItem('backupHistory')) || [];
+          history.unshift({
+            name: filename,
+            date: new Date().toISOString(),
+            size: (JSON.stringify(collectAllAppData()).length / 1024).toFixed(2) + ' KB'
+          });
+          // Garder seulement les 5 dernières sauvegardes
+          history = history.slice(0, 5);
+          localStorage.setItem('backupHistory', JSON.stringify(history));
+          updateBackupHistoryUI();
+        } catch (e) {
+          console.error('Erreur de sauvegarde historique:', e);
+        }
+      }
+
+      // Mettre à jour l'UI de l'historique
+      function updateBackupHistoryUI() {
+        try {
+          const history = JSON.parse(localStorage.getItem('backupHistory')) || [];
+          const list = document.getElementById('backupHistoryList');
+          list.innerHTML = '';
+          
+          if (history.length === 0) {
+            list.innerHTML = '<div class="text-center text-muted py-3">Aucune sauvegarde disponible</div>';
+            return;
+          }
+
+          history.forEach((backup, index) => {
+            const item = document.createElement('div');
+            item.className = 'list-group-item backup-history-item';
+            item.innerHTML = `
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">${backup.name}</h6>
+                  <small class="text-muted">${new Date(backup.date).toLocaleString()}</small>
+                </div>
+                <div class="d-flex align-items-center">
+                  <small class="text-muted me-2">${backup.size}</small>
+                  <button class="btn btn-sm btn-outline-primary download-history-btn" data-index="${index}">
+                    <i class="ph ph-download-simple"></i>
+                  </button>
+                </div>
+              </div>
+            `;
+            list.appendChild(item);
+          });
+
+          // Ajouter les écouteurs d'événements pour les boutons de téléchargement
+          document.querySelectorAll('.download-history-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const index = parseInt(this.getAttribute('data-index'));
+              showAlert('Cette sauvegarde n\'est pas stockée localement. Veuillez utiliser l\'export manuel.', 'info');
+            });
+          });
+        } catch (e) {
+          console.error('Erreur de mise à jour UI historique:', e);
+        }
+      }
+
+      // Fonction pour restaurer des données
+      function restoreAppData(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const data = JSON.parse(e.target.result);
+            
+            if (!confirm(`Êtes-vous sûr de vouloir restaurer ces données ? Toutes les données actuelles seront écrasées.`)) {
+              return;
+            }
+            
+            // Sauvegarder les paramètres actuels avant restauration
+            const currentSettings = localStorage.getItem('appSettings');
+            const currentUser = localStorage.getItem('currentUser');
+            
+            try {
+              // Restaurer les données
+              if (data.settings) localStorage.setItem('appSettings', JSON.stringify(data.settings));
+              if (data.userData) localStorage.setItem('currentUser', JSON.stringify(data.userData));
+              
+              showAlert('Données restaurées avec succès ! La page va recharger...', 'success');
+              setTimeout(() => location.reload(), 2000);
+            } catch (e) {
+              // En cas d'erreur, restaurer les anciens paramètres
+              localStorage.setItem('appSettings', currentSettings);
+              localStorage.setItem('currentUser', currentUser);
+              showAlert('Erreur lors de la restauration. Les données ont été récupérées.', 'danger');
+              console.error('Erreur de restauration:', e);
+            }
+          } catch (e) {
+            showAlert('Fichier invalide. Veuillez sélectionner un fichier JSON valide.', 'danger');
+          }
+        };
+        reader.onerror = function() {
+          showAlert('Erreur de lecture du fichier', 'danger');
+        };
+        reader.readAsText(file);
+      }
+
+      // Initialisation des écouteurs d'événements pour la sauvegarde
+      document.getElementById('manualBackupBtn').addEventListener('click', exportAppData);
+      document.getElementById('restoreBtn').addEventListener('click', () => {
+        const fileInput = document.getElementById('restoreFile');
+        if (fileInput.files.length > 0) {
+          restoreAppData(fileInput.files[0]);
+        } else {
+          showAlert('Veuillez sélectionner un fichier à restaurer', 'warning');
+        }
+      });
+
+      // Charger l'historique au démarrage
+      updateBackupHistoryUI();
+
+      // Charger la fréquence de sauvegarde automatique
+      const savedFrequency = localStorage.getItem('autoBackupFrequency') || 'none';
+      document.getElementById('autoBackupFrequency').value = savedFrequency;
+
+      // Gérer la sauvegarde automatique
+      document.getElementById('autoBackupFrequency').addEventListener('change', function() {
+        localStorage.setItem('autoBackupFrequency', this.value);
+        showAlert(`Sauvegarde automatique ${this.value === 'none' ? 'désactivée' : 'configurée'}`, 'info');
+        
+        // Planifier les sauvegardes automatiques (simplifié)
+        if (this.value !== 'none') {
+          showAlert(`Une sauvegarde automatique sera effectuée ${getFrequencyText(this.value)}`, 'info');
+        }
+      });
+
+      function getFrequencyText(frequency) {
+        switch(frequency) {
+          case 'daily': return 'chaque jour à minuit';
+          case 'weekly': return 'chaque lundi à minuit';
+          case 'monthly': return 'le premier jour de chaque mois à minuit';
+          default: return '';
+        }
+      }
+
+      // =============================================
+      // AMÉLIORATIONS AJOUTÉES
+      // =============================================
+
+      // Aperçu du logo avant upload
+      document.getElementById('logo').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const logoPreview = document.getElementById('logoPreview');
+            logoPreview.src = event.target.result;
+            logoPreview.style.display = 'block';
+            document.getElementById('clearLogoBtn').style.display = 'flex';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Effacer le logo
+      document.getElementById('clearLogoBtn').addEventListener('click', function() {
+        document.getElementById('logo').value = '';
+        document.getElementById('logoPreview').src = '';
+        document.getElementById('logoPreview').style.display = 'none';
+        this.style.display = 'none';
+      });
+
+      // Indicateur de force du mot de passe
+      document.getElementById('adminPassword').addEventListener('input', function() {
+        const password = this.value;
+        const strengthBar = document.getElementById('passwordStrengthBar');
+        const strengthText = document.getElementById('passwordStrengthText');
+        
+        // Calcul de la force du mot de passe
+        let strength = 0;
+        if (password.length >= 8) strength += 1;
+        if (password.match(/[a-z]/) strength += 1;
+        if (password.match(/[A-Z]/)) strength += 1;
+        if (password.match(/[0-9]/)) strength += 1;
+        if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+        
+        // Mise à jour de la barre et du texte
+        const width = (strength / 5) * 100;
+        strengthBar.style.width = `${width}%`;
+        
+        if (password.length === 0) {
+          strengthBar.style.width = '0%';
+          strengthText.textContent = '';
+          strengthBar.className = 'progress-bar';
+        } else if (password.length < 8) {
+          strengthBar.className = 'progress-bar bg-danger';
+          strengthText.textContent = 'Trop court';
+          strengthText.className = 'password-strength strength-weak';
+        } else {
+          switch(strength) {
+            case 1:
+            case 2:
+              strengthBar.className = 'progress-bar bg-danger';
+              strengthText.textContent = 'Faible';
+              strengthText.className = 'password-strength strength-weak';
+              break;
+            case 3:
+              strengthBar.className = 'progress-bar bg-warning';
+              strengthText.textContent = 'Moyen';
+              strengthText.className = 'password-strength strength-medium';
+              break;
+            case 4:
+            case 5:
+              strengthBar.className = 'progress-bar bg-success';
+              strengthText.textContent = 'Fort';
+              strengthText.className = 'password-strength strength-strong';
+              break;
+          }
+        }
+      });
+
+      // Vérification de la correspondance des mots de passe
+      document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('adminPassword').value;
+        const confirmPass = this.value;
+        const matchIndicator = document.getElementById('passwordMatchIndicator');
+        
+        if (confirmPass.length === 0) {
+          matchIndicator.style.display = 'none';
+          return;
+        }
+        
+        if (password === confirmPass) {
+          matchIndicator.style.display = 'block';
+          matchIndicator.innerHTML = '<i class="ph ph-check-circle text-success"></i> <span class="text-success">Les mots de passe correspondent</span>';
+          this.classList.remove('is-invalid');
+        } else {
+          matchIndicator.style.display = 'block';
+          matchIndicator.innerHTML = '<i class="ph ph-x-circle text-danger"></i> <span class="text-danger">Les mots de passe ne correspondent pas</span>';
+          this.classList.add('is-invalid');
+        }
+      });
+
+      // Appliquer le thème au chargement
+      const savedTheme = savedSettings.appTheme || 'light';
+      applyTheme(savedTheme);
+    });
+  </script>
+</body>
+</html>
