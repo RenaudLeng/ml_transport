@@ -1,0 +1,3 @@
+/*
+  Service-Worker-Allowed: /
+  Cache-Control: max-age=0
