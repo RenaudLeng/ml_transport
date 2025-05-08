@@ -1,3 +1,45 @@
+// ==================== SERVICE WORKER REGISTRATION ====================
+// Enregistrement et gestion des mises à jour du Service Worker
+navigator.serviceWorker.register('/sw.js').then(reg => {
+  reg.addEventListener('updatefound', () => {
+    const newWorker = reg.installing;
+    newWorker.addEventListener('statechange', () => {
+      if (newWorker.state === 'installed') {
+        if (navigator.serviceWorker.controller) {
+          showUpdateAlert();
+        } else {
+          console.log('Service Worker installé pour la première fois');
+        }
+      }
+    });
+  });
+  
+  // Vérifier les mises à jour périodiquement
+  setInterval(() => {
+    reg.update().catch(err => console.log('Échec de la mise à jour du SW:', err));
+  }, 3600000); // Vérifie toutes les heures
+});
+
+function showUpdateAlert() {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = 'update-alert alert alert-info';
+  alertDiv.style.position = 'fixed';
+  alertDiv.style.bottom = '20px';
+  alertDiv.style.right = '20px';
+  alertDiv.style.zIndex = '1000';
+  alertDiv.innerHTML = `
+    <p>Une nouvelle version est disponible !</p>
+    <button class="btn btn-sm btn-primary">Mettre à jour</button>
+  `;
+  
+  document.body.appendChild(alertDiv);
+  
+  alertDiv.querySelector('button').addEventListener('click', () => {
+    window.location.reload(true);
+  });
+}
+
+// ==================== DONNÉES ET FONCTIONNALITÉS EXISTANTES ====================
 // Exemple de données (remplacer par des données réelles de localStorage ou de backend)
 const recettes = [
   { busMatricule: 'AK678AA', montant: 35000, date: '2025-04-16' },
@@ -16,6 +58,18 @@ const busData = [
   { matricule: 'AK679AA', latitude: '0.40', longitude: '9.46' },
   { matricule: 'AK680AA', latitude: '0.38', longitude: '9.47' },
 ];
+
+// Gestion hors ligne
+window.addEventListener('offline', () => {
+  document.getElementById('offlineAlert').style.display = 'block';
+  console.log('Mode hors ligne activé - Utilisation du cache');
+});
+
+window.addEventListener('online', () => {
+  document.getElementById('offlineAlert').style.display = 'none';
+  console.log('Connexion rétablie - Synchronisation des données');
+  // Ici vous pourriez ajouter une logique de synchronisation
+});
 
 // Mettre à jour les meilleurs et pires bus
 function updateTopBuses() {
@@ -110,6 +164,13 @@ document.getElementById("filterData").addEventListener("click", function () {
 });
 
 // Initialisation
-loadBusMap();
-updateTopBuses();
-updateIASuggestions();
+document.addEventListener('DOMContentLoaded', () => {
+  // Vérifier l'état de la connexion au chargement
+  if (!navigator.onLine) {
+    document.getElementById('offlineAlert').style.display = 'block';
+  }
+  
+  loadBusMap();
+  updateTopBuses();
+  updateIASuggestions();
+});
