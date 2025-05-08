@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Statistiques | ML TRANSPORT</title>
+  <title>Finance | ML TRANSPORT</title>
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -13,7 +13,12 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+
+  <!-- FileSaver for Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Style amélioré -->
   <style>
     :root {
       --card-border-radius: 12px;
@@ -21,139 +26,414 @@
       --transition-speed: 0.3s;
     }
     
-    .stat-card {
+    /* Cartes de synthèse améliorées */
+    .summary-card {
       border-radius: var(--card-border-radius);
       padding: var(--card-padding);
       transition: all var(--transition-speed) ease;
-      height: 100%;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
     }
     
-    .stat-card-primary {
-      background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.2) 100%);
-      border-left: 4px solid #0d6efd;
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
     }
     
-    .stat-card-success {
-      background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.2) 100%);
-      border-left: 4px solid #198754;
+    .summary-card-today {
+      background: linear-gradient(135deg, #198754 0%, #2ecc71 100%);
+      color: white;
     }
     
-    .stat-card-danger {
-      background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.2) 100%);
-      border-left: 4px solid #dc3545;
+    .summary-card-today::before {
+      background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
     }
     
-    .stat-card-warning {
-      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.2) 100%);
-      border-left: 4px solid #ffc107;
+    .summary-card-week {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      color: white;
     }
     
-    .stat-card:hover {
+    .summary-card-week::before {
+      background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);
+    }
+    
+    .summary-card-month {
+      background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+      color: #2c3e50;
+    }
+    
+    .summary-card-month::before {
+      background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
+    }
+    
+    .summary-card-total {
+      background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+      color: white;
+    }
+    
+    .summary-card-total::before {
+      background: linear-gradient(90deg, #8e44ad 0%, #9b59b6 100%);
+    }
+
+    .summary-card-expenses {
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      color: white;
+    }
+    
+    .summary-card-expenses::before {
+      background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
+    }
+
+    .summary-card-profit {
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      color: white;
+    }
+    
+    .summary-card-profit::before {
+      background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+    }
+    
+    .summary-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
     
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 700;
+    .summary-card .card-title {
+      font-size: 1rem;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
     }
     
-    .stat-label {
-      font-size: 0.9rem;
+    .summary-card .card-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    
+    .summary-card small {
+      display: block;
+      font-size: 0.8rem;
       opacity: 0.8;
     }
     
-    .chart-container {
-      position: relative;
-      height: 300px;
-      width: 100%;
-    }
-    
-    .suggestion-item {
-      border-left: 3px solid #0d6efd;
-      padding-left: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .suggestion-item.warning {
-      border-left-color: #ffc107;
-    }
-    
-    .suggestion-item.danger {
-      border-left-color: #dc3545;
-    }
-    
-    .suggestion-item.success {
-      border-left-color: #198754;
-    }
-
-    /* Nouveaux styles pour l'analyse intelligente */
-    .ai-analysis-card {
+    /* Cartes de recettes */
+    .receipt-card {
+      transition: all var(--transition-speed) ease;
+      border-left: 4px solid;
       border-radius: var(--card-border-radius);
-      background: linear-gradient(135deg, rgba(111, 66, 193, 0.1) 0%, rgba(111, 66, 193, 0.2) 100%);
-      border-left: 4px solid #6f42c1;
     }
-
-    .ai-highlight {
-      background-color: rgba(255, 193, 7, 0.2);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-weight: bold;
+    
+    .receipt-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    .action-log {
-      max-height: 400px;
-      overflow-y: auto;
+    
+    .receipt-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-
-    .action-item {
-      padding: 0.75rem;
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.2s;
+    
+    .receipt-normal {
+      border-left-color: #198754; /* Vert pour montant normal */
     }
-
-    .action-item:hover {
-      background-color: #f8f9fa;
+    
+    .receipt-low {
+      border-left-color: #dc3545; /* Rouge pour montant faible */
+      background-color: rgba(220, 53, 69, 0.05);
     }
-
-    .action-time {
-      font-size: 0.8rem;
-      color: #6c757d;
+    
+    .receipt-high {
+      border-left-color: #ffc107; /* Jaune pour montant élevé */
+      background-color: rgba(255, 193, 7, 0.05);
     }
-
-    .action-type {
-      display: inline-block;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      text-transform: uppercase;
+    
+    .comment-icon {
+      cursor: pointer;
+      transition: all var(--transition-speed);
     }
-
-    .action-type.create {
-      background-color: rgba(25, 135, 84, 0.1);
-      color: #198754;
-    }
-
-    .action-type.update {
-      background-color: rgba(13, 110, 253, 0.1);
+    
+    .comment-icon:hover {
+      transform: scale(1.1);
       color: #0d6efd;
     }
-
-    .action-type.delete {
+    
+    .comment-bubble {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 3px solid #0d6efd;
+    }
+    
+    .target-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 5px;
+    }
+    
+    .target-met {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .target-not-met {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    /* Boutons d'action */
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-left: 5px;
+      transition: all var(--transition-speed);
+    }
+    
+    .action-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .edit-btn {
+      background-color: rgba(13, 110, 253, 0.1);
+      color: #0d6efd;
+      border: none;
+    }
+    
+    .edit-btn:hover {
+      background-color: rgba(13, 110, 253, 0.2);
+    }
+    
+    .delete-btn {
       background-color: rgba(220, 53, 69, 0.1);
       color: #dc3545;
+      border: none;
     }
-
-    .action-type.system {
-      background-color: rgba(108, 117, 125, 0.1);
+    
+    .delete-btn:hover {
+      background-color: rgba(220, 53, 69, 0.2);
+    }
+    
+    /* Styles pour les dépenses */
+    .expense-item {
+      border-left: 4px solid #e74c3c;
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .expense-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .expense-details {
+      font-size: 0.9em;
       color: #6c757d;
     }
-
-    @media (max-width: 768px) {
-      .chart-container {
-        height: 250px;
+    
+    /* Onglets */
+    .nav-tabs .nav-link {
+      border: none;
+      color: #495057;
+      font-weight: 500;
+    }
+    
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      border-bottom: 3px solid #0d6efd;
+      background-color: transparent;
+    }
+    
+    .nav-tabs .nav-link:hover:not(.active) {
+      border-bottom: 3px solid #dee2e6;
+    }
+    
+    /* Autres styles */
+    .bus-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .bus-select-option .status-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .input-group-text {
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .input-group:focus-within .input-group-text {
+      background-color: #e7f1ff;
+      color: #0d6efd;
+    }
+    
+    @media print {
+      .no-print {
+        display: none !important;
       }
+      
+      .receipt-card, .expense-item {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+    }
+    
+    /* Animation pour les nouvelles entrées */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .new-entry {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Styles pour le calendrier des coches */
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .calendar th {
+      text-align: center;
+      padding: 10px;
+      background-color: #f8f9fa;
+      font-weight: 500;
+    }
+    
+    .calendar td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #dee2e6;
+      height: 40px;
+      position: relative;
+    }
+    
+    .calendar-day {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      font-size: 0.8em;
+    }
+    
+    .day-badge {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      line-height: 24px;
+      font-size: 0.7em;
+      font-weight: bold;
+    }
+    
+    .badge-complete {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .badge-partial {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    
+    .badge-none {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .badge-future {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      border: 1px solid #dee2e6;
+    }
+    
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .month-title {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    
+    .month-nav {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9em;
+    }
+    
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    /* Nouveaux styles pour le sélecteur de type dans le calendrier */
+    .calendar-type-selector {
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .calendar-type-selector .btn {
+      flex: 1;
+      max-width: 200px;
+    }
+    
+    /* Style pour les badges de dépenses */
+    .badge-expense-complete {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .badge-expense-partial {
+      background-color: #f39c12;
+      color: white;
+    }
+    
+    .badge-expense-none {
+      background-color: #95a5a6;
+      color: white;
     }
   </style>
 </head>
@@ -165,192 +445,381 @@
         <i class="ph ph-bus fs-3 me-2 text-primary"></i>
         <span class="fw-bold">ML TRANSPORT</span>
       </a>
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="index.html"><i class="ph ph-house"></i> Accueil</a></li>
-          <li class="nav-item"><a class="nav-link" href="finance.html"><i class="ph ph-currency-circle-dollar"></i> Finance</a></li>
-          <li class="nav-item"><a class="nav-link" href="maintenance.html"><i class="ph ph-wrench"></i> Maintenance</a></li>
-          <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="ph ph-calendar-check"></i> Agenda</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#"><i class="ph ph-chart-bar"></i> Statistiques</a></li>
-        </ul>
+      <div class="d-flex align-items-center">
+        <span class="me-3 text-muted small">
+          <i class="ph ph-user-circle me-1"></i> Admin
+        </span>
       </div>
     </div>
   </nav>
 
-  <!-- CONTENU -->
-  <main class="container mt-5 pt-5 pb-5">
-    <h2 class="text-center my-4 text-primary">
-      <i class="ph ph-chart-bar fs-2"></i> Tableau de bord statistique
-    </h2>
+  <!-- CONTENU PRINCIPAL -->
+  <main class="container mt-5 pt-5">
 
-    <!-- Cartes de synthèse -->
-    <div class="row g-4 mb-4">
-      <div class="col-md-6 col-lg-3">
-        <div class="stat-card stat-card-primary">
-          <div class="stat-value text-primary" id="totalRecettes">0 XAF</div>
-          <div class="stat-label">Recettes totales</div>
-          <small class="text-muted">30 derniers jours</small>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="stat-card stat-card-danger">
-          <div class="stat-value text-danger" id="totalDepenses">0 XAF</div>
-          <div class="stat-label">Dépenses totales</div>
-          <small class="text-muted">30 derniers jours</small>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="stat-card stat-card-success">
-          <div class="stat-value text-success" id="totalProfit">0 XAF</div>
-          <div class="stat-label">Bénéfice net</div>
-          <small class="text-muted">30 derniers jours</small>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="stat-card stat-card-warning">
-          <div class="stat-value text-warning" id="avgDailyProfit">0 XAF</div>
-          <div class="stat-label">Bénéfice moyen/jour</div>
-          <small class="text-muted">30 derniers jours</small>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filtres -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label for="periodSelect" class="form-label">Période</label>
-            <select class="form-select" id="periodSelect">
-              <option value="7">7 derniers jours</option>
-              <option value="30" selected>30 derniers jours</option>
-              <option value="90">3 derniers mois</option>
-              <option value="365">12 derniers mois</option>
-              <option value="custom">Période personnalisée</option>
-            </select>
+    <!-- ZONE DES TOTAUX - NOUVEAU DESIGN -->
+    <div class="row text-center mb-4 g-3" id="zoneTotaux">
+      <div class="col-md-3">
+        <div class="summary-card summary-card-today">
+          <div class="card-body p-2">
+            <h5 class="card-title"><i class="ph ph-sun me-1"></i> Recettes Aujourd'hui</h5>
+            <p class="card-text" id="totalJour">0 XAF</p>
+            <small id="dailyTargetStatus"></small>
           </div>
-          <div class="col-md-4 mb-3 d-none" id="customStartDateContainer">
-            <label for="customStartDate" class="form-label">Date de début</label>
-            <input type="date" class="form-control" id="customStartDate">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-card summary-card-expenses">
+          <div class="card-body p-2">
+            <h5 class="card-title"><i class="ph ph-arrow-down-left me-1"></i> Dépenses Aujourd'hui</h5>
+            <p class="card-text" id="depensesJour">0 XAF</p>
+            <small>Total des dépenses</small>
           </div>
-          <div class="col-md-4 mb-3 d-none" id="customEndDateContainer">
-            <label for="customEndDate" class="form-label">Date de fin</label>
-            <input type="date" class="form-control" id="customEndDate">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-card summary-card-profit">
+          <div class="card-body p-2">
+            <h5 class="card-title"><i class="ph ph-trend-up me-1"></i> Bénéfice Aujourd'hui</h5>
+            <p class="card-text" id="profitJour">0 XAF</p>
+            <small>Recettes - Dépenses</small>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="busFilter" class="form-label">Filtrer par bus</label>
-            <select class="form-select" id="busFilter">
-              <option value="">Tous les bus</option>
-            </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="summary-card summary-card-total">
+          <div class="card-body p-2">
+            <h5 class="card-title"><i class="ph ph-coin me-1"></i> Bénéfice Total</h5>
+            <p class="card-text" id="totalProfit">0 XAF</p>
+            <small>Toutes opérations</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Graphiques -->
-    <div class="row g-4 mb-4">
-      <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header">
-            <h5><i class="ph ph-trend-up"></i> Évolution des recettes et dépenses</h5>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <canvas id="trendChart"></canvas>
+    <!-- Onglets -->
+    <ul class="nav nav-tabs mb-4" id="financeTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="recettes-tab" data-bs-toggle="tab" data-bs-target="#recettes" type="button" role="tab">
+          <i class="ph ph-wallet me-1"></i> Recettes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="depenses-tab" data-bs-toggle="tab" data-bs-target="#depenses" type="button" role="tab">
+          <i class="ph ph-arrow-down-left me-1"></i> Dépenses
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="coches-tab" data-bs-toggle="tab" data-bs-target="#coches" type="button" role="tab">
+          <i class="ph ph-calendar-check me-1"></i> Coches
+        </button>
+      </li>
+    </ul>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content" id="financeTabsContent">
+      <!-- Onglet Recettes -->
+      <div class="tab-pane fade show active" id="recettes" role="tabpanel">
+        <h2 class="text-center my-4 text-success">
+          <i class="ph ph-wallet fs-2"></i> Enregistrement des Recettes
+        </h2>
+
+        <form id="recetteForm" class="card p-4 shadow-sm mb-4">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="dateRecette" class="form-label">Date</label>
+              <input type="date" class="form-control" id="dateRecette" required>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="card shadow-sm h-100">
-          <div class="card-header">
-            <h5><i class="ph ph-chart-pie"></i> Répartition des dépenses</h5>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <canvas id="expensePieChart"></canvas>
+            <div class="col-md-4 mb-3">
+              <label for="matriculeBus" class="form-label">Matricule du bus</label>
+              <select class="form-select" id="matriculeBus" required></select>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Détails par bus -->
-    <div class="row g-4 mb-4">
-      <div class="col-lg-12">
-        <div class="card shadow-sm h-100">
-          <div class="card-header">
-            <h5><i class="ph ph-bus"></i> Performance par bus</h5>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <canvas id="busPerformanceChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Analyse intelligente -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-header">
-        <h5><i class="ph ph-robot"></i> Analyse intelligente</h5>
-      </div>
-      <div class="card-body">
-        <div class="ai-analysis-card p-4 mb-4">
-          <div class="d-flex align-items-center mb-3">
-            <i class="ph ph-robot fs-3 me-2 text-purple"></i>
-            <h5 class="mb-0">Analyse globale de l'activité</h5>
-          </div>
-          <div id="aiAnalysisContent">
-            <div class="text-center py-4">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Chargement...</span>
+            <div class="col-md-4 mb-3">
+              <label for="montantRecette" class="form-label">Montant versé (XAF)</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="montantRecette" required>
+                <span class="input-group-text">XAF</span>
               </div>
-              <p class="mt-2">Analyse des données en cours...</p>
+              <div class="form-text text-muted">Objectif journalier: 35 000 XAF</div>
             </div>
           </div>
-        </div>
-        
-        <h5 class="mb-3"><i class="ph ph-lightbulb"></i> Suggestions optimisées</h5>
-        <div id="suggestionsContainer">
-          <div class="text-center py-4">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Chargement...</span>
-            </div>
-            <p class="mt-2">Génération des suggestions...</p>
+          <div class="mb-3">
+            <label for="commentaireRecette" class="form-label">Commentaire (facultatif)</label>
+            <textarea class="form-control" id="commentaireRecette" rows="2" placeholder="Ex: Paiement partiel, client XYZ..."></textarea>
           </div>
-        </div>
-      </div>
-    </div>
+          <button type="submit" class="btn btn-success w-100">
+            <i class="ph ph-check-circle"></i> Enregistrer
+          </button>
+        </form>
 
-    <!-- Journal des actions -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-header">
-        <h5><i class="ph ph-clock-counter-clockwise"></i> Journal des actions (recapActions)</h5>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4><i class="ph ph-list-bullets"></i> Historique des recettes</h4>
+          <div class="dropdown no-print">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="ph ph-export"></i> Exporter
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="exportToPDF('recettes')"><i class="ph ph-file-pdf"></i> PDF</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportToExcel('recettes')"><i class="ph ph-file-xls"></i> Excel</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportToCSV('recettes')"><i class="ph ph-file-csv"></i> CSV</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="row">
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="searchRecette" placeholder="Rechercher...">
+            </div>
+            <div class="col-md-6">
+              <select class="form-select" id="filterBus">
+                <option value="">Tous les bus</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="recetteList" class="mb-5"></div>
       </div>
-      <div class="card-body">
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-          <div>
-            <button id="refreshActions" class="btn btn-sm btn-outline-primary">
-              <i class="ph ph-arrow-clockwise"></i> Actualiser
+
+      <!-- Onglet Dépenses -->
+      <div class="tab-pane fade" id="depenses" role="tabpanel">
+        <h2 class="text-center my-4 text-danger">
+          <i class="ph ph-arrow-down-left fs-2"></i> Enregistrement des Dépenses
+        </h2>
+
+        <form id="depenseForm" class="card p-4 shadow-sm mb-4">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="dateDepense" class="form-label">Date</label>
+              <input type="date" class="form-control" id="dateDepense" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="typeDepense" class="form-label">Type de dépense</label>
+              <select class="form-select" id="typeDepense" required>
+                <option value="">-- Sélectionnez --</option>
+                <option value="bus">Liée à un bus</option>
+                <option value="entreprise">Liée à l'entreprise</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3 d-none" id="busFieldDepense">
+              <label for="busDepense" class="form-label">Bus concerné</label>
+              <select class="form-select" id="busDepense">
+                <option value="">-- Choisir un bus --</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="motifDepense" class="form-label">Motif</label>
+              <input type="text" class="form-control" id="motifDepense" placeholder="Ex: Achat carburant, salaire, pièce..." required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="montantDepense" class="form-label">Montant (XAF)</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="montantDepense" required>
+                <span class="input-group-text">XAF</span>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="detailsDepense" class="form-label">Détails (Optionnel)</label>
+            <textarea class="form-control" id="detailsDepense" rows="2" placeholder="Informations supplémentaires sur la dépense"></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger w-100">
+            <i class="ph ph-check-circle"></i> Enregistrer
+          </button>
+        </form>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4><i class="ph ph-list-bullets"></i> Historique des dépenses</h4>
+          <div class="dropdown no-print">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="ph ph-export"></i> Exporter
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="exportToPDF('depenses')"><i class="ph ph-file-pdf"></i> PDF</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportToExcel('depenses')"><i class="ph ph-file-xls"></i> Excel</a></li>
+              <li><a class="dropdown-item" href="#" onclick="exportToCSV('depenses')"><i class="ph ph-file-csv"></i> CSV</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="btn-group w-100" role="group">
+            <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('all')">Toutes</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('bus')">Bus</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('entreprise')">Entreprise</button>
+          </div>
+        </div>
+
+        <div id="depenseList" class="mb-5"></div>
+      </div>
+
+      <!-- Nouvel onglet Coches -->
+      <div class="tab-pane fade" id="coches" role="tabpanel">
+        <h2 class="text-center my-4 text-primary">
+          <i class="ph ph-calendar-check fs-2"></i> Suivi des Opérations
+        </h2>
+
+        <div class="card p-4 shadow-sm mb-4">
+          <div class="mb-3">
+            <label for="monthSelect" class="form-label">Sélectionnez un mois</label>
+            <div class="input-group">
+              <input type="month" class="form-control" id="monthSelect">
+              <button class="btn btn-primary" type="button" onclick="generateCalendar()">
+                <i class="ph ph-magnifying-glass"></i> Afficher
+              </button>
+            </div>
+          </div>
+          <div class="calendar-type-selector">
+            <button type="button" class="btn btn-outline-primary active" id="showReceipts" onclick="setCalendarType('receipts')">
+              <i class="ph ph-wallet"></i> Recettes
+            </button>
+            <button type="button" class="btn btn-outline-danger" id="showExpenses" onclick="setCalendarType('expenses')">
+              <i class="ph ph-arrow-down-left"></i> Dépenses
             </button>
           </div>
-          <div>
-            <input type="text" id="actionSearch" class="form-control form-control-sm" placeholder="Rechercher une action...">
+        </div>
+
+        <div id="calendarContainer" class="mb-4">
+          <!-- Le calendrier sera généré ici -->
+        </div>
+
+        <div id="receiptLegend" class="legend">
+          <div class="legend-item">
+            <div class="legend-color bg-success"></div>
+            <span>Recette complète</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color bg-warning"></div>
+            <span>Recette partielle</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color bg-danger"></div>
+            <span>Pas de recette</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color bg-light border"></div>
+            <span>Jour futur</span>
           </div>
         </div>
-        <div class="action-log" id="actionsLog">
-          <!-- Les actions seront chargées ici -->
+
+        <div id="expenseLegend" class="legend" style="display: none;">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #e74c3c;"></div>
+            <span>Dépenses enregistrées</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #f39c12;"></div>
+            <span>Dépenses partielles</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #95a5a6;"></div>
+            <span>Pas de dépenses</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color bg-light border"></div>
+            <span>Jour futur</span>
+          </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- BOUTON MODE -->
+  <!-- MODAL D'ÉDITION RECETTE -->
+  <div class="modal fade" id="editRecetteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Modifier la recette</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editRecetteForm">
+            <input type="hidden" id="editRecetteId">
+            <div class="mb-3">
+              <label for="editRecetteDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="editRecetteDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="editRecetteMatricule" class="form-label">Matricule du bus</label>
+              <select class="form-select" id="editRecetteMatricule" required></select>
+            </div>
+            <div class="mb-3">
+              <label for="editRecetteMontant" class="form-label">Montant (XAF)</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="editRecetteMontant" required>
+                <span class="input-group-text">XAF</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editRecetteCommentaire" class="form-label">Commentaire</label>
+              <textarea class="form-control" id="editRecetteCommentaire" rows="2"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-primary" id="saveRecetteEdit">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL D'ÉDITION DEPENSE -->
+  <div class="modal fade" id="editDepenseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Modifier la dépense</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editDepenseForm">
+            <input type="hidden" id="editDepenseId">
+            <div class="mb-3">
+              <label for="editDepenseDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="editDepenseDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="editDepenseType" class="form-label">Type de dépense</label>
+              <select class="form-select" id="editDepenseType" required>
+                <option value="bus">Liée à un bus</option>
+                <option value="entreprise">Liée à l'entreprise</option>
+              </select>
+            </div>
+            <div class="mb-3" id="editBusFieldDepense">
+              <label for="editBusDepense" class="form-label">Bus concerné</label>
+              <select class="form-select" id="editBusDepense">
+                <option value="">-- Choisir un bus --</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="editDepenseMotif" class="form-label">Motif</label>
+              <input type="text" class="form-control" id="editDepenseMotif" required>
+            </div>
+            <div class="mb-3">
+              <label for="editDepenseMontant" class="form-label">Montant (XAF)</label>
+              <div class="input-group">
+                <input type="number" class="form-control" id="editDepenseMontant" required>
+                <span class="input-group-text">XAF</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editDepenseDetails" class="form-label">Détails</label>
+              <textarea class="form-control" id="editDepenseDetails" rows="2"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-primary" id="saveDepenseEdit">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOUTON MODE SOMBRE/CLAIR -->
   <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle no-print" title="Changer de thème">
     <i class="ph ph-moon-stars fs-4"></i>
   </button>
@@ -367,783 +836,1036 @@
 
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="theme.js"></script>
   <script>
-    // Données et configuration
-    let trendChart, expensePieChart, busPerformanceChart;
-    let allRecettes = [], allDepenses = [], allBuses = [], allMaintenance = [], allActions = [];
+    // Constantes
+    const DAILY_TARGET = 35000;
+    const HOLIDAY_TARGET = 30000;
+    const DEADLINE_HOUR = 22; // 22h pour la deadline
+    const DEADLINE_MINUTE = 55; // 55 minutes
     
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', function() {
-      loadData();
+    // Éléments DOM
+    const recetteForm = document.getElementById('recetteForm');
+    const depenseForm = document.getElementById('depenseForm');
+    const recetteList = document.getElementById('recetteList');
+    const depenseList = document.getElementById('depenseList');
+    const searchRecette = document.getElementById('searchRecette');
+    const filterBus = document.getElementById('filterBus');
+    const typeDepense = document.getElementById('typeDepense');
+    const busFieldDepense = document.getElementById('busFieldDepense');
+    const busDepenseSelect = document.getElementById('busDepense');
+    const monthSelect = document.getElementById('monthSelect');
+    const calendarContainer = document.getElementById('calendarContainer');
+    const receiptLegend = document.getElementById('receiptLegend');
+    const expenseLegend = document.getElementById('expenseLegend');
+    const showReceiptsBtn = document.getElementById('showReceipts');
+    const showExpensesBtn = document.getElementById('showExpenses');
+    
+    // Modals
+    const editRecetteModal = new bootstrap.Modal(document.getElementById('editRecetteModal'));
+    const editDepenseModal = new bootstrap.Modal(document.getElementById('editDepenseModal'));
+    
+    // Données
+    let recettes = JSON.parse(localStorage.getItem('recettes')) || [];
+    let depenses = JSON.parse(localStorage.getItem('depenses')) || [];
+    let currentEditIndex = -1;
+    let currentFilter = 'all';
+    let calendarType = 'receipts'; // 'receipts' ou 'expenses'
+    
+    // Récupérer les bus depuis le localStorage ou une API
+    function getAvailableBuses() {
+      try {
+        // Essayer de récupérer depuis le localStorage
+                 const busesFromStorage = JSON.parse(localStorage.getItem('buses'));
+        if (busesFromStorage && busesFromStorage.length > 0) {
+          return busesFromStorage;
+        }
+        
+        // Si pas dans le localStorage, utiliser des données par défaut
+        return [
+          { matricule: 'AB-123-CD', marque: 'Toyota', modele: 'Coaster', annee: 2020 },
+          { matricule: 'EF-456-GH', marque: 'Mercedes', modele: 'Sprinter', annee: 2019 },
+          { matricule: 'IJ-789-KL', marque: 'Ford', modele: 'Transit', annee: 2021 }
+        ];
+      } catch (e) {
+        console.error("Error loading buses:", e);
+        return [];
+      }
+    }
+
+    // Initialiser l'application
+    function initApp() {
+      // Remplir les sélecteurs de bus
+      fillBusSelectors();
+      
+      // Charger les données existantes
+      loadRecettes();
+      loadDepenses();
+      
+      // Mettre à jour les totaux
+      updateTotals();
+      
+      // Configurer les écouteurs d'événements
       setupEventListeners();
-      updateLastModified();
       
-      // Définir la période par défaut (30 derniers jours)
-      updateCharts(30);
-      loadActionLog();
-    });
+      // Définir la date du jour comme valeur par défaut
+      setDefaultDates();
+      
+      // Générer le calendrier pour le mois courant
+      setDefaultMonth();
+      generateCalendar();
+    }
     
-    // Charger les données depuis le localStorage
-    function loadData() {
-      allRecettes = JSON.parse(localStorage.getItem('recettes')) || [];
-      allDepenses = JSON.parse(localStorage.getItem('depenses')) || [];
-      allBuses = JSON.parse(localStorage.getItem('busList')) || [];
-      allMaintenance = JSON.parse(localStorage.getItem('maintenances')) || [];
-      allActions = JSON.parse(localStorage.getItem('actionLog')) || [];
+    // Remplir tous les sélecteurs de bus
+    function fillBusSelectors() {
+      const buses = getAvailableBuses();
+      const busSelectors = [
+        document.getElementById('matriculeBus'),
+        document.getElementById('busDepense'),
+        document.getElementById('filterBus'),
+        document.getElementById('editRecetteMatricule'),
+        document.getElementById('editBusDepense')
+      ];
       
-      // Peupler le filtre des bus
-      populateBusFilter();
+      busSelectors.forEach(select => {
+        // Sauvegarder la sélection actuelle
+        const currentValue = select.value;
+        
+        // Vider le sélecteur
+        select.innerHTML = '';
+        
+        // Ajouter l'option par défaut si nécessaire
+        if (select.id === 'filterBus' || select.id === 'busDepense' || select.id === 'editBusDepense') {
+          const defaultOption = document.createElement('option');
+          defaultOption.value = '';
+          defaultOption.textContent = select.id === 'filterBus' ? 'Tous les bus' : '-- Choisir un bus --';
+          select.appendChild(defaultOption);
+        }
+        
+        // Ajouter les bus
+        buses.forEach(bus => {
+          const option = document.createElement('option');
+          option.value = bus.matricule;
+          
+          if (select.id === 'matriculeBus' || select.id === 'editRecetteMatricule') {
+            // Pour les formulaires, afficher plus d'informations
+            const busInfo = document.createElement('div');
+            busInfo.className = 'bus-select-option';
+            busInfo.innerHTML = `
+              <span>${bus.matricule}</span>
+              <span class="badge bg-secondary status-badge">${bus.marque} ${bus.modele}</span>
+            `;
+            option.textContent = `${bus.matricule} (${bus.marque} ${bus.modele})`;
+          } else {
+            option.textContent = bus.matricule;
+          }
+          
+          select.appendChild(option);
+        });
+        
+        // Restaurer la sélection précédente si elle existe toujours
+        if (currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
+          select.value = currentValue;
+        }
+      });
+    }
+    
+    // Définir les dates par défaut
+    function setDefaultDates() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateRecette').value = today;
+      document.getElementById('dateDepense').value = today;
+      document.getElementById('editRecetteDate').value = today;
+      document.getElementById('editDepenseDate').value = today;
+    }
+    
+    // Définir le mois par défaut
+    function setDefaultMonth() {
+      const today = new Date();
+      const month = today.getMonth() + 1;
+      const year = today.getFullYear();
+      const monthString = `${year}-${month.toString().padStart(2, '0')}`;
+      document.getElementById('monthSelect').value = monthString;
     }
     
     // Configurer les écouteurs d'événements
     function setupEventListeners() {
-      document.getElementById('periodSelect').addEventListener('change', function() {
-        if (this.value === 'custom') {
-          document.getElementById('customStartDateContainer').classList.remove('d-none');
-          document.getElementById('customEndDateContainer').classList.remove('d-none');
-          
-          // Définir les dates par défaut (30 derniers jours)
-          const endDate = new Date();
-          const startDate = new Date();
-          startDate.setDate(startDate.getDate() - 30);
-          
-          document.getElementById('customStartDate').valueAsDate = startDate;
-          document.getElementById('customEndDate').valueAsDate = endDate;
-        } else {
-          document.getElementById('customStartDateContainer').classList.add('d-none');
-          document.getElementById('customEndDateContainer').classList.add('d-none');
-          updateCharts(parseInt(this.value));
-        }
+      // Formulaire de recette
+      recetteForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        addRecette();
       });
       
-      document.getElementById('customStartDate').addEventListener('change', updateCustomDateRange);
-      document.getElementById('customEndDate').addEventListener('change', updateCustomDateRange);
-      document.getElementById('busFilter').addEventListener('change', function() {
-        updateCharts(getSelectedPeriod());
+      // Formulaire de dépense
+      depenseForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        addDepense();
       });
       
-      // Écouteurs pour le journal des actions
-      document.getElementById('refreshActions').addEventListener('click', loadActionLog);
-      document.getElementById('actionSearch').addEventListener('input', function() {
-        filterActionLog(this.value);
+      // Type de dépense change
+      typeDepense.addEventListener('change', function() {
+        busFieldDepense.classList.toggle('d-none', this.value !== 'bus');
       });
-    }
-    
-    // Peupler le filtre des bus
-    function populateBusFilter() {
-      const busFilter = document.getElementById('busFilter');
-      busFilter.innerHTML = '<option value="">Tous les bus</option>';
       
-      allBuses.forEach(bus => {
-        const option = document.createElement('option');
-        option.value = bus.matricule;
-        option.textContent = `${bus.matricule} - ${bus.nom}`;
-        busFilter.appendChild(option);
+      // Recherche de recettes
+      searchRecette.addEventListener('input', function() {
+        loadRecettes();
+      });
+      
+      // Filtre par bus
+      filterBus.addEventListener('change', function() {
+        loadRecettes();
+      });
+      
+      // Sauvegarder l'édition de recette
+      document.getElementById('saveRecetteEdit').addEventListener('click', saveRecetteEdit);
+      
+      // Sauvegarder l'édition de dépense
+      document.getElementById('saveDepenseEdit').addEventListener('click', saveDepenseEdit);
+      
+      // Type de dépense dans le modal d'édition
+      document.getElementById('editDepenseType').addEventListener('change', function() {
+        document.getElementById('editBusFieldDepense').classList.toggle('d-none', this.value !== 'bus');
       });
     }
     
-    // Mettre à jour les graphiques en fonction de la période sélectionnée
-    function updateCharts(days) {
-      let startDate, endDate = new Date();
+    // Ajouter une recette
+    function addRecette() {
+      const date = document.getElementById('dateRecette').value;
+      const matricule = document.getElementById('matriculeBus').value;
+      const montant = parseFloat(document.getElementById('montantRecette').value);
+      const commentaire = document.getElementById('commentaireRecette').value;
       
-      if (typeof days === 'number') {
-        startDate = new Date();
-        startDate.setDate(startDate.getDate() - days);
-      } else if (days === 'custom') {
-        startDate = new Date(document.getElementById('customStartDate').value);
-        endDate = new Date(document.getElementById('customEndDate').value);
-      }
-      
-      // Filtrer les données par période
-      const filteredRecettes = filterDataByDate(allRecettes, startDate, endDate);
-      const filteredDepenses = filterDataByDate(allDepenses, startDate, endDate);
-      
-      // Filtrer par bus si sélectionné
-      const selectedBus = document.getElementById('busFilter').value;
-      const busFilteredRecettes = selectedBus ? 
-        filteredRecettes.filter(r => r.matricule === selectedBus) : filteredRecettes;
-      const busFilteredDepenses = selectedBus ? 
-        filteredDepenses.filter(d => d.bus === selectedBus) : filteredDepenses;
-      
-      // Mettre à jour les cartes de synthèse
-      updateSummaryCards(busFilteredRecettes, busFilteredDepenses, startDate, endDate);
-      
-      // Mettre à jour les graphiques
-      updateTrendChart(busFilteredRecettes, busFilteredDepenses, startDate, endDate);
-      updateExpensePieChart(busFilteredDepenses);
-      updateBusPerformanceChart(filteredRecettes, filteredDepenses);
-      
-      // Mettre à jour les analyses intelligentes
-      updateAIAnalysis(busFilteredRecettes, busFilteredDepenses, startDate, endDate);
-      updateSuggestions(busFilteredRecettes, busFilteredDepenses);
-    }
-    
-    // Filtrer les données par date
-    function filterDataByDate(data, startDate, endDate) {
-      return data.filter(item => {
-        const itemDate = new Date(item.date);
-        return itemDate >= startDate && itemDate <= endDate;
-      });
-    }
-    
-    // Mettre à jour les cartes de synthèse
-    function updateSummaryCards(recettes, depenses, startDate, endDate) {
-      // Calculer les totaux
-      const totalRecettes = recettes.reduce((sum, r) => sum + (r.montant || 0), 0);
-      const totalDepenses = depenses.reduce((sum, d) => sum + (d.montant || 0), 0);
-      const totalProfit = totalRecettes - totalDepenses;
-      
-      // Calculer le nombre de jours dans la période
-      const daysInPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
-      const avgDailyProfit = totalProfit / daysInPeriod;
-      
-      // Mettre à jour l'interface
-      document.getElementById('totalRecettes').textContent = formatCurrency(totalRecettes);
-      document.getElementById('totalDepenses').textContent = formatCurrency(totalDepenses);
-      document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
-      document.getElementById('avgDailyProfit').textContent = formatCurrency(avgDailyProfit);
-    }
-    
-    // Mettre à jour le graphique d'évolution
-    function updateTrendChart(recettes, depenses, startDate, endDate) {
-      // Grouper les données par jour/semaine/mois selon la période
-      const daysInPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-      let groupBy;
-      
-      if (daysInPeriod <= 14) groupBy = 'day';
-      else if (daysInPeriod <= 60) groupBy = 'week';
-      else groupBy = 'month';
-      
-      // Préparer les données groupées
-      const labels = [];
-      const recettesData = [];
-      const depensesData = [];
-      
-      // Créer les intervalles de temps
-      const currentDate = new Date(startDate);
-      
-      while (currentDate <= endDate) {
-        let label;
-        const periodStart = new Date(currentDate);
-        
-        if (groupBy === 'day') {
-          label = currentDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-          currentDate.setDate(currentDate.getDate() + 1);
-        } else if (groupBy === 'week') {
-          const weekEnd = new Date(currentDate);
-          weekEnd.setDate(weekEnd.getDate() + 6);
-          label = `${currentDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} - ${weekEnd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}`;
-          currentDate.setDate(currentDate.getDate() + 7);
-        } else {
-          label = currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-          currentDate.setMonth(currentDate.getMonth() + 1);
-        }
-        
-        labels.push(label);
-        
-        // Calculer les totaux pour la période
-        const periodRecettes = recettes.filter(r => {
-          const rDate = new Date(r.date);
-          return rDate >= periodStart && rDate < currentDate;
-        }).reduce((sum, r) => sum + (r.montant || 0), 0);
-        
-        const periodDepenses = depenses.filter(d => {
-          const dDate = new Date(d.date);
-          return dDate >= periodStart && dDate < currentDate;
-        }).reduce((sum, d) => sum + (d.montant || 0), 0);
-        
-        recettesData.push(periodRecettes);
-        depensesData.push(periodDepenses);
-      }
-      
-      // Créer ou mettre à jour le graphique
-      const ctx = document.getElementById('trendChart').getContext('2d');
-      
-      if (trendChart) {
-        trendChart.data.labels = labels;
-        trendChart.data.datasets[0].data = recettesData;
-        trendChart.data.datasets[1].data = depensesData;
-        trendChart.update();
-      } else {
-        trendChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Recettes',
-                data: recettesData,
-                borderColor: '#198754',
-                backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                tension: 0.3,
-                fill: true
-              },
-              {
-                label: 'Dépenses',
-                data: depensesData,
-                borderColor: '#dc3545',
-                backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                tension: 0.3,
-                fill: true
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return formatCurrency(value);
-                  }
-                }
-              }
-            },
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-    
-    // Mettre à jour le graphique circulaire des dépenses
-    function updateExpensePieChart(depenses) {
-      // Grouper les dépenses par type (exclure le carburant comme demandé)
-      const expenseTypes = {};
-      
-      depenses.forEach(d => {
-        if (d.categorie === 'carburant') return; // Exclure le carburant
-        
-        const type = d.type === 'bus' ? 'Bus' : 'Entreprise';
-        if (!expenseTypes[type]) expenseTypes[type] = 0;
-        expenseTypes[type] += d.montant || 0;
-      });
-      
-      const labels = Object.keys(expenseTypes);
-      const data = Object.values(expenseTypes);
-      
-      // Créer ou mettre à jour le graphique
-      const ctx = document.getElementById('expensePieChart').getContext('2d');
-      
-      if (expensePieChart) {
-        expensePieChart.data.labels = labels;
-        expensePieChart.data.datasets[0].data = data;
-        expensePieChart.update();
-      } else {
-        expensePieChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: labels,
-            datasets: [{
-              data: data,
-              backgroundColor: [
-                '#fd7e14',
-                '#6f42c1',
-                '#20c997',
-                '#ffc107',
-                '#0dcaf0'
-              ],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const percentage = Math.round((context.raw / total) * 100);
-                    return `${context.label}: ${formatCurrency(context.raw)} (${percentage}%)`;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-    
-    // Mettre à jour le graphique de performance par bus
-    function updateBusPerformanceChart(recettes, depenses) {
-      // Grouper les données par bus
-      const busPerformance = {};
-      
-      allBuses.forEach(bus => {
-        busPerformance[bus.matricule] = {
-          nom: bus.nom,
-          recettes: 0,
-          depenses: 0,
-          maintenance: 0
-        };
-      });
-      
-      // Calculer les recettes par bus
-      recettes.forEach(r => {
-        if (busPerformance[r.matricule]) {
-          busPerformance[r.matricule].recettes += r.montant || 0;
-        }
-      });
-      
-      // Calculer les dépenses par bus (exclure le carburant)
-      depenses.forEach(d => {
-        if (d.bus && busPerformance[d.bus] && d.categorie !== 'carburant') {
-          busPerformance[d.bus].depenses += d.montant || 0;
-        }
-      });
-      
-      // Calculer les coûts de maintenance par bus
-      const maintenanceCosts = calculateMaintenanceCosts();
-      Object.keys(maintenanceCosts).forEach(matricule => {
-        if (busPerformance[matricule]) {
-          busPerformance[matricule].maintenance = maintenanceCosts[matricule];
-          busPerformance[matricule].depenses += maintenanceCosts[matricule];
-        }
-      });
-      
-      // Préparer les données pour le graphique
-      const labels = [];
-      const profitData = [];
-      const efficiencyData = [];
-      
-      Object.entries(busPerformance).forEach(([matricule, data]) => {
-        const profit = data.recettes - data.depenses;
-        const efficiency = data.recettes > 0 ? (profit / data.recettes) * 100 : 0;
-        
-        if (data.recettes > 0 || data.depenses > 0) {
-          labels.push(`${matricule} (${data.nom})`);
-          profitData.push(profit);
-          efficiencyData.push(efficiency);
-        }
-      });
-      
-      // Créer ou mettre à jour le graphique
-      const ctx = document.getElementById('busPerformanceChart').getContext('2d');
-      
-      if (busPerformanceChart) {
-        busPerformanceChart.data.labels = labels;
-        busPerformanceChart.data.datasets[0].data = profitData;
-        busPerformanceChart.update();
-      } else {
-        busPerformanceChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Bénéfice (Recettes - Dépenses)',
-              data: profitData,
-              backgroundColor: function(context) {
-                return context.raw >= 0 ? 'rgba(25, 135, 84, 0.7)' : 'rgba(220, 53, 69, 0.7)';
-              },
-              borderColor: function(context) {
-                return context.raw >= 0 ? 'rgba(25, 135, 84, 1)' : 'rgba(220, 53, 69, 1)';
-              },
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: false,
-                ticks: {
-                  callback: function(value) {
-                    return formatCurrency(value);
-                  }
-                }
-              }
-            },
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-    
-    // Calculer les coûts de maintenance par bus
-    function calculateMaintenanceCosts() {
-      const maintenanceCosts = {};
-      
-      allMaintenance.forEach(m => {
-        if (!maintenanceCosts[m.bus]) {
-          maintenanceCosts[m.bus] = 0;
-        }
-        maintenanceCosts[m.bus] += m.cout || 0;
-      });
-      
-      return maintenanceCosts;
-    }
-    
-    // Mettre à jour l'analyse intelligente
-    function updateAIAnalysis(recettes, depenses, startDate, endDate) {
-      const container = document.getElementById('aiAnalysisContent');
-      
-      // Calculer les indicateurs clés
-      const totalRecettes = recettes.reduce((sum, r) => sum + (r.montant || 0), 0);
-      const totalDepenses = depenses.reduce((sum, d) => sum + (d.montant || 0), 0);
-      const profit = totalRecettes - totalDepenses;
-      const profitMargin = totalRecettes > 0 ? (profit / totalRecettes) * 100 : 0;
-      
-      // Analyser les tendances
-      const daysInPeriod = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) || 1;
-      const avgDailyRecettes = totalRecettes / daysInPeriod;
-      const avgDailyDepenses = totalDepenses / daysInPeriod;
-      
-      // Analyser la performance des bus
-      const busPerformance = analyzeBusPerformance(recettes, depenses);
-      
-      // Analyser les dépenses
-      const expenseAnalysis = analyzeExpenses(depenses);
-      
-      // Générer le rapport d'analyse
-      let analysisHTML = `
-        <div class="mb-3">
-          <h6><i class="ph ph-trend-up"></i> Performance globale</h6>
-          <p>
-            Sur la période du ${startDate.toLocaleDateString('fr-FR')} au ${endDate.toLocaleDateString('fr-FR')}, 
-            votre activité a généré <span class="ai-highlight">${formatCurrency(totalRecettes)}</span> de recettes pour 
-            <span class="ai-highlight">${formatCurrency(totalDepenses)}</span> de dépenses, 
-            soit un bénéfice net de <span class="ai-highlight" style="color: ${profit >= 0 ? '#198754' : '#dc3545'}">${formatCurrency(profit)}</span> 
-            (marge de ${profitMargin.toFixed(1)}%).
-          </p>
-          <p>
-            Cela représente en moyenne <span class="ai-highlight">${formatCurrency(avgDailyRecettes)}</span> de recettes par jour et 
-            <span class="ai-highlight">${formatCurrency(avgDailyDepenses)}</span> de dépenses quotidiennes.
-          </p>
-        </div>
-        
-        <div class="mb-3">
-          <h6><i class="ph ph-bus"></i> Performance des bus</h6>
-          ${busPerformance}
-        </div>
-        
-        <div class="mb-3">
-          <h6><i class="ph ph-money"></i> Analyse des dépenses</h6>
-          ${expenseAnalysis}
-        </div>
-        
-        <div class="alert alert-info mt-3">
-          <i class="ph ph-info"></i> Ces analyses sont générées automatiquement à partir des données de votre application. 
-          Pour des recommandations plus précises, consultez la section "Suggestions optimisées" ci-dessous.
-        </div>
-      `;
-      
-      container.innerHTML = analysisHTML;
-    }
-    
-    // Analyser la performance des bus
-    function analyzeBusPerformance(recettes, depenses) {
-      // Grouper les données par bus
-      const busData = {};
-      
-      allBuses.forEach(bus => {
-        busData[bus.matricule] = {
-          nom: bus.nom,
-          recettes: 0,
-          depenses: 0
-        };
-      });
-      
-      // Calculer les recettes par bus
-      recettes.forEach(r => {
-        if (busData[r.matricule]) {
-          busData[r.matricule].recettes += r.montant || 0;
-        }
-      });
-      
-      // Calculer les dépenses par bus (exclure le carburant)
-      depenses.forEach(d => {
-        if (d.bus && busData[d.bus] && d.categorie !== 'carburant') {
-          busData[d.bus].depenses += d.montant || 0;
-        }
-      });
-      
-      // Ajouter les coûts de maintenance
-      const maintenanceCosts = calculateMaintenanceCosts();
-      Object.keys(maintenanceCosts).forEach(matricule => {
-        if (busData[matricule]) {
-          busData[matricule].depenses += maintenanceCosts[matricule];
-        }
-                });
-      
-      let performanceHTML = '<ul class="list-unstyled">';
-      let bestPerformingBus = null;
-      let worstPerformingBus = null;
-      let maxProfit = -Infinity;
-      let minProfit = Infinity;
-      
-      Object.entries(busData).forEach(([matricule, data]) => {
-        const profit = data.recettes - data.depenses;
-        performanceHTML += `<li>Le bus <span class="fw-bold">${matricule} (${data.nom})</span> a généré 
-                              <span class="fw-bold" style="color: ${data.recettes >= 0 ? '#198754' : '#dc3545'}">${formatCurrency(data.recettes)}</span> de recettes et 
-                              <span class="fw-bold" style="color: ${data.depenses >= 0 ? '#dc3545' : '#198754'}">${formatCurrency(data.depenses)}</span> de dépenses, 
-                              pour un bénéfice de <span class="fw-bold" style="color: ${profit >= 0 ? '#198754' : '#dc3545'}">${formatCurrency(profit)}</span>.</li>`;
-        
-        if (profit > maxProfit) {
-          maxProfit = profit;
-          bestPerformingBus = `${matricule} (${data.nom})`;
-        }
-        if (profit < minProfit) {
-          minProfit = profit;
-          worstPerformingBus = `${matricule} (${data.nom})`;
-        }
-      });
-      
-      performanceHTML += '</ul>';
-      
-      if (bestPerformingBus) {
-        performanceHTML += `<p class="mt-2">Le bus le plus performant est <span class="fw-bold text-success">${bestPerformingBus}</span>.</p>`;
-      }
-      if (worstPerformingBus) {
-        performanceHTML += `<p>Le bus nécessitant le plus d'attention est <span class="fw-bold text-danger">${worstPerformingBus}</span>.</p>`;
-      }
-      
-      return performanceHTML || '<p>Aucune donnée de performance par bus disponible pour la période sélectionnée.</p>';
-    }
-    
-    // Analyser les dépenses
-    function analyzeExpenses(depenses) {
-      const expenseSummary = {};
-      
-      depenses.forEach(d => {
-        if (d.categorie !== 'carburant') {
-          if (!expenseSummary[d.categorie]) {
-            expenseSummary[d.categorie] = 0;
-          }
-          expenseSummary[d.categorie] += d.montant || 0;
-        }
-      });
-      
-      let expenseHTML = '<ul class="list-unstyled">';
-      
-      Object.entries(expenseSummary).forEach(([categorie, total]) => {
-        expenseHTML += `<li>Les dépenses de <span class="fw-bold">${categorie}</span> s'élèvent à <span class="fw-bold text-danger">${formatCurrency(total)}</span>.</li>`;
-      });
-      
-      expenseHTML += '</ul>';
-      
-      if (Object.keys(expenseSummary).length > 0) {
-        const highestExpenseCategory = Object.keys(expenseSummary).reduce((a, b) => expenseSummary[a] > expenseSummary[b] ? a : b);
-        expenseHTML += `<p class="mt-2">La catégorie de dépenses la plus importante est <span class="fw-bold text-warning">${highestExpenseCategory}</span>.</p>`;
-      }
-      
-      return expenseHTML || '<p>Aucune donnée de dépenses (hors carburant) disponible pour la période sélectionnée.</p>';
-    }
-    
-    // Mettre à jour les suggestions
-    function updateSuggestions(recettes, depenses) {
-      const container = document.getElementById('suggestionsContainer');
-      let suggestionsHTML = '';
-      
-      // Suggestion basée sur la rentabilité globale
-      const totalRecettes = recettes.reduce((sum, r) => sum + (r.montant || 0), 0);
-      const totalDepenses = depenses.reduce((sum, d) => sum + (d.montant || 0), 0);
-      const profitMargin = totalRecettes > 0 ? ((totalRecettes - totalDepenses) / totalRecettes) * 100 : 0;
-      
-      if (profitMargin < 10) {
-        suggestionsHTML += `<div class="suggestion-item warning">
-                              <i class="ph ph-warning text-warning me-2"></i> La marge bénéficiaire actuelle (${profitMargin.toFixed(1)}%) est faible. 
-                              Envisagez d'analyser les coûts et d'identifier des opportunités d'augmentation des revenus.
-                            </div>`;
-      } else if (profitMargin > 25) {
-        suggestionsHTML += `<div class="suggestion-item success">
-                              <i class="ph ph-check-circle text-success me-2"></i> Votre marge bénéficiaire (${profitMargin.toFixed(1)}%) est bonne. 
-                              Continuez sur cette lancée et explorez des pistes de croissance.
-                            </div>`;
-      }
-      
-      // Suggestion basée sur les dépenses de carburant (si des données sont disponibles)
-      const carburantDepenses = depenses.filter(d => d.categorie === 'carburant').reduce((sum, d) => sum + (d.montant || 0), 0);
-      if (carburantDepenses > 0) {
-        const totalDepensesSansCarburant = totalDepenses - carburantDepenses;
-        const proportionCarburant = totalDepenses > 0 ? (carburantDepenses / totalDepenses) * 100 : 0;
-        if (proportionCarburant > 30) {
-          suggestionsHTML += `<div class="suggestion-item danger">
-                                <i class="ph ph-fuel-pump text-danger me-2"></i> Les dépenses en carburant représentent ${proportionCarburant.toFixed(1)}% de vos dépenses totales. 
-                                Examinez les itinéraires et la consommation des véhicules pour optimiser les coûts.
-                              </div>`;
-        } else {
-          suggestionsHTML += `<div class="suggestion-item success">
-                                <i class="ph ph-fuel-pump text-success me-2"></i> Vos coûts de carburant semblent maîtrisés (représentent ${proportionCarburant.toFixed(1)}% des dépenses totales).
-                              </div>`;
-        }
-      }
-      
-      // Suggestion basée sur les coûts de maintenance
-      const maintenanceCosts = calculateMaintenanceCosts();
-      const totalMaintenanceCost = Object.values(maintenanceCosts).reduce((sum, cost) => sum + cost, 0);
-      if (totalMaintenanceCost > 0) {
-        const avgMaintenancePerBus = Object.keys(maintenanceCosts).length > 0 ? totalMaintenanceCost / Object.keys(maintenanceCosts).length : 0;
-        if (avgMaintenancePerBus > 50000) { // Seuil arbitraire
-          suggestionsHTML += `<div class="suggestion-item warning">
-                                <i class="ph ph-wrench text-warning me-2"></i> Les coûts de maintenance moyens par bus sont élevés (${formatCurrency(avgMaintenancePerBus)}). 
-                                Planifiez des inspections régulières pour prévenir les pannes coûteuses.
-                              </div>`;
-        } else {
-          suggestionsHTML += `<div class="suggestion-item success">
-                                <i class="ph ph-wrench text-success me-2"></i> Les coûts de maintenance moyens par bus semblent raisonnables (${formatCurrency(avgMaintenancePerBus)}).
-                              </div>`;
-        }
-      }
-      
-      if (!suggestionsHTML) {
-        suggestionsHTML = '<p class="text-muted">Aucune suggestion spécifique pour le moment.</p>';
-      }
-      
-      container.innerHTML = suggestionsHTML;
-    }
-    
-    // Charger le journal des actions
-    function loadActionLog() {
-      const actionsLog = document.getElementById('actionsLog');
-      actionsLog.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>';
-      
-      setTimeout(() => {
-        actionsLog.innerHTML = ''; // Effacer le message de chargement
-        if (allActions.length === 0) {
-          actionsLog.innerHTML = '<p class="text-muted">Aucune action enregistrée.</p>';
-          return;
-        }
-        
-        allActions.slice().reverse().forEach(action => {
-          const actionItem = document.createElement('div');
-          actionItem.classList.add('action-item');
-          
-          const timeSpan = document.createElement('span');
-          timeSpan.classList.add('action-time');
-          timeSpan.textContent = new Date(action.timestamp).toLocaleString('fr-FR');
-          
-          const typeSpan = document.createElement('span');
-          typeSpan.classList.add('action-type', action.type);
-          typeSpan.textContent = action.type;
-          
-          const messageSpan = document.createElement('span');
-          messageSpan.textContent = ` ${action.message}`;
-          
-          actionItem.appendChild(timeSpan);
-          actionItem.appendChild(typeSpan);
-          actionItem.appendChild(messageSpan);
-          actionsLog.appendChild(actionItem);
-        });
-      }, 500);
-    }
-    
-    // Filtrer le journal des actions
-    function filterActionLog(searchTerm) {
-      const actionsLog = document.getElementById('actionsLog');
-      actionsLog.innerHTML = '';
-      const searchTermLower = searchTerm.toLowerCase();
-      
-      const filteredActions = allActions.filter(action => {
-        return new Date(action.timestamp).toLocaleString('fr-FR').toLowerCase().includes(searchTermLower) ||
-               action.type.toLowerCase().includes(searchTermLower) ||
-               action.message.toLowerCase().includes(searchTermLower);
-      }).slice().reverse();
-      
-      if (filteredActions.length === 0) {
-        actionsLog.innerHTML = '<p class="text-muted">Aucune action correspondante.</p>';
+      if (!date || !matricule || isNaN(montant)) {
+        alert('Veuillez remplir tous les champs obligatoires');
         return;
       }
       
-      filteredActions.forEach(action => {
-        const actionItem = document.createElement('div');
-        actionItem.classList.add('action-item');
+      const newRecette = {
+        id: Date.now(),
+        date,
+        matricule,
+        montant,
+        commentaire,
+        timestamp: new Date().toISOString()
+      };
+      
+      recettes.push(newRecette);
+      saveRecettes();
+      loadRecettes();
+      updateTotals();
+      
+      // Réinitialiser le formulaire
+      recetteForm.reset();
+      setDefaultDates();
+      
+      // Afficher un feedback
+      showToast('Recette enregistrée avec succès', 'success');
+    }
+    
+    // Ajouter une dépense
+    function addDepense() {
+      const date = document.getElementById('dateDepense').value;
+      const type = document.getElementById('typeDepense').value;
+      const bus = type === 'bus' ? document.getElementById('busDepense').value : null;
+      const motif = document.getElementById('motifDepense').value;
+      const montant = parseFloat(document.getElementById('montantDepense').value);
+      const details = document.getElementById('detailsDepense').value;
+      
+      if (!date || !type || !motif || isNaN(montant) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+      
+      if (type === 'bus' && !bus) {
+        alert('Veuillez sélectionner un bus');
+        return;
+      }
+      
+      const newDepense = {
+        id: Date.now(),
+        date,
+        type,
+        bus,
+        motif,
+        montant,
+        details,
+        timestamp: new Date().toISOString()
+      };
+      
+      depenses.push(newDepense);
+      saveDepenses();
+      loadDepenses();
+      updateTotals();
+      
+      // Réinitialiser le formulaire
+      depenseForm.reset();
+      setDefaultDates();
+      document.getElementById('typeDepense').value = '';
+      busFieldDepense.classList.add('d-none');
+      
+      // Afficher un feedback
+      showToast('Dépense enregistrée avec succès', 'success');
+    }
+    
+    // Charger les recettes
+    function loadRecettes() {
+      const searchTerm = searchRecette.value.toLowerCase();
+      const busFilter = filterBus.value;
+      
+      // Filtrer les recettes
+      let filteredRecettes = [...recettes];
+      
+      if (searchTerm) {
+        filteredRecettes = filteredRecettes.filter(r => 
+          r.matricule.toLowerCase().includes(searchTerm) || 
+          (r.commentaire && r.commentaire.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      if (busFilter) {
+        filteredRecettes = filteredRecettes.filter(r => r.matricule === busFilter);
+      }
+      
+      // Trier par date (plus récent en premier)
+      filteredRecettes.sort((a, b) => new Date(b.date) - new Date(a.date) || new Date(b.timestamp) - new Date(a.timestamp));
+      
+      // Afficher les recettes
+      if (filteredRecettes.length === 0) {
+        recetteList.innerHTML = `
+          <div class="alert alert-info">
+            <i class="ph ph-info"></i> Aucune recette trouvée
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      filteredRecettes.forEach((recette, index) => {
+        const isToday = recette.date === new Date().toISOString().split('T')[0];
+        const isLow = recette.montant < (isToday ? DAILY_TARGET : HOLIDAY_TARGET);
         
-        const timeSpan = document.createElement('span');
-        timeSpan.classList.add('action-time');
-        timeSpan.textContent = new Date(action.timestamp).toLocaleString('fr-FR');
-        
-        const typeSpan = document.createElement('span');
-        typeSpan.classList.add('action-type', action.type);
-        typeSpan.textContent = action.type;
-        
-        const messageSpan = document.createElement('span');
-        messageSpan.textContent = ` ${action.message}`;
-        
-        actionItem.appendChild(timeSpan);
-        actionItem.appendChild(typeSpan);
-        actionItem.appendChild(messageSpan);
-        actionsLog.appendChild(actionItem);
+        html += `
+          <div class="card mb-3 receipt-card ${isLow ? 'receipt-low' : 'receipt-normal'} ${index < 3 ? 'new-entry' : ''}">
+            <div class="card-body">
+              <div class="receipt-card-header">
+                <h5 class="card-title mb-1">
+                  <i class="ph ph-bus"></i> ${recette.matricule}
+                  <span class="badge bg-${isToday ? 'primary' : 'secondary'} ms-2">
+                    ${formatDate(recette.date)}
+                  </span>
+                </h5>
+                <div>
+                  <span class="badge bg-${isLow ? 'danger' : 'success'} rounded-pill fs-6">
+                    ${recette.montant.toLocaleString()} XAF
+                  </span>
+                </div>
+              </div>
+              
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">
+                  Enregistré le ${formatDateTime(recette.timestamp)}
+                </small>
+                
+                <div>
+                  <button class="action-btn edit-btn" onclick="editRecette(${recette.id})">
+                    <i class="ph ph-pencil-simple"></i>
+                  </button>
+                  <button class="action-btn delete-btn" onclick="deleteRecette(${recette.id})">
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+              
+              ${recette.commentaire ? `
+                <div class="comment-bubble mt-2">
+                  <i class="ph ph-note-pencil"></i> ${recette.commentaire}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
       });
+      
+      recetteList.innerHTML = html;
     }
     
-    // Mettre à jour la date de dernière modification
-    function updateLastModified() {
-      const lastUpdateSpan = document.getElementById('lastUpdate');
-      const lastModified = localStorage.getItem('lastModified');
-      if (lastModified) {
-        lastUpdateSpan.textContent = new Date(parseInt(lastModified)).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    // Charger les dépenses
+    function loadDepenses() {
+      // Filtrer selon le type sélectionné
+      let filteredDepenses = [...depenses];
+      
+      if (currentFilter === 'bus') {
+        filteredDepenses = filteredDepenses.filter(d => d.type === 'bus');
+      } else if (currentFilter === 'entreprise') {
+        filteredDepenses = filteredDepenses.filter(d => d.type === 'entreprise');
+      }
+      
+      // Trier par date (plus récent en premier)
+      filteredDepenses.sort((a, b) => new Date(b.date) - new Date(a.date) || new Date(b.timestamp) - new Date(a.timestamp));
+      
+      // Afficher les dépenses
+      if (filteredDepenses.length === 0) {
+        depenseList.innerHTML = `
+          <div class="alert alert-info">
+            <i class="ph ph-info"></i> Aucune dépense trouvée
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      filteredDepenses.forEach((depense, index) => {
+        html += `
+          <div class="card mb-3 expense-item ${index < 3 ? 'new-entry' : ''}">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 class="card-title mb-1">
+                    <i class="ph ph-${depense.type === 'bus' ? 'bus' : 'buildings'}"></i> 
+                    ${depense.motif}
+                    ${depense.type === 'bus' ? `<span class="badge bg-primary ms-2">${depense.bus}</span>` : ''}
+                  </h5>
+                  <small class="text-muted">
+                    ${formatDate(depense.date)} • ${depense.type === 'bus' ? 'Bus' : 'Entreprise'}
+                  </small>
+                </div>
+                <span class="badge bg-danger rounded-pill fs-6">
+                  ${depense.montant.toLocaleString()} XAF
+                </span>
+              </div>
+              
+              ${depense.details ? `
+                <div class="expense-details mt-2">
+                  <i class="ph ph-note"></i> ${depense.details}
+                </div>
+              ` : ''}
+              
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">
+                  Enregistré le ${formatDateTime(depense.timestamp)}
+                </small>
+                
+                <div>
+                  <button class="action-btn edit-btn" onclick="editDepense(${depense.id})">
+                    <i class="ph ph-pencil-simple"></i>
+                  </button>
+                  <button class="action-btn delete-btn" onclick="deleteDepense(${depense.id})">
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      depenseList.innerHTML = html;
+    }
+    
+    // Mettre à jour les totaux
+    function updateTotals() {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Calculer les recettes d'aujourd'hui
+      const recettesToday = recettes
+        .filter(r => r.date === today)
+        .reduce((sum, r) => sum + r.montant, 0);
+      
+      // Calculer les dépenses d'aujourd'hui
+      const depensesToday = depenses
+        .filter(d => d.date === today)
+        .reduce((sum, d) => sum + d.montant, 0);
+      
+      // Calculer le bénéfice d'aujourd'hui
+      const profitToday = recettesToday - depensesToday;
+      
+      // Calculer le bénéfice total
+      const totalRecettes = recettes.reduce((sum, r) => sum + r.montant, 0);
+      const totalDepenses = depenses.reduce((sum, d) => sum + d.montant, 0);
+      const totalProfit = totalRecettes - totalDepenses;
+      
+      // Mettre à jour l'interface
+      document.getElementById('totalJour').textContent = recettesToday.toLocaleString() + ' XAF';
+      document.getElementById('depensesJour').textContent = depensesToday.toLocaleString() + ' XAF';
+      document.getElementById('profitJour').textContent = profitToday.toLocaleString() + ' XAF';
+      document.getElementById('totalProfit').textContent = totalProfit.toLocaleString() + ' XAF';
+      
+      // Mettre à jour le statut de l'objectif journalier
+      updateDailyTargetStatus(recettesToday);
+    }
+    
+    // Mettre à jour le statut de l'objectif journalier
+    function updateDailyTargetStatus(recettesToday) {
+      const targetStatus = document.getElementById('dailyTargetStatus');
+      const now = new Date();
+      const isHoliday = now.getDay() === 0 || isPublicHoliday(now); // Dimanche ou jour férié
+      const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+      
+      if (recettesToday >= target) {
+        targetStatus.innerHTML = `
+          <span class="target-indicator target-met">
+            <i class="ph ph-check"></i>
+          </span>
+          Objectif atteint (${target.toLocaleString()} XAF)
+        `;
       } else {
-        lastUpdateSpan.textContent = 'N/A';
+        const remaining = target - recettesToday;
+        targetStatus.innerHTML = `
+          <span class="target-indicator target-not-met">
+            <i class="ph ph-x"></i>
+          </span>
+          ${remaining.toLocaleString()} XAF restant
+        `;
       }
     }
     
-    // Formatter la devise
-    function formatCurrency(amount) {
-      return new Intl.NumberFormat('fr-GA', { style: 'currency', currency: 'XAF', minimumFractionDigits: 0 }).format(amount);
+    // Vérifier si c'est un jour férié (simplifié)
+    function isPublicHoliday(date) {
+      // Ici, vous devriez implémenter une logique plus sophistiquée
+      // pour vérifier les jours fériés en fonction de votre pays
+      return false;
     }
     
-    // Obtenir la période sélectionnée
-    function getSelectedPeriod() {
-      const periodSelect = document.getElementById('periodSelect');
-      if (periodSelect.value === 'custom') {
-        return 'custom';
+    // Formater une date
+    function formatDate(dateString) {
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('fr-FR', options);
+    }
+    
+    // Formater une date et heure
+    function formatDateTime(dateTimeString) {
+      const date = new Date(dateTimeString);
+      const dateStr = formatDate(dateTimeString);
+      const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      return `${dateStr} à ${timeStr}`;
+    }
+    
+    // Sauvegarder les recettes
+    function saveRecettes() {
+      localStorage.setItem('recettes', JSON.stringify(recettes));
+    }
+    
+    // Sauvegarder les dépenses
+    function saveDepenses() {
+      localStorage.setItem('depenses', JSON.stringify(depenses));
+    }
+    
+    // Éditer une recette
+    function editRecette(id) {
+      const index = recettes.findIndex(r => r.id === id);
+      if (index === -1) return;
+      
+      const recette = recettes[index];
+      currentEditIndex = index;
+      
+      document.getElementById('editRecetteId').value = recette.id;
+      document.getElementById('editRecetteDate').value = recette.date;
+      document.getElementById('editRecetteMontant').value = recette.montant;
+      document.getElementById('editRecetteCommentaire').value = recette.commentaire || '';
+      
+      // Sélectionner le bon bus
+      const busSelect = document.getElementById('editRecetteMatricule');
+      if (Array.from(busSelect.options).some(opt => opt.value === recette.matricule)) {
+        busSelect.value = recette.matricule;
       }
-      return parseInt(periodSelect.value);
+      
+      editRecetteModal.show();
     }
     
-    // Mettre à jour les graphiques lors du changement de date personnalisée
-    function updateCustomDateRange() {
-      if (document.getElementById('customStartDate').value && document.getElementById('customEndDate').value) {
-        updateCharts('custom');
+    // Sauvegarder l'édition de recette
+    function saveRecetteEdit() {
+      const id = parseInt(document.getElementById('editRecetteId').value);
+      const date = document.getElementById('editRecetteDate').value;
+      const matricule = document.getElementById('editRecetteMatricule').value;
+      const montant = parseFloat(document.getElementById('editRecetteMontant').value);
+      const commentaire = document.getElementById('editRecetteCommentaire').value;
+      
+      if (!date || !matricule || isNaN(montant)) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+      
+      const index = recettes.findIndex(r => r.id === id);
+      if (index === -1) return;
+      
+      recettes[index] = {
+        ...recettes[index],
+        date,
+        matricule,
+        montant,
+        commentaire,
+        timestamp: new Date().toISOString() // Mettre à jour le timestamp
+      };
+      
+      saveRecettes();
+      loadRecettes();
+      updateTotals();
+      editRecetteModal.hide();
+      
+      showToast('Recette modifiée avec succès', 'success');
+    }
+    
+    // Supprimer une recette
+    function deleteRecette(id) {
+      if (!confirm('Voulez-vous vraiment supprimer cette recette ?')) return;
+      
+      recettes = recettes.filter(r => r.id !== id);
+      saveRecettes();
+      loadRecettes();
+      updateTotals();
+      
+      showToast('Recette supprimée avec succès', 'success');
+    }
+    
+    // Éditer une dépense
+    function editDepense(id) {
+      const index = depenses.findIndex(d => d.id === id);
+      if (index === -1) return;
+      
+      const depense = depenses[index];
+      currentEditIndex = index;
+      
+      document.getElementById('editDepenseId').value = depense.id;
+      document.getElementById('editDepenseDate').value = depense.date;
+      document.getElementById('editDepenseType').value = depense.type;
+      document.getElementById('editDepenseMotif').value = depense.motif;
+      document.getElementById('editDepenseMontant').value = depense.montant;
+      document.getElementById('editDepenseDetails').value = depense.details || '';
+      
+      // Gérer le champ bus
+      const busField = document.getElementById('editBusFieldDepense');
+      const busSelect = document.getElementById('editBusDepense');
+      
+      if (depense.type === 'bus') {
+        busField.classList.remove('d-none');
+        if (Array.from(busSelect.options).some(opt => opt.value === depense.bus)) {
+          busSelect.value = depense.bus;
+        }
+      } else {
+        busField.classList.add('d-none');
+      }
+      
+      editDepenseModal.show();
+    }
+    
+    // Sauvegarder l'édition de dépense
+    function saveDepenseEdit() {
+      const id = parseInt(document.getElementById('editDepenseId').value);
+      const date = document.getElementById('editDepenseDate').value;
+      const type = document.getElementById('editDepenseType').value;
+      const bus = type === 'bus' ? document.getElementById('editBusDepense').value : null;
+      const motif = document.getElementById('editDepenseMotif').value;
+      const montant = parseFloat(document.getElementById('editDepenseMontant').value);
+      const details = document.getElementById('editDepenseDetails').value;
+      
+      if (!date || !type || !motif || isNaN(montant)) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+      
+      if (type === 'bus' && !bus) {
+        alert('Veuillez sélectionner un bus');
+        return;
+      }
+      
+      const index = depenses.findIndex(d => d.id === id);
+      if (index === -1) return;
+      
+      depenses[index] = {
+        ...depenses[index],
+        date,
+        type,
+        bus,
+        motif,
+        montant,
+        details,
+        timestamp: new Date().toISOString() // Mettre à jour le timestamp
+      };
+      
+      saveDepenses();
+      loadDepenses();
+      updateTotals();
+      editDepenseModal.hide();
+      
+      showToast('Dépense modifiée avec succès', 'success');
+    }
+    
+    // Supprimer une dépense
+    function deleteDepense(id) {
+      if (!confirm('Voulez-vous vraiment supprimer cette dépense ?')) return;
+      
+      depenses = depenses.filter(d => d.id !== id);
+      saveDepenses();
+      loadDepenses();
+      updateTotals();
+      
+      showToast('Dépense supprimée avec succès', 'success');
+    }
+    
+    // Filtrer les dépenses
+    function filtrerDepenses(type) {
+      currentFilter = type;
+      
+      // Mettre à jour les boutons actifs
+      document.querySelectorAll('#depenses .btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      if (type === 'all') {
+        document.querySelector('#depenses .btn-group .btn:nth-child(1)').classList.add('active');
+      } else if (type === 'bus') {
+        document.querySelector('#depenses .btn-group .btn:nth-child(2)').classList.add('active');
+      } else if (type === 'entreprise') {
+        document.querySelector('#depenses .btn-group .btn:nth-child(3)').classList.add('active');
+      }
+      
+      loadDepenses();
+    }
+    
+    // Définir le type de calendrier (recettes ou dépenses)
+    function setCalendarType(type) {
+      calendarType = type;
+      
+      // Mettre à jour les boutons actifs
+      showReceiptsBtn.classList.toggle('active', type === 'receipts');
+      showExpensesBtn.classList.toggle('active', type === 'expenses');
+      
+      // Afficher/masquer les légendes
+      receiptLegend.style.display = type === 'receipts' ? 'flex' : 'none';
+      expenseLegend.style.display = type === 'expenses' ? 'flex' : 'none';
+      
+      // Régénérer le calendrier
+      generateCalendar();
+    }
+    
+    // Générer le calendrier
+    function generateCalendar() {
+      const monthYear = document.getElementById('monthSelect').value;
+      if (!monthYear) return;
+      
+      const [year, month] = monthYear.split('-').map(Number);
+      const firstDay = new Date(year, month - 1, 1);
+      const lastDay = new Date(year, month, 0);
+      const daysInMonth = lastDay.getDate();
+      const startingDay = firstDay.getDay();
+      
+      // Ajuster le premier jour de la semaine (0=Dimanche, 1=Lundi...)
+      const adjustedStartingDay = startingDay === 0 ? 6 : startingDay - 1;
+      
+      let calendarHTML = `
+        <div class="month-header">
+          <h3 class="month-title">${getMonthName(month - 1)} ${year}</h3>
+          <div class="month-nav">
+            <button class="btn btn-sm btn-outline-secondary" onclick="navigateMonth(-1)">
+              <i class="ph ph-caret-left"></i> Précédent
+            </button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="navigateMonth(1)">
+              Suivant <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+        </div>
+        
+        <table class="calendar">
+          <thead>
+            <tr>
+              <th>Lundi</th>
+              <th>Mardi</th>
+              <th>Mercredi</th>
+              <th>Jeudi</th>
+              <th>Vendredi</th>
+              <th>Samedi</th>
+              <th>Dimanche</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      let day = 1;
+      let isFinished = false;
+      
+      for (let i = 0; i < 6; i++) { // 6 lignes max pour couvrir tous les mois
+        if (isFinished) break;
+        
+        calendarHTML += '<tr>';
+        
+        for (let j = 0; j < 7; j++) { // 7 jours par semaine
+          if (i === 0 && j < adjustedStartingDay) {
+            // Cellule vide avant le premier jour du mois
+            calendarHTML += '<td></td>';
+          } else if (day > daysInMonth) {
+            // Cellule vide après le dernier jour du mois
+            calendarHTML += '<td></td>';
+            if (i > 0) isFinished = true;
+          } else {
+            // Cellule avec le jour du mois
+            const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+            const isToday = isCurrentDay(year, month, day);
+            
+            let badgeClass = 'badge-future';
+            let badgeContent = '';
+            
+            if (new Date(dateStr) <= new Date()) {
+              if (calendarType === 'receipts') {
+                const dayData = getDayReceiptData(dateStr);
+                badgeClass = getReceiptBadgeClass(dayData);
+                badgeContent = dayData.total > 0 ? dayData.total.toLocaleString() : '';
+              } else {
+                const dayData = getDayExpenseData(dateStr);
+                badgeClass = getExpenseBadgeClass(dayData);
+                badgeContent = dayData.total > 0 ? dayData.total.toLocaleString() : '';
+              }
+            }
+            
+            calendarHTML += `
+              <td class="${isToday ? 'bg-light' : ''}">
+                <span class="calendar-day">${day}</span>
+                <div class="day-badge ${badgeClass}">${badgeContent}</div>
+              </td>
+            `;
+            day++;
+          }
+        }
+        
+        calendarHTML += '</tr>';
+      }
+      
+      calendarHTML += `
+          </tbody>
+        </table>
+      `;
+      
+      calendarContainer.innerHTML = calendarHTML;
+    }
+    
+    // Obtenir les données de recettes pour un jour donné
+    function getDayReceiptData(dateStr) {
+      const dayRecettes = recettes.filter(r => r.date === dateStr);
+      const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+      const isHoliday = isPublicHoliday(new Date(dateStr)) || new Date(dateStr).getDay() === 0;
+      const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+      
+      return {
+        total,
+        count: dayRecettes.length,
+        target,
+        isComplete: total >= target
+      };
+    }
+    
+    // Obtenir les données de dépenses pour un jour donné
+    function getDayExpenseData(dateStr) {
+      const dayDepenses = depenses.filter(d => d.date === dateStr);
+      const total = dayDepenses.reduce((sum, d) => sum + d.montant, 0);
+      
+      return {
+        total,
+        count: dayDepenses.length,
+        hasExpenses: dayDepenses.length > 0
+      };
+    }
+    
+    // Obtenir la classe CSS pour le badge de recette
+    function getReceiptBadgeClass(dayData) {
+      if (dayData.total === 0) return 'badge-none';
+      if (dayData.isComplete) return 'badge-complete';
+      return 'badge-partial';
+    }
+    
+    // Obtenir la classe CSS pour le badge de dépense
+    function getExpenseBadgeClass(dayData) {
+      if (dayData.total === 0) return 'badge-expense-none';
+      if (dayData.total > 50000) return 'badge-expense-complete'; // Seuil arbitraire
+      return 'badge-expense-partial';
+    }
+    
+    // Vérifier si c'est le jour courant
+    function isCurrentDay(year, month, day) {
+      const today = new Date();
+      return (
+        today.getFullYear() === year &&
+        today.getMonth() + 1 === month &&
+        today.getDate() === day
+      );
+    }
+    
+    // Obtenir le nom du mois
+    function getMonthName(monthIndex) {
+      const months = [
+        'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+      ];
+      return months[monthIndex];
+    }
+    
+    // Naviguer entre les mois
+    function navigateMonth(direction) {
+      const current = document.getElementById('monthSelect').value;
+      const [year, month] = current.split('-').map(Number);
+      
+      let newMonth = month + direction;
+      let newYear = year;
+      
+      if (newMonth > 12) {
+        newMonth = 1;
+        newYear++;
+      } else if (newMonth < 1) {
+        newMonth = 12;
+        newYear--;
+      }
+      
+      const newMonthStr = `${newYear}-${newMonth.toString().padStart(2, '0')}`;
+      document.getElementById('monthSelect').value = newMonthStr;
+      generateCalendar();
+    }
+    
+    // Exporter en PDF
+    function exportToPDF(type) {
+      alert('Export PDF non implémenté dans cette démo');
+      // En production, vous utiliseriez une bibliothèque comme jsPDF
+    }
+    
+    // Exporter en Excel
+    function exportToExcel(type) {
+      try {
+        let data, fileName;
+        
+        if (type === 'recettes') {
+          data = recettes.map(r => ({
+            Date: r.date,
+            'Matricule Bus': r.matricule,
+            Montant: r.montant,
+            Commentaire: r.commentaire || '',
+            'Date enregistrement': formatDateTime(r.timestamp)
+          }));
+          fileName = `recettes-ml-transport-${new Date().toISOString().split('T')[0]}.xlsx`;
+        } else {
+          data = depenses.map(d => ({
+            Date: d.date,
+            Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
+            'Bus concerné': d.bus || '',
+            Motif: d.motif,
+            Montant: d.montant,
+            Détails: d.details || '',
+            'Date enregistrement': formatDateTime(d.timestamp)
+          }));
+          fileName = `depenses-ml-transport-${new Date().toISOString().split('T')[0]}.xlsx`;
+        }
+        
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Données");
+        XLSX.writeFile(wb, fileName);
+        
+        showToast('Export Excel réussi', 'success');
+      } catch (e) {
+        console.error("Erreur d'export Excel:", e);
+        showToast("Erreur lors de l'export", 'danger');
       }
     }
     
-    // Gestion du thème sombre/clair
-    const toggleThemeButton = document.getElementById('toggleTheme');
-    const body = document.body;
-    const currentTheme = localStorage.getItem('theme') || 'light-mode';
+    // Exporter en CSV
+    function exportToCSV(type) {
+      try {
+        let data, fileName;
+        
+        if (type === 'recettes') {
+          data = recettes.map(r => ({
+            Date: r.date,
+            'Matricule Bus': r.matricule,
+            Montant: r.montant,
+            Commentaire: r.commentaire || '',
+            'Date enregistrement': formatDateTime(r.timestamp)
+          }));
+          fileName = `recettes-ml-transport-${new Date().toISOString().split('T')[0]}.csv`;
+        } else {
+          data = depenses.map(d => ({
+            Date: d.date,
+            Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
+            'Bus concerné': d.bus || '',
+            Motif: d.motif,
+            Montant: d.montant,
+            Détails: d.details || '',
+            'Date enregistrement': formatDateTime(d.timestamp)
+          }));
+          fileName = `depenses-ml-transport-${new Date().toISOString().split('T')[0]}.csv`;
+        }
+        
+        const csv = XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(data));
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, fileName);
+        
+        showToast('Export CSV réussi', 'success');
+      } catch (e) {
+        console.error("Erreur d'export CSV:", e);
+        showToast("Erreur lors de l'export", 'danger');
+      }
+    }
     
-    body.className = currentTheme;
-    updateThemeIcon();
+    // Afficher un toast (notification)
+    function showToast(message, type) {
+      // Créer le toast si il n'existe pas
+      let toastContainer = document.getElementById('toastContainer');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.bottom = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '1100';
+        document.body.appendChild(toastContainer);
+      }
+      
+      const toastId = 'toast-' + Date.now();
+      const toast = document.createElement('div');
+      toast.id = toastId;
+      toast.className = `toast show align-items-center text-white bg-${type} border-0`;
+      toast.role = 'alert';
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="ph ph-${type === 'success' ? 'check-circle' : 'warning-circle'} me-2"></i>
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // Supprimer le toast après 5 secondes
+      setTimeout(() => {
+        const toastElement = document.getElementById(toastId);
+        if (toastElement) {
+          toastElement.classList.remove('show');
+          setTimeout(() => toastElement.remove(), 300);
+        }
+      }, 5000);
+    }
     
-    toggleThemeButton.addEventListener('click', () => {
-      body.classList.toggle('light-mode');
-      body.classList.toggle('dark-mode');
-      const newTheme = body.classList.contains('dark-mode') ? 'dark-mode' : 'light-mode';
-      localStorage.setItem('theme', newTheme);
-      updateThemeIcon();
+    // Mettre à jour la date de dernière mise à jour
+    function updateLastUpdateDate() {
+      const now = new Date();
+      const options = { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      };
+      document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', options);
+    }
+    
+    // Initialiser l'application lorsque le DOM est chargé
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp();
+      updateLastUpdateDate();
+      
+      // Mettre à jour la dernière mise à jour toutes les minutes
+      setInterval(updateLastUpdateDate, 60000);
     });
-    
-    function updateThemeIcon() {
-      if (body.classList.contains('dark-mode')) {
-        toggleThemeButton.innerHTML = '<i class="ph ph-sun fs-4"></i>';
-        toggleThemeButton.title = 'Changer au thème clair';
-      } else {
-        toggleThemeButton.innerHTML = '<i class="ph ph-moon-stars fs-4"></i>';
-        toggleThemeButton.title = 'Changer au thème sombre';
-      }
-    }
   </script>
 </body>
 </html>
-
-      
