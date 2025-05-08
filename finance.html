@@ -21,787 +21,835 @@
 <!-- Style amélioré -->
 <style>
 :root {
---card-border-radius: 12px;
---card-padding: 1.25rem;
---transition-speed: 0.3s;
+  --card-border-radius: 12px;
+  --card-padding: 1.25rem;
+  --transition-speed: 0.3s;
 }
 
 /* Cartes de synthèse améliorées */
 .summary-card {
-border-radius: var(--card-border-radius);
-padding: var(--card-padding);
-transition: all var(--transition-speed) ease;
-border: none;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-position: relative;
-overflow: hidden;
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding);
+  transition: all var(--transition-speed) ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .summary-card::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 4px;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
 }
 
 .summary-card-today {
-background: linear-gradient(135deg, #198754 0%, #2ecc71 100%);
-color: white;
+  background: linear-gradient(135deg, #198754 0%, #2ecc71 100%);
+  color: white;
 }
 
 .summary-card-today::before {
-background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+  background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
 }
 
 .summary-card-week {
-background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-color: white;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
 }
 
 .summary-card-week::before {
-background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);
+  background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);
 }
 
 .summary-card-month {
-background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
-color: #2c3e50;
+  background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+  color: #2c3e50;
 }
 
 .summary-card-month::before {
-background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
+  background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
 }
 
 .summary-card-total {
-background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-color: white;
+  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  color: white;
 }
 
 .summary-card-total::before {
-background: linear-gradient(90deg, #8e44ad 0%, #9b59b6 100%);
+  background: linear-gradient(90deg, #8e44ad 0%, #9b59b6 100%);
 }
 
 .summary-card-expenses {
-background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-color: white;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  color: white;
 }
 
 .summary-card-expenses::before {
-background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
+  background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
 }
 
 .summary-card-profit {
-background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-color: white;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
 }
 
 .summary-card-profit::before {
-background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+  background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
 }
 
 .summary-card:hover {
-transform: translateY(-5px);
-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .summary-card .card-title {
-font-size: 1rem;
-font-weight: 500;
-opacity: 0.9;
-margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
 }
 
 .summary-card .card-text {
-font-size: 1.5rem;
-font-weight: 700;
-margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
 }
 
 .summary-card small {
-display: block;
-font-size: 0.8rem;
-opacity: 0.8;
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 
 /* Cartes de recettes */
 .receipt-card {
-transition: all var(--transition-speed) ease;
-border-left: 4px solid;
-border-radius: var(--card-border-radius);
+  transition: all var(--transition-speed) ease;
+  border-left: 4px solid;
+  border-radius: var(--card-border-radius);
 }
 
 .receipt-card-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .receipt-card:hover {
-transform: translateY(-3px);
-box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .receipt-normal {
-border-left-color: #198754; /* Vert pour montant normal */
+  border-left-color: #198754; /* Vert pour montant normal */
 }
 
 .receipt-low {
-border-left-color: #dc3545; /* Rouge pour montant faible */
-background-color: rgba(220, 53, 69, 0.05);
+  border-left-color: #dc3545; /* Rouge pour montant faible */
+  background-color: rgba(220, 53, 69, 0.05);
 }
 
 .receipt-high {
-border-left-color: #ffc107; /* Jaune pour montant élevé */
-background-color: rgba(255, 193, 7, 0.05);
+  border-left-color: #ffc107; /* Jaune pour montant élevé */
+  background-color: rgba(255, 193, 7, 0.05);
 }
 
 .comment-icon {
-cursor: pointer;
-transition: all var(--transition-speed);
+  cursor: pointer;
+  transition: all var(--transition-speed);
 }
 
 .comment-icon:hover {
-transform: scale(1.1);
-color: #0d6efd;
+  transform: scale(1.1);
+  color: #0d6efd;
 }
 
 .comment-bubble {
-background-color: #f8f9fa;
-border-radius: 10px;
-padding: 10px;
-margin-top: 10px;
-border-left: 3px solid #0d6efd;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  border-left: 3px solid #0d6efd;
 }
 
 .target-indicator {
-width: 20px;
-height: 20px;
-border-radius: 50%;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-margin-left: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
 }
 
 .target-met {
-background-color: #198754;
-color: white;
+  background-color: #198754;
+  color: white;
 }
 
 .target-not-met {
-background-color: #dc3545;
-color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
 /* Boutons d'action */
 .action-btn {
-width: 32px;
-height: 32px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-border-radius: 50%;
-margin-left: 5px;
-transition: all var(--transition-speed);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-left: 5px;
+  transition: all var(--transition-speed);
 }
 
 .action-btn:hover {
-transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .edit-btn {
-background-color: rgba(13, 110, 253, 0.1);
-color: #0d6efd;
-border: none;
+  background-color: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+  border: none;
 }
 
 .edit-btn:hover {
-background-color: rgba(13, 110, 253, 0.2);
+  background-color: rgba(13, 110, 253, 0.2);
 }
 
 .delete-btn {
-background-color: rgba(220, 53, 69, 0.1);
-color: #dc3545;
-border: none;
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: none;
 }
 
 .delete-btn:hover {
-background-color: rgba(220, 53, 69, 0.2);
+  background-color: rgba(220, 53, 69, 0.2);
 }
 
 /* Styles pour les dépenses */
 .expense-item {
-border-left: 4px solid #e74c3c;
-transition: all var(--transition-speed) ease;
+  border-left: 4px solid #e74c3c;
+  transition: all var(--transition-speed) ease;
 }
 
 .expense-item:hover {
-transform: translateY(-3px);
-box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .expense-details {
-font-size: 0.9em;
-color: #6c757d;
+  font-size: 0.9em;
+  color: #6c757d;
+}
+
+/* Styles pour les justificatifs */
+.justificatif-container {
+  margin-top: 10px;
+}
+
+.justificatif-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.justificatif-image:hover {
+  transform: scale(1.05);
 }
 
 /* Onglets */
 .nav-tabs .nav-link {
-border: none;
-color: #495057;
-font-weight: 500;
+  border: none;
+  color: #495057;
+  font-weight: 500;
 }
 
 .nav-tabs .nav-link.active {
-color: #0d6efd;
-border-bottom: 3px solid #0d6efd;
-background-color: transparent;
+  color: #0d6efd;
+  border-bottom: 3px solid #0d6efd;
+  background-color: transparent;
 }
 
 .nav-tabs .nav-link:hover:not(.active) {
-border-bottom: 3px solid #dee2e6;
+  border-bottom: 3px solid #dee2e6;
 }
 
 /* Autres styles */
 .bus-select-option {
-display: flex;
-align-items: center;
-gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .bus-select-option .status-badge {
-font-size: 0.7rem;
-padding: 2px 6px;
+  font-size: 0.7rem;
+  padding: 2px 6px;
 }
 
 .form-control:focus, .form-select:focus {
-border-color: #0d6efd;
-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 .input-group-text {
-transition: all var(--transition-speed) ease;
+  transition: all var(--transition-speed) ease;
 }
 
 .input-group:focus-within .input-group-text {
-background-color: #e7f1ff;
-color: #0d6efd;
+  background-color: #e7f1ff;
+  color: #0d6efd;
 }
 
 @media print {
-.no-print {
-display: none !important;
-}
+  .no-print {
+    display: none !important;
+  }
 
-.receipt-card, .expense-item {
-break-inside: avoid;
-box-shadow: none !important;
-}
+  .receipt-card, .expense-item {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
 }
 
 /* Animation pour les nouvelles entrées */
 @keyframes fadeIn {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .new-entry {
-animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.5s ease-out;
 }
 
 /* Styles pour le calendrier des coches */
 .calendar {
-width: 100%;
-border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .calendar th {
-text-align: center;
-padding: 10px;
-background-color: #f8f9fa;
-font-weight: 500;
+  text-align: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  font-weight: 500;
 }
 
 .calendar td {
-padding: 10px;
-text-align: center;
-border: 1px solid #dee2e6;
-height: 40px;
-position: relative;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  height: 40px;
+  position: relative;
 }
 
 .calendar-day {
-position: absolute;
-top: 2px;
-left: 2px;
-font-size: 0.8em;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.8em;
 }
 
 .day-badge {
-display: inline-block;
-width: 24px;
-height: 24px;
-border-radius: 50%;
-line-height: 24px;
-font-size: 0.7em;
-font-weight: bold;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  line-height: 24px;
+  font-size: 0.7em;
+  font-weight: bold;
 }
 
 .badge-complete {
-background-color: #198754;
-color: white;
+  background-color: #198754;
+  color: white;
 }
 
 .badge-partial {
-background-color: #ffc107;
-color: #212529;
+  background-color: #ffc107;
+  color: #212529;
 }
 
 .badge-none {
-background-color: #dc3545;
-color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
 .badge-future {
-background-color: #f8f9fa;
-color: #6c757d;
-border: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
 }
 
 .month-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .month-title {
-font-weight: bold;
-font-size: 1.2em;
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .month-nav {
-display: flex;
-gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .legend {
-display: flex;
-justify-content: center;
-gap: 15px;
-margin-top: 15px;
-flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 .legend-item {
-display: flex;
-align-items: center;
-gap: 5px;
-font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9em;
 }
 
 .legend-color {
-width: 16px;
-height: 16px;
-border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+/* Modal pour les images */
+.modal-image {
+  max-width: 100%;
+  max-height: 80vh;
 }
 </style>
 </head>
 <body class="light-mode">
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
-<div class="container-fluid">
-<a class="navbar-brand d-flex align-items-center" href="index.html">
-<i class="ph ph-bus fs-3 me-2 text-primary"></i>
-<span class="fw-bold">ML TRANSPORT</span>
-</a>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-<span class="navbar-toggler-icon"></span>
-</button>
-<div class="collapse navbar-collapse" id="navbarNav">
-<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-<li class="nav-item">
-<a class="nav-link" href="index.html"><i class="ph ph-gauge me-1"></i> Tableau de bord</a>
-</li>
-<li class="nav-item">
-<a class="nav-link active" aria-current="page" href="finance.html"><i class="ph ph-wallet me-1"></i> Finance</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="bus.html"><i class="ph ph-bus me-1"></i> Gestion des bus</a>
-</li>
-<!-- Ajoutez d'autres liens de navigation ici si nécessaire -->
-</ul>
-<div class="d-flex align-items-center">
-<span class="me-3 text-muted small">
-<i class="ph ph-user-circle me-1"></i> Admin
-</span>
-</div>
-</div>
-</div>
-</nav>
-
-</a>
-<div class="d-flex align-items-center">
-<span class="me-3 text-muted small">
-<i class="ph ph-user-circle me-1"></i> Admin
-</span>
-</div>
-</div>
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="index.html">
+      <i class="ph ph-bus fs-3 me-2 text-primary"></i>
+      <span class="fw-bold">ML TRANSPORT</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><i class="ph ph-gauge me-1"></i> Tableau de bord</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="finance.html"><i class="ph ph-wallet me-1"></i> Finance</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="bus.html"><i class="ph ph-bus me-1"></i> Gestion des bus</a>
+        </li>
+        <!-- Ajoutez d'autres liens de navigation ici si nécessaire -->
+      </ul>
+      <div class="d-flex align-items-center">
+        <span class="me-3 text-muted small">
+          <i class="ph ph-user-circle me-1"></i> Admin
+        </span>
+      </div>
+    </div>
+  </div>
 </nav>
 
 <!-- CONTENU PRINCIPAL -->
 <main class="container mt-5 pt-5">
 
-<!-- ZONE DES TOTAUX - NOUVEAU DESIGN -->
-<div class="row text-center mb-4 g-3" id="zoneTotaux">
-<div class="col-md-3">
-<div class="summary-card summary-card-today">
-<div class="card-body p-2">
-<h5 class="card-title"><i class="ph ph-sun me-1"></i> Recettes Aujourd'hui</h5>
-<p class="card-text" id="totalJour">0 XAF</p>
-<small id="dailyTargetStatus"></small>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="summary-card summary-card-expenses">
-<div class="card-body p-2">
-<h5 class="card-title"><i class="ph ph-arrow-down-left me-1"></i> Dépenses Aujourd'hui</h5>
-<p class="card-text" id="depensesJour">0 XAF</p>
-<small>Total des dépenses</small>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="summary-card summary-card-profit">
-<div class="card-body p-2">
-<h5 class="card-title"><i class="ph ph-trend-up me-1"></i> Bénéfice Aujourd'hui</h5>
-<p class="card-text" id="profitJour">0 XAF</p>
-<small>Recettes - Dépenses</small>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="summary-card summary-card-total">
-<div class="card-body p-2">
-<h5 class="card-title"><i class="ph ph-coin me-1"></i> Bénéfice Total</h5>
-<p class="card-text" id="totalProfit">0 XAF</p>
-<small>Toutes opérations</small>
-</div>
-</div>
-</div>
-</div>
+  <!-- ZONE DES TOTAUX - NOUVEAU DESIGN -->
+  <div class="row text-center mb-4 g-3" id="zoneTotaux">
+    <div class="col-md-3">
+      <div class="summary-card summary-card-today">
+        <div class="card-body p-2">
+          <h5 class="card-title"><i class="ph ph-sun me-1"></i> Recettes Aujourd'hui</h5>
+          <p class="card-text" id="totalJour">0 XAF</p>
+          <small id="dailyTargetStatus"></small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="summary-card summary-card-expenses">
+        <div class="card-body p-2">
+          <h5 class="card-title"><i class="ph ph-arrow-down-left me-1"></i> Dépenses Aujourd'hui</h5>
+          <p class="card-text" id="depensesJour">0 XAF</p>
+          <small>Total des dépenses</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="summary-card summary-card-profit">
+        <div class="card-body p-2">
+          <h5 class="card-title"><i class="ph ph-trend-up me-1"></i> Bénéfice Aujourd'hui</h5>
+          <p class="card-text" id="profitJour">0 XAF</p>
+          <small>Recettes - Dépenses</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="summary-card summary-card-total">
+        <div class="card-body p-2">
+          <h5 class="card-title"><i class="ph ph-coin me-1"></i> Bénéfice Total</h5>
+          <p class="card-text" id="totalProfit">0 XAF</p>
+          <small>Toutes opérations</small>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- Onglets -->
-<ul class="nav nav-tabs mb-4" id="financeTabs" role="tablist">
-<li class="nav-item" role="presentation">
-<button class="nav-link active" id="recettes-tab" data-bs-toggle="tab" data-bs-target="#recettes" type="button" role="tab">
-<i class="ph ph-wallet me-1"></i> Recettes
-</button>
-</li>
-<li class="nav-item" role="presentation">
-<button class="nav-link" id="depenses-tab" data-bs-toggle="tab" data-bs-target="#depenses" type="button" role="tab">
-<i class="ph ph-arrow-down-left me-1"></i> Dépenses
-</button>
-</li>
-<li class="nav-item" role="presentation">
-<button class="nav-link" id="coches-tab" data-bs-toggle="tab" data-bs-target="#coches" type="button" role="tab">
-<i class="ph ph-calendar-check me-1"></i> Coches
-</button>
-</li>
-</ul>
+  <!-- Onglets -->
+  <ul class="nav nav-tabs mb-4" id="financeTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="recettes-tab" data-bs-toggle="tab" data-bs-target="#recettes" type="button" role="tab">
+        <i class="ph ph-wallet me-1"></i> Recettes
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="depenses-tab" data-bs-toggle="tab" data-bs-target="#depenses" type="button" role="tab">
+        <i class="ph ph-arrow-down-left me-1"></i> Dépenses
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="coches-tab" data-bs-toggle="tab" data-bs-target="#coches" type="button" role="tab">
+        <i class="ph ph-calendar-check me-1"></i> Coches
+      </button>
+    </li>
+  </ul>
 
-<!-- Contenu des onglets -->
-<div class="tab-content" id="financeTabsContent">
-<!-- Onglet Recettes -->
-<div class="tab-pane fade show active" id="recettes" role="tabpanel">
-<h2 class="text-center my-4 text-success">
-<i class="ph ph-wallet fs-2"></i> Enregistrement des Recettes
-</h2>
+  <!-- Contenu des onglets -->
+  <div class="tab-content" id="financeTabsContent">
+    <!-- Onglet Recettes -->
+    <div class="tab-pane fade show active" id="recettes" role="tabpanel">
+      <h2 class="text-center my-4 text-success">
+        <i class="ph ph-wallet fs-2"></i> Enregistrement des Recettes
+      </h2>
 
-<form id="recetteForm" class="card p-4 shadow-sm mb-4">
-<div class="row">
-<div class="col-md-4 mb-3">
-<label for="dateRecette" class="form-label">Date</label>
-<input type="date" class="form-control" id="dateRecette" required>
-</div>
-<div class="col-md-4 mb-3">
-<label for="matriculeBus" class="form-label">Matricule du bus</label>
-<select class="form-select" id="matriculeBus" required></select>
-</div>
-<div class="col-md-4 mb-3">
-<label for="montantRecette" class="form-label">Montant versé (XAF)</label>
-<div class="input-group">
-<input type="number" class="form-control" id="montantRecette" required>
-<span class="input-group-text">XAF</span>
-</div>
-<div class="form-text text-muted">Objectif journalier: 35 000 XAF</div>
-</div>
-</div>
-<div class="mb-3">
-<label for="commentaireRecette" class="form-label">Commentaire (facultatif)</label>
-<textarea class="form-control" id="commentaireRecette" rows="2" placeholder="Ex: Paiement partiel, client XYZ..."></textarea>
-</div>
-<button type="submit" class="btn btn-success w-100">
-<i class="ph ph-check-circle"></i> Enregistrer
-</button>
-</form>
+      <form id="recetteForm" class="card p-4 shadow-sm mb-4">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="dateRecette" class="form-label">Date</label>
+            <input type="date" class="form-control" id="dateRecette" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="matriculeBus" class="form-label">Matricule du bus</label>
+            <select class="form-select" id="matriculeBus" required></select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="montantRecette" class="form-label">Montant versé (XAF)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="montantRecette" required>
+              <span class="input-group-text">XAF</span>
+            </div>
+            <div class="form-text text-muted">Objectif journalier: 35 000 XAF</div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="commentaireRecette" class="form-label">Commentaire (facultatif)</label>
+          <textarea class="form-control" id="commentaireRecette" rows="2" placeholder="Ex: Paiement partiel, client XYZ..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-success w-100">
+          <i class="ph ph-check-circle"></i> Enregistrer
+        </button>
+      </form>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h4><i class="ph ph-list-bullets"></i> Historique des recettes</h4>
-<div class="dropdown no-print">
-<button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-<i class="ph ph-export"></i> Exporter
-</button>
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="#" onclick="exportToPDF('recettes')"><i class="ph ph-file-pdf"></i> PDF</a></li>
-<li><a class="dropdown-item" href="#" onclick="exportToExcel('recettes')"><i class="ph ph-file-xls"></i> Excel</a></li>
-<li><a class="dropdown-item" href="#" onclick="exportToCSV('recettes')"><i class="ph ph-file-csv"></i> CSV</a></li>
-</ul>
-</div>
-</div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4><i class="ph ph-list-bullets"></i> Historique des recettes</h4>
+        <div class="dropdown no-print">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="ph ph-export"></i> Exporter
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="exportToPDF('recettes')"><i class="ph ph-file-pdf"></i> PDF</a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportToExcel('recettes')"><i class="ph ph-file-xls"></i> Excel</a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportToCSV('recettes')"><i class="ph ph-file-csv"></i> CSV</a></li>
+          </ul>
+        </div>
+      </div>
 
-<div class="mb-3">
-<div class="row">
-<div class="col-md-6">
-<input type="text" class="form-control" id="searchRecette" placeholder="Rechercher...">
-</div>
-<div class="col-md-6">
-<select class="form-select" id="filterBus">
-<option value="">Tous les bus</option>
-</select>
-</div>
-</div>
-</div>
+      <div class="mb-3">
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" id="searchRecette" placeholder="Rechercher...">
+          </div>
+          <div class="col-md-6">
+            <select class="form-select" id="filterBus">
+              <option value="">Tous les bus</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-<div id="recetteList" class="mb-5"></div>
-</div>
+      <div id="recetteList" class="mb-5"></div>
+    </div>
 
-<!-- Onglet Dépenses -->
-<div class="tab-pane fade" id="depenses" role="tabpanel">
-<h2 class="text-center my-4 text-danger">
-<i class="ph ph-arrow-down-left fs-2"></i> Enregistrement des Dépenses
-</h2>
+    <!-- Onglet Dépenses -->
+    <div class="tab-pane fade" id="depenses" role="tabpanel">
+      <h2 class="text-center my-4 text-danger">
+        <i class="ph ph-arrow-down-left fs-2"></i> Enregistrement des Dépenses
+      </h2>
 
-<form id="depenseForm" class="card p-4 shadow-sm mb-4">
-<div class="row">
-<div class="col-md-4 mb-3">
-<label for="dateDepense" class="form-label">Date</label>
-<input type="date" class="form-control" id="dateDepense" required>
-</div>
-<div class="col-md-4 mb-3">
-<label for="typeDepense" class="form-label">Type de dépense</label>
-<select class="form-select" id="typeDepense" required>
-<option value="">-- Sélectionnez --</option>
-<option value="bus">Liée à un bus</option>
-<option value="entreprise">Liée à l'entreprise</option>
-</select>
-</div>
-<div class="col-md-4 mb-3 d-none" id="busFieldDepense">
-<label for="busDepense" class="form-label">Bus concerné</label>
-<select class="form-select" id="busDepense">
-<option value="">-- Choisir un bus --</option>
-</select>
-</div>
-</div>
-<div class="row">
-<div class="col-md-6 mb-3">
-<label for="motifDepense" class="form-label">Motif</label>
-<input type="text" class="form-control" id="motifDepense" placeholder="Ex: Achat carburant, salaire, pièce..." required>
-</div>
-<div class="col-md-6 mb-3">
-<label for="montantDepense" class="form-label">Montant (XAF)</label>
-<div class="input-group">
-<input type="number" class="form-control" id="montantDepense" required>
-<span class="input-group-text">XAF</span>
-</div>
-</div>
-</div>
-<div class="mb-3">
-<label for="detailsDepense" class="form-label">Détails (Optionnel)</label>
-<textarea class="form-control" id="detailsDepense" rows="2" placeholder="Informations supplémentaires sur la dépense"></textarea>
-</div>
-<button type="submit" class="btn btn-danger w-100">
-<i class="ph ph-check-circle"></i> Enregistrer
-</button>
-</form>
+      <form id="depenseForm" class="card p-4 shadow-sm mb-4">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="dateDepense" class="form-label">Date</label>
+            <input type="date" class="form-control" id="dateDepense" required>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="typeDepense" class="form-label">Type de dépense</label>
+            <select class="form-select" id="typeDepense" required>
+              <option value="">-- Sélectionnez --</option>
+              <option value="bus">Liée à un bus</option>
+              <option value="entreprise">Liée à l'entreprise</option>
+            </select>
+          </div>
+          <div class="col-md-4 mb-3 d-none" id="busFieldDepense">
+            <label for="busDepense" class="form-label">Bus concerné</label>
+            <select class="form-select" id="busDepense">
+              <option value="">-- Choisir un bus --</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="motifDepense" class="form-label">Motif</label>
+            <input type="text" class="form-control" id="motifDepense" placeholder="Ex: Achat carburant, salaire, pièce..." required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="montantDepense" class="form-label">Montant (XAF)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="montantDepense" required>
+              <span class="input-group-text">XAF</span>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="detailsDepense" class="form-label">Détails (Optionnel)</label>
+          <textarea class="form-control" id="detailsDepense" rows="2" placeholder="Informations supplémentaires sur la dépense"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="justificatifDepense" class="form-label">Justificatif (image, facultatif)</label>
+          <input type="file" class="form-control" id="justificatifDepense" accept="image/*">
+          <div class="form-text">Vous pouvez joindre une photo du reçu ou facture</div>
+        </div>
+        <button type="submit" class="btn btn-danger w-100">
+          <i class="ph ph-check-circle"></i> Enregistrer
+        </button>
+      </form>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h4><i class="ph ph-list-bullets"></i> Historique des dépenses</h4>
-<div class="dropdown no-print">
-<button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-<i class="ph ph-export"></i> Exporter
-</button>
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="#" onclick="exportToPDF('depenses')"><i class="ph ph-file-pdf"></i> PDF</a></li>
-<li><a class="dropdown-item" href="#" onclick="exportToExcel('depenses')"><i class="ph ph-file-xls"></i> Excel</a></li>
-<li><a class="dropdown-item" href="#" onclick="exportToCSV('depenses')"><i class="ph ph-file-csv"></i> CSV</a></li>
-</ul>
-</div>
-</div>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4><i class="ph ph-list-bullets"></i> Historique des dépenses</h4>
+        <div class="dropdown no-print">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="ph ph-export"></i> Exporter
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="exportToPDF('depenses')"><i class="ph ph-file-pdf"></i> PDF</a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportToExcel('depenses')"><i class="ph ph-file-xls"></i> Excel</a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportToCSV('depenses')"><i class="ph ph-file-csv"></i> CSV</a></li>
+          </ul>
+        </div>
+      </div>
 
-<div class="mb-3">
-<div class="btn-group w-100" role="group">
-<button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('all')">Toutes</button>
-<button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('bus')">Bus</button>
-<button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('entreprise')">Entreprise</button>
-</div>
-</div>
+      <div class="mb-3">
+        <div class="btn-group w-100" role="group">
+          <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('all')">Toutes</button>
+          <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('bus')">Bus</button>
+          <button type="button" class="btn btn-outline-secondary" onclick="filtrerDepenses('entreprise')">Entreprise</button>
+        </div>
+      </div>
 
-<div id="depenseList" class="mb-5"></div>
-</div>
+      <div id="depenseList" class="mb-5"></div>
+    </div>
 
-<!-- Nouvel onglet Coches -->
-<div class="tab-pane fade" id="coches" role="tabpanel">
-<h2 class="text-center my-4 text-primary">
-<i class="ph ph-calendar-check fs-2"></i> Suivi des Recettes
-</h2>
+    <!-- Nouvel onglet Coches -->
+    <div class="tab-pane fade" id="coches" role="tabpanel">
+      <h2 class="text-center my-4 text-primary">
+        <i class="ph ph-calendar-check fs-2"></i> Suivi des Recettes
+      </h2>
 
-<div class="card p-4 shadow-sm mb-4">
-<div class="mb-3">
-<label for="monthSelect" class="form-label">Sélectionnez un mois</label>
-<div class="input-group">
-<input type="month" class="form-control" id="monthSelect">
-<button class="btn btn-primary" type="button" onclick="generateCalendar()">
-<i class="ph ph-magnifying-glass"></i> Afficher
-</button>
-</div>
-</div>
-</div>
+      <div class="card p-4 shadow-sm mb-4">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="monthSelect" class="form-label">Sélectionnez un mois</label>
+            <input type="month" class="form-control" id="monthSelect">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="busCalendarSelect" class="form-label">Sélectionnez un bus</label>
+            <select class="form-select" id="busCalendarSelect">
+              <option value="all">Tous les bus</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary w-100" type="button" onclick="generateCalendar()">
+          <i class="ph ph-magnifying-glass"></i> Afficher le calendrier
+        </button>
+      </div>
 
-<div id="calendarContainer" class="mb-4">
-<!-- Le calendrier sera généré ici -->
-</div>
+      <div id="calendarContainer" class="mb-4">
+        <!-- Le calendrier sera généré ici -->
+      </div>
 
-<div class="legend">
-<div class="legend-item">
-<div class="legend-color bg-success"></div>
-<span>Recette complète</span>
-</div>
-<div class="legend-item">
-<div class="legend-color bg-warning"></div>
-<span>Recette partielle</span>
-</div>
-<div class="legend-item">
-<div class="legend-color bg-danger"></div>
-<span>Pas de recette</span>
-</div>
-<div class="legend-item">
-<div class="legend-color bg-light border"></div>
-<span>Jour futur</span>
-</div>
-</div>
-</div>
-</div>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color bg-success"></div>
+          <span>Recette complète</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color bg-warning"></div>
+          <span>Recette partielle</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color bg-danger"></div>
+          <span>Pas de recette</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color bg-light border"></div>
+          <span>Jour futur</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <!-- MODAL D'ÉDITION RECETTE -->
 <div class="modal fade" id="editRecetteModal" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header bg-primary text-white">
-<h5 class="modal-title">Modifier la recette</h5>
-<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<form id="editRecetteForm">
-<input type="hidden" id="editRecetteId">
-<div class="mb-3">
-<label for="editRecetteDate" class="form-label">Date</label>
-<input type="date" class="form-control" id="editRecetteDate" required>
-</div>
-<div class="mb-3">
-<label for="editRecetteMatricule" class="form-label">Matricule du bus</label>
-<select class="form-select" id="editRecetteMatricule" required></select>
-</div>
-<div class="mb-3">
-<label for="editRecetteMontant" class="form-label">Montant (XAF)</label>
-<div class="input-group">
-<input type="number" class="form-control" id="editRecetteMontant" required>
-<span class="input-group-text">XAF</span>
-</div>
-</div>
-<div class="mb-3">
-<label for="editRecetteCommentaire" class="form-label">Commentaire</label>
-<textarea class="form-control" id="editRecetteCommentaire" rows="2"></textarea>
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-<button type="button" class="btn btn-primary" id="saveRecetteEdit">Enregistrer</button>
-</div>
-</div>
-</div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Modifier la recette</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editRecetteForm">
+          <input type="hidden" id="editRecetteId">
+          <div class="mb-3">
+            <label for="editRecetteDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="editRecetteDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="editRecetteMatricule" class="form-label">Matricule du bus</label>
+            <select class="form-select" id="editRecetteMatricule" required></select>
+          </div>
+          <div class="mb-3">
+            <label for="editRecetteMontant" class="form-label">Montant (XAF)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="editRecetteMontant" required>
+              <span class="input-group-text">XAF</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="editRecetteCommentaire" class="form-label">Commentaire</label>
+            <textarea class="form-control" id="editRecetteCommentaire" rows="2"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="saveRecetteEdit">Enregistrer</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL D'ÉDITION DEPENSE -->
 <div class="modal fade" id="editDepenseModal" tabindex="-1" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header bg-primary text-white">
-<h5 class="modal-title">Modifier la dépense</h5>
-<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Modifier la dépense</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editDepenseForm">
+          <input type="hidden" id="editDepenseId">
+          <div class="mb-3">
+            <label for="editDepenseDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="editDepenseDate" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDepenseType" class="form-label">Type de dépense</label>
+            <select class="form-select" id="editDepenseType" required>
+              <option value="bus">Liée à un bus</option>
+              <option value="entreprise">Liée à l'entreprise</option>
+            </select>
+          </div>
+          <div class="mb-3" id="editBusFieldDepense">
+            <label for="editBusDepense" class="form-label">Bus concerné</label>
+            <select class="form-select" id="editBusDepense">
+              <option value="">-- Choisir un bus --</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editDepenseMotif" class="form-label">Motif</label>
+            <input type="text" class="form-control" id="editDepenseMotif" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDepenseMontant" class="form-label">Montant (XAF)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="editDepenseMontant" required>
+              <span class="input-group-text">XAF</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="editDepenseDetails" class="form-label">Détails</label>
+            <textarea class="form-control" id="editDepenseDetails" rows="2"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editDepenseJustificatif" class="form-label">Justificatif</label>
+            <input type="file" class="form-control" id="editDepenseJustificatif" accept="image/*">
+            <div class="form-text">Modifier le justificatif si nécessaire</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" id="saveDepenseEdit">Enregistrer</button>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="modal-body">
-<form id="editDepenseForm">
-<input type="hidden" id="editDepenseId">
-<div class="mb-3">
-<label for="editDepenseDate" class="form-label">Date</label>
-<input type="date" class="form-control" id="editDepenseDate" required>
-</div>
-<div class="mb-3">
-<label for="editDepenseType" class="form-label">Type de dépense</label>
-<select class="form-select" id="editDepenseType" required>
-<option value="bus">Liée à un bus</option>
-<option value="entreprise">Liée à l'entreprise</option>
-</select>
-</div>
-<div class="mb-3" id="editBusFieldDepense">
-<label for="editBusDepense" class="form-label">Bus concerné</label>
-<select class="form-select" id="editBusDepense">
-<option value="">-- Choisir un bus --</option>
-</select>
-</div>
-<div class="mb-3">
-<label for="editDepenseMotif" class="form-label">Motif</label>
-<input type="text" class="form-control" id="editDepenseMotif" required>
-</div>
-<div class="mb-3">
-<label for="editDepenseMontant" class="form-label">Montant (XAF)</label>
-<div class="input-group">
-<input type="number" class="form-control" id="editDepenseMontant" required>
-<span class="input-group-text">XAF</span>
-</div>
-</div>
-<div class="mb-3">
-<label for="editDepenseDetails" class="form-label">Détails</label>
-<textarea class="form-control" id="editDepenseDetails" rows="2"></textarea>
-</div>
-</form>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-<button type="button" class="btn btn-primary" id="saveDepenseEdit">Enregistrer</button>
-</div>
-</div>
-</div>
+
+<!-- MODAL POUR AFFICHER L'IMAGE -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Justificatif</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="modalImage" src="" class="modal-image" alt="Justificatif">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- BOUTON MODE SOMBRE/CLAIR -->
 <button id="toggleTheme" class="btn btn-dark rounded-circle shadow theme-toggle no-print" title="Changer de thème">
-<i class="ph ph-moon-stars fs-4"></i>
+  <i class="ph ph-moon-stars fs-4"></i>
 </button>
 
 <!-- FOOTER -->
 <footer class="text-center py-3 bg-dark text-white">
-<div class="container">
-<div class="d-flex justify-content-between align-items-center">
-<span>Powered by Forever/&gt;Inc</span>
-<span class="small">Dernière mise à jour: <span id="lastUpdate"></span></span>
-</div>
-</div>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <span>Powered by Forever/&gt;Inc</span>
+      <span class="small">Dernière mise à jour: <span id="lastUpdate"></span></span>
+    </div>
+  </div>
 </footer>
 
 <!-- SCRIPTS -->
@@ -825,11 +873,13 @@ const typeDepense = document.getElementById('typeDepense');
 const busFieldDepense = document.getElementById('busFieldDepense');
 const busDepenseSelect = document.getElementById('busDepense');
 const monthSelect = document.getElementById('monthSelect');
+const busCalendarSelect = document.getElementById('busCalendarSelect');
 const calendarContainer = document.getElementById('calendarContainer');
 
 // Modals
 const editRecetteModal = new bootstrap.Modal(document.getElementById('editRecetteModal'));
 const editDepenseModal = new bootstrap.Modal(document.getElementById('editDepenseModal'));
+const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
 
 // Données
 let recettes = JSON.parse(localStorage.getItem('recettes')) || [];
@@ -839,860 +889,941 @@ let currentFilter = 'all';
 
 // Récupérer les bus depuis le localStorage ou une API
 function getAvailableBuses() {
-try {
-// Essayer de récupérer depuis le localStorage
-const busesFromStorage = JSON.parse(localStorage.getItem('busList')) || [];
+  try {
+    // Essayer de récupérer depuis le localStorage
+    const busesFromStorage = JSON.parse(localStorage.getItem('busList')) || [];
 
-if (busesFromStorage.length > 0) {
-return busesFromStorage.map(bus => ({
-matricule: bus.matricule,
-nom: bus.nom,
-service: bus.service
-}));
-}
+    if (busesFromStorage.length > 0) {
+      return busesFromStorage.map(bus => ({
+        matricule: bus.matricule,
+        nom: bus.nom,
+        service: bus.service
+      }));
+    }
 
-// Si aucun bus dans le localStorage, utiliser des valeurs par défaut
-return [
-{ matricule: 'AK678AA', nom: 'Bus Principal', service: 'Oui' },
-{ matricule: 'AK679BB', nom: 'Bus Secondaire', service: 'Oui' },
-{ matricule: 'AK680CC', nom: 'Bus de Réserve', service: 'Non' }
-];
-} catch (e) {
-console.error("Erreur lors de la récupération des bus:", e);
-return [];
-}
+    // Si aucun bus dans le localStorage, utiliser des valeurs par défaut
+    return [
+      { matricule: 'AK678AA', nom: 'Bus Principal', service: 'Oui' },
+      { matricule: 'AK679BB', nom: 'Bus Secondaire', service: 'Oui' },
+      { matricule: 'AK680CC', nom: 'Bus de Réserve', service: 'Non' }
+    ];
+  } catch (e) {
+    console.error("Erreur lors de la récupération des bus:", e);
+    return [];
+  }
 }
 
 // Initialisation
 function init() {
-populateBusSelect();
-populateBusFilter();
-populateDepenseBusSelect();
-populateEditBusSelect();
-populateEditDepenseBusSelect();
-afficherRecettes();
-afficherDepenses();
-updateLastModified();
+  populateBusSelect();
+  populateBusFilter();
+  populateDepenseBusSelect();
+  populateEditBusSelect();
+  populateEditDepenseBusSelect();
+  populateCalendarBusSelect();
+  afficherRecettes();
+  afficherDepenses();
+  updateLastModified();
 
-// Définir la date du jour par défaut
-document.getElementById('dateRecette').valueAsDate = new Date();
-document.getElementById('dateDepense').valueAsDate = new Date();
+  // Définir la date du jour par défaut
+  document.getElementById('dateRecette').valueAsDate = new Date();
+  document.getElementById('dateDepense').valueAsDate = new Date();
 
-// Définir le mois actuel par défaut dans le sélecteur de mois
-const today = new Date();
-const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-monthSelect.value = currentMonth;
+  // Définir le mois actuel par défaut dans le sélecteur de mois
+  const today = new Date();
+  const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+  monthSelect.value = currentMonth;
 
-// Générer le calendrier pour le mois en cours
-generateCalendar();
+  // Générer le calendrier pour le mois en cours
+  generateCalendar();
 
-// Événement pour sauvegarder les modifications
-document.getElementById('saveRecetteEdit').addEventListener('click', saveEditedRecette);
-document.getElementById('saveDepenseEdit').addEventListener('click', saveEditedDepense);
+  // Événement pour sauvegarder les modifications
+  document.getElementById('saveRecetteEdit').addEventListener('click', saveEditedRecette);
+  document.getElementById('saveDepenseEdit').addEventListener('click', saveEditedDepense);
 
-// Gestion du changement de type de dépense
-typeDepense.addEventListener('change', () => {
-busFieldDepense.classList.toggle('d-none', typeDepense.value !== 'bus');
-});
+  // Gestion du changement de type de dépense
+  typeDepense.addEventListener('change', () => {
+    busFieldDepense.classList.toggle('d-none', typeDepense.value !== 'bus');
+  });
 
-// Initialiser les totaux
-mettreAJourTotaux();
+  // Initialiser les totaux
+  mettreAJourTotaux();
 }
 
 function populateBusSelect() {
-const selectBus = document.getElementById('matriculeBus');
-selectBus.innerHTML = '';
+  const selectBus = document.getElementById('matriculeBus');
+  selectBus.innerHTML = '';
 
-const availableBuses = getAvailableBuses()
-.filter(bus => bus.service === 'Oui') // Seulement les bus en service
-.sort((a, b) => a.matricule.localeCompare(b.matricule));
+  const availableBuses = getAvailableBuses()
+    .filter(bus => bus.service === 'Oui') // Seulement les bus en service
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
 
-if (availableBuses.length === 0) {
-const option = document.createElement('option');
-option.value = '';
-option.textContent = 'Aucun bus disponible';
-option.disabled = true;
-selectBus.appendChild(option);
-return;
+  if (availableBuses.length === 0) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Aucun bus disponible';
+    option.disabled = true;
+    selectBus.appendChild(option);
+    return;
+  }
+
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
-availableBuses.forEach(bus => {
-const option = document.createElement('option');
-option.value = bus.matricule;
-option.textContent = `${bus.matricule} - ${bus.nom}`;
-selectBus.appendChild(option);
-});
+function populateCalendarBusSelect() {
+  const selectBus = document.getElementById('busCalendarSelect');
+  // Garder l'option "Tous les bus"
+  while (selectBus.options.length > 1) {
+    selectBus.remove(1);
+  }
+
+  const availableBuses = getAvailableBuses()
+    .filter(bus => bus.service === 'Oui') // Seulement les bus en service
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
 function populateDepenseBusSelect() {
-const selectBus = document.getElementById('busDepense');
-selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
+  const selectBus = document.getElementById('busDepense');
+  selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
 
-const availableBuses = getAvailableBuses()
-.sort((a, b) => a.matricule.localeCompare(b.matricule));
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
 
-availableBuses.forEach(bus => {
-const option = document.createElement('option');
-option.value = bus.matricule;
-option.textContent = `${bus.matricule} - ${bus.nom}`;
-selectBus.appendChild(option);
-});
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
 function populateEditDepenseBusSelect() {
-const selectBus = document.getElementById('editBusDepense');
-selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
+  const selectBus = document.getElementById('editBusDepense');
+  selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
 
-const availableBuses = getAvailableBuses()
-.sort((a, b) => a.matricule.localeCompare(b.matricule));
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
 
-availableBuses.forEach(bus => {
-const option = document.createElement('option');
-option.value = bus.matricule;
-option.textContent = `${bus.matricule} - ${bus.nom}`;
-selectBus.appendChild(option);
-});
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
 function populateBusFilter() {
-filterBus.innerHTML = '<option value="">Tous les bus</option>';
+  filterBus.innerHTML = '<option value="">Tous les bus</option>';
 
-const availableBuses = getAvailableBuses()
-.sort((a, b) => a.matricule.localeCompare(b.matricule));
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
 
-availableBuses.forEach(bus => {
-const option = document.createElement('option');
-option.value = bus.matricule;
-option.textContent = `${bus.matricule} - ${bus.nom}`;
-filterBus.appendChild(option);
-});
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    filterBus.appendChild(option);
+  });
 }
 
 function populateEditBusSelect() {
-const selectBus = document.getElementById('editRecetteMatricule');
-selectBus.innerHTML = '';
+  const selectBus = document.getElementById('editRecetteMatricule');
+  selectBus.innerHTML = '';
 
-const availableBuses = getAvailableBuses()
-.sort((a, b) => a.matricule.localeCompare(b.matricule));
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
 
-availableBuses.forEach(bus => {
-const option = document.createElement('option');
-option.value = bus.matricule;
-option.textContent = `${bus.matricule} - ${bus.nom}`;
-selectBus.appendChild(option);
-});
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
 function afficherRecettes(filter = '') {
-recetteList.innerHTML = '';
+  recetteList.innerHTML = '';
 
-const busFilter = filterBus.value;
-const searchTerm = filter.toLowerCase();
+  const busFilter = filterBus.value;
+  const searchTerm = filter.toLowerCase();
 
-if (recettes.length === 0) {
-recetteList.innerHTML = `
-<div class="alert alert-info text-center">
-<i class="ph ph-info"></i> Aucune recette enregistrée
-</div>
-`;
-return;
-}
+  if (recettes.length === 0) {
+    recetteList.innerHTML = `
+      <div class="alert alert-info text-center">
+        <i class="ph ph-info"></i> Aucune recette enregistrée
+      </div>
+    `;
+    return;
+  }
 
-// Filtrer et trier par date (récent en premier)
-const filteredRecettes = recettes
-.filter(r => {
-const matchesBus = busFilter ? r.matricule === busFilter : true;
-const matchesSearch = searchTerm ?
-r.matricule.toLowerCase().includes(searchTerm) ||
-(r.commentaire && r.commentaire.toLowerCase().includes(searchTerm)) : true;
-return matchesBus && matchesSearch;
-})
-.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Filtrer et trier par date (récent en premier)
+  const filteredRecettes = recettes
+    .filter(r => {
+      const matchesBus = busFilter ? r.matricule === busFilter : true;
+      const matchesSearch = searchTerm ?
+        r.matricule.toLowerCase().includes(searchTerm) ||
+        (r.commentaire && r.commentaire.toLowerCase().includes(searchTerm)) : true;
+      return matchesBus && matchesSearch;
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-if (filteredRecettes.length === 0) {
-recetteList.innerHTML = `
-<div class="alert alert-warning text-center">
-<i class="ph ph-warning"></i> Aucun résultat trouvé
-</div>
-`;
-return;
-}
+  if (filteredRecettes.length === 0) {
+    recetteList.innerHTML = `
+      <div class="alert alert-warning text-center">
+        <i class="ph ph-warning"></i> Aucun résultat trouvé
+      </div>
+    `;
+    return;
+  }
 
-// Utilisation d'un fragment pour améliorer les performances
-const fragment = document.createDocumentFragment();
+  // Utilisation d'un fragment pour améliorer les performances
+  const fragment = document.createDocumentFragment();
 
-filteredRecettes.forEach((recette, index) => {
-const card = document.createElement('div');
-let cardClass = 'receipt-normal';
+  filteredRecettes.forEach((recette, index) => {
+    const card = document.createElement('div');
+    let cardClass = 'receipt-normal';
 
-// Déterminer si c'est un jour férié/dimanche
-const date = new Date(recette.date);
-const isHoliday = date.getDay() === 0; // Dimanche
-const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+    // Déterminer si c'est un jour férié/dimanche
+    const date = new Date(recette.date);
+    const isHoliday = date.getDay() === 0; // Dimanche
+    const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
 
-if (recette.montant < target) {
-cardClass = 'receipt-low';
-} else if (recette.montant > target * 1.2) {
-cardClass = 'receipt-high';
-}
+    if (recette.montant < target) {
+      cardClass = 'receipt-low';
+    } else if (recette.montant > target * 1.2) {
+      cardClass = 'receipt-high';
+    }
 
-card.className = `card mb-3 p-3 ${cardClass} receipt-card`;
+    card.className = `card mb-3 p-3 ${cardClass} receipt-card`;
 
-// Récupérer le nom du bus depuis la liste des bus disponibles
-const busInfo = getAvailableBuses().find(b => b.matricule === recette.matricule) || {};
-const busName = busInfo.nom || 'Bus inconnu';
+    // Récupérer le nom du bus depuis la liste des bus disponibles
+    const busInfo = getAvailableBuses().find(b => b.matricule === recette.matricule) || {};
+    const busName = busInfo.nom || 'Bus inconnu';
 
-// Indicateur d'objectif
-const targetIndicator = recette.montant >= target ?
-`<span class="target-indicator target-met" title="Objectif atteint"><i class="ph ph-check"></i></span>` :
-`<span class="target-indicator target-not-met" title="Objectif non atteint"><i class="ph ph-x"></i></span>`;
+    // Indicateur d'objectif
+    const targetIndicator = recette.montant >= target ?
+      `<span class="target-indicator target-met" title="Objectif atteint"><i class="ph ph-check"></i></span>` :
+      `<span class="target-indicator target-not-met" title="Objectif non atteint"><i class="ph ph-x"></i></span>`;
 
-card.innerHTML = `
-<div class="d-flex justify-content-between align-items-center">
-<div>
-<h5 class="mb-1">
-<i class="ph ph-bus text-primary"></i> ${recette.matricule} (${busName})
-${targetIndicator}
-</h5>
-<small class="text-muted">${formatDate(recette.date)}</small>
-</div>
-<div class="text-end">
-<h4 class="mb-0">${recette.montant.toLocaleString()} XAF</h4>
-<small class="text-muted">Objectif: ${target.toLocaleString()} XAF</small>
-</div>
-</div>
-${recette.commentaire ? `
-<div class="comment-bubble mt-2">
-<i class="ph ph-note-pencil"></i> ${recette.commentaire}
-</div>
-` : ''}
-<div class="d-flex justify-content-end mt-2">
-<button class="action-btn edit-btn no-print" onclick="openEditRecetteModal(${index})" title="Modifier">
-<i class="ph ph-pencil"></i>
-</button>
-<button class="action-btn delete-btn no-print" onclick="supprimerRecette(${index})" title="Supprimer">
-<i class="ph ph-trash"></i>
-</button>
-</div>
-`;
+    card.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">
+            <i class="ph ph-bus text-primary"></i> ${recette.matricule} (${busName})
+            ${targetIndicator}
+          </h5>
+          <small class="text-muted">${formatDate(recette.date)}</small>
+        </div>
+        <div class="text-end">
+          <h4 class="mb-0">${recette.montant.toLocaleString()} XAF</h4>
+          <small class="text-muted">Objectif: ${target.toLocaleString()} XAF</small>
+        </div>
+      </div>
+      ${recette.commentaire ? `
+        <div class="comment-bubble mt-2">
+          <i class="ph ph-note-pencil"></i> ${recette.commentaire}
+        </div>
+      ` : ''}
+      <div class="d-flex justify-content-end mt-2">
+        <button class="action-btn edit-btn no-print" onclick="openEditRecetteModal(${index})" title="Modifier">
+          <i class="ph ph-pencil"></i>
+        </button>
+        <button class="action-btn delete-btn no-print" onclick="supprimerRecette(${index})" title="Supprimer">
+          <i class="ph ph-trash"></i>
+        </button>
+      </div>
+    `;
 
-fragment.appendChild(card);
-});
+    fragment.appendChild(card);
+  });
 
-recetteList.appendChild(fragment);
-mettreAJourTotaux();
+  recetteList.appendChild(fragment);
+  mettreAJourTotaux();
 }
 
 function afficherDepenses() {
-depenseList.innerHTML = '';
+  depenseList.innerHTML = '';
 
-if (depenses.length === 0) {
-depenseList.innerHTML = `
-<div class="alert alert-info text-center">
-<i class="ph ph-info"></i> Aucune dépense enregistrée
-</div>
-`;
-return;
-}
+  if (depenses.length === 0) {
+    depenseList.innerHTML = `
+      <div class="alert alert-info text-center">
+        <i class="ph ph-info"></i> Aucune dépense enregistrée
+      </div>
+    `;
+    return;
+  }
 
-// Filtrer selon le filtre actif
-let filteredDepenses = depenses;
-if (currentFilter !== 'all') {
-filteredDepenses = depenses.filter(d => d.type === currentFilter);
-}
+  // Filtrer selon le filtre actif
+  let filteredDepenses = depenses;
+  if (currentFilter !== 'all') {
+    filteredDepenses = depenses.filter(d => d.type === currentFilter);
+  }
 
-// Trier par date (récent en premier)
-filteredDepenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Trier par date (récent en premier)
+  filteredDepenses.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-if (filteredDepenses.length === 0) {
-depenseList.innerHTML = `
-<div class="alert alert-warning text-center">
-<i class="ph ph-warning"></i> Aucune dépense trouvée pour ce filtre
-</div>
-`;
-return;
-}
+  if (filteredDepenses.length === 0) {
+    depenseList.innerHTML = `
+      <div class="alert alert-warning text-center">
+        <i class="ph ph-warning"></i> Aucune dépense trouvée pour ce filtre
+      </div>
+    `;
+    return;
+  }
 
-// Utilisation d'un fragment pour améliorer les performances
-const fragment = document.createDocumentFragment();
+  // Utilisation d'un fragment pour améliorer les performances
+  const fragment = document.createDocumentFragment();
 
-filteredDepenses.forEach((depense, index) => {
-const card = document.createElement('div');
-card.className = 'card mb-3 p-3 expense-item';
+  filteredDepenses.forEach((depense, index) => {
+    const card = document.createElement('div');
+    card.className = 'card mb-3 p-3 expense-item';
 
-// Récupérer le nom du bus si c'est une dépense liée à un bus
-const busInfo = depense.bus ? getAvailableBuses().find(b => b.matricule === depense.bus) || {} : {};
-const busName = busInfo.nom || '';
+    // Récupérer le nom du bus si c'est une dépense liée à un bus
+    const busInfo = depense.bus ? getAvailableBuses().find(b => b.matricule === depense.bus) || {} : {};
+    const busName = busInfo.nom || '';
 
-card.innerHTML = `
-<div class="d-flex justify-content-between align-items-center">
-<div>
-<h5 class="mb-1">
-<i class="ph ph-arrow-down-left text-danger"></i> ${depense.motif}
-<small class="text-muted">(${depense.type === 'bus' ? 'Bus: ' + depense.bus + (busName ? ' (' + busName + ')' : '') : 'Entreprise'})</small>
-</h5>
-<small class="text-muted">${formatDate(depense.date)}</small>
-${depense.details ? `
-<div class="expense-details mt-2">
-<i class="ph ph-info"></i> ${depense.details}
-</div>
-` : ''}
-</div>
-<div class="text-end">
-<h4 class="mb-0 text-danger">${depense.montant.toLocaleString()} XAF</h4>
-</div>
-</div>
-<div class="d-flex justify-content-end mt-2">
-<button class="action-btn edit-btn no-print" onclick="openEditDepenseModal(${index})" title="Modifier">
-<i class="ph ph-pencil"></i>
-</button>
-<button class="action-btn delete-btn no-print" onclick="supprimerDepense(${index})" title="Supprimer">
-<i class="ph ph-trash"></i>
-</button>
-</div>
-`;
+    // Afficher le justificatif s'il existe
+    let justificatifHTML = '';
+    if (depense.justificatif) {
+      justificatifHTML = `
+        <div class="justificatif-container mt-2">
+          <p class="mb-1"><i class="ph ph-image"></i> Justificatif joint:</p>
+          <img src="${depense.justificatif}" class="justificatif-image" onclick="showImageModal('${depense.justificatif}')" 
+               alt="Justificatif de dépense" title="Cliquez pour agrandir">
+        </div>
+      `;
+    }
 
-fragment.appendChild(card);
-});
+    card.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">
+            <i class="ph ph-arrow-down-left text-danger"></i> ${depense.motif}
+            <small class="text-muted">(${depense.type === 'bus' ? 'Bus: ' + depense.bus + (busName ? ' (' + busName + ')' : '') : 'Entreprise'})</small>
+          </h5>
+          <small class="text-muted">${formatDate(depense.date)}</small>
+          ${depense.details ? `
+            <div class="expense-details mt-2">
+              <i class="ph ph-info"></i> ${depense.details}
+            </div>
+          ` : ''}
+          ${justificatifHTML}
+        </div>
+        <div class="text-end">
+          <h4 class="mb-0 text-danger">${depense.montant.toLocaleString()} XAF</h4>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="action-btn edit-btn no-print" onclick="openEditDepenseModal(${index})" title="Modifier">
+          <i class="ph ph-pencil"></i>
+        </button>
+        <button class="action-btn delete-btn no-print" onclick="supprimerDepense(${index})" title="Supprimer">
+          <i class="ph ph-trash"></i>
+        </button>
+      </div>
+    `;
 
-depenseList.appendChild(fragment);
-mettreAJourTotaux();
+    fragment.appendChild(card);
+  });
+
+  depenseList.appendChild(fragment);
+  mettreAJourTotaux();
 }
 
 function filtrerDepenses(type) {
-currentFilter = type;
-afficherDepenses();
+  currentFilter = type;
+  afficherDepenses();
 }
 
 function openEditRecetteModal(index) {
-currentEditIndex = index;
-const recette = recettes[index];
+  currentEditIndex = index;
+  const recette = recettes[index];
 
-document.getElementById('editRecetteId').value = index;
-document.getElementById('editRecetteDate').value = recette.date;
-document.getElementById('editRecetteMatricule').value = recette.matricule;
-document.getElementById('editRecetteMontant').value = recette.montant;
-document.getElementById('editRecetteCommentaire').value = recette.commentaire || '';
+  document.getElementById('editRecetteId').value = index;
+  document.getElementById('editRecetteDate').value = recette.date;
+  document.getElementById('editRecetteMatricule').value = recette.matricule;
+  document.getElementById('editRecetteMontant').value = recette.montant;
+  document.getElementById('editRecetteCommentaire').value = recette.commentaire || '';
 
-editRecetteModal.show();
+  editRecetteModal.show();
 }
 
 function openEditDepenseModal(index) {
-currentEditIndex = index;
-const depense = depenses[index];
+  currentEditIndex = index;
+  const depense = depenses[index];
 
-document.getElementById('editDepenseId').value = index;
-document.getElementById('editDepenseDate').value = depense.date;
-document.getElementById('editDepenseType').value = depense.type;
-document.getElementById('editDepenseMotif').value = depense.motif;
-document.getElementById('editDepenseMontant').value = depense.montant;
-document.getElementById('editDepenseDetails').value = depense.details || '';
+  document.getElementById('editDepenseId').value = index;
+  document.getElementById('editDepenseDate').value = depense.date;
+  document.getElementById('editDepenseType').value = depense.type;
+  document.getElementById('editDepenseMotif').value = depense.motif;
+  document.getElementById('editDepenseMontant').value = depense.montant;
+  document.getElementById('editDepenseDetails').value = depense.details || '';
 
-// Gérer le champ bus
-const editBusField = document.getElementById('editBusFieldDepense');
-if (depense.type === 'bus') {
-editBusField.classList.remove('d-none');
-document.getElementById('editBusDepense').value = depense.bus || '';
-} else {
-editBusField.classList.add('d-none');
-}
+  // Gérer le champ bus
+  const editBusField = document.getElementById('editBusFieldDepense');
+  if (depense.type === 'bus') {
+    editBusField.classList.remove('d-none');
+    document.getElementById('editBusDepense').value = depense.bus || '';
+  } else {
+    editBusField.classList.add('d-none');
+  }
 
-editDepenseModal.show();
+  editDepenseModal.show();
 }
 
 function saveEditedRecette() {
-const index = currentEditIndex;
-if (index === -1 || index >= recettes.length) return;
+  const index = currentEditIndex;
+  if (index === -1 || index >= recettes.length) return;
 
-const editedRecette = {
-date: document.getElementById('editRecetteDate').value,
-matricule: document.getElementById('editRecetteMatricule').value,
-montant: parseInt(document.getElementById('editRecetteMontant').value, 10),
-commentaire: document.getElementById('editRecetteCommentaire').value
-};
+  const editedRecette = {
+    date: document.getElementById('editRecetteDate').value,
+    matricule: document.getElementById('editRecetteMatricule').value,
+    montant: parseInt(document.getElementById('editRecetteMontant').value, 10),
+    commentaire: document.getElementById('editRecetteCommentaire').value
+  };
 
-recettes[index] = editedRecette;
-localStorage.setItem('recettes', JSON.stringify(recettes));
+  recettes[index] = editedRecette;
+  localStorage.setItem('recettes', JSON.stringify(recettes));
 
-editRecetteModal.hide();
-afficherRecettes(searchRecette.value);
-generateCalendar(); // Mettre à jour le calendrier après modification
-showNotification('Recette modifiée avec succès', 'success');
+  editRecetteModal.hide();
+  afficherRecettes(searchRecette.value);
+  generateCalendar(); // Mettre à jour le calendrier après modification
+  showNotification('Recette modifiée avec succès', 'success');
 }
 
 function saveEditedDepense() {
-const index = currentEditIndex;
-if (index === -1 || index >= depenses.length) return;
+  const index = currentEditIndex;
+  if (index === -1 || index >= depenses.length) return;
 
-const editedDepense = {
-date: document.getElementById('editDepenseDate').value,
-type: document.getElementById('editDepenseType').value,
-bus: document.getElementById('editDepenseType').value === 'bus' ? document.getElementById('editBusDepense').value : null,
-motif: document.getElementById('editDepenseMotif').value,
-montant: parseInt(document.getElementById('editDepenseMontant').value, 10),
-details: document.getElementById('editDepenseDetails').value
-};
+  const editedDepense = {
+    date: document.getElementById('editDepenseDate').value,
+    type: document.getElementById('editDepenseType').value,
+    bus: document.getElementById('editDepenseType').value === 'bus' ? document.getElementById('editBusDepense').value : null,
+    motif: document.getElementById('editDepenseMotif').value,
+    montant: parseInt(document.getElementById('editDepenseMontant').value, 10),
+    details: document.getElementById('editDepenseDetails').value,
+    justificatif: depenses[index].justificatif || null // Conserver l'ancien justificatif
+  };
 
-depenses[index] = editedDepense;
-localStorage.setItem('depenses', JSON.stringify(depenses));
+  // Gestion du nouveau justificatif
+  const justificatifInput = document.getElementById('editDepenseJustificatif');
+  if (justificatifInput.files.length > 0) {
+    const file = justificatifInput.files[0];
+    editedDepense.justificatif = URL.createObjectURL(file);
+  }
 
-editDepenseModal.hide();
-afficherDepenses();
-showNotification('Dépense modifiée avec succès', 'success');
+  depenses[index] = editedDepense;
+  localStorage.setItem('depenses', JSON.stringify(depenses));
+
+  editDepenseModal.hide();
+  afficherDepenses();
+  showNotification('Dépense modifiée avec succès', 'success');
 }
 
 function formatDate(dateString) {
-const options = {
-weekday: 'short',
-day: 'numeric',
-month: 'short',
-year: 'numeric'
-};
-return new Date(dateString).toLocaleDateString('fr-FR', options);
+  const options = {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  };
+  return new Date(dateString).toLocaleDateString('fr-FR', options);
 }
 
 function supprimerRecette(index) {
-if (confirm("Voulez-vous vraiment supprimer cette recette ?")) {
-recettes.splice(index, 1);
-localStorage.setItem('recettes', JSON.stringify(recettes));
-afficherRecettes(searchRecette.value);
-generateCalendar(); // Mettre à jour le calendrier après suppression
-showNotification('Recette supprimée avec succès', 'danger');
-}
+  if (confirm("Voulez-vous vraiment supprimer cette recette ?")) {
+    recettes.splice(index, 1);
+    localStorage.setItem('recettes', JSON.stringify(recettes));
+    afficherRecettes(searchRecette.value);
+    generateCalendar(); // Mettre à jour le calendrier après suppression
+    showNotification('Recette supprimée avec succès', 'danger');
+  }
 }
 
 function supprimerDepense(index) {
-if (confirm("Voulez-vous vraiment supprimer cette dépense ?")) {
-depenses.splice(index, 1);
-localStorage.setItem('depenses', JSON.stringify(depenses));
-afficherDepenses();
-showNotification('Dépense supprimée avec succès', 'danger');
-}
+  if (confirm("Voulez-vous vraiment supprimer cette dépense ?")) {
+    // Libérer l'URL de l'image si elle existe
+    if (depenses[index].justificatif) {
+      URL.revokeObjectURL(depenses[index].justificatif);
+    }
+    depenses.splice(index, 1);
+    localStorage.setItem('depenses', JSON.stringify(depenses));
+    afficherDepenses();
+    showNotification('Dépense supprimée avec succès', 'danger');
+  }
 }
 
 function mettreAJourTotaux() {
-const today = new Date().toISOString().split('T')[0];
-const thisMonth = today.slice(0, 7);
-const thisWeek = getWeekNumber(new Date());
+  const today = new Date().toISOString().split('T')[0];
+  const thisMonth = today.slice(0, 7);
+  const thisWeek = getWeekNumber(new Date());
 
-let totalJour = 0, totalSemaine = 0, totalMois = 0, totalRecettes = 0;
-let depensesJour = 0, depensesSemaine = 0, depensesMois = 0, totalDepenses = 0;
+  let totalJour = 0, totalSemaine = 0, totalMois = 0, totalRecettes = 0;
+  let depensesJour = 0, depensesSemaine = 0, depensesMois = 0, totalDepenses = 0;
 
-// Calcul des totaux des recettes
-recettes.forEach(r => {
-const recetteDate = new Date(r.date);
-const recetteWeek = getWeekNumber(recetteDate);
+  // Calcul des totaux des recettes
+  recettes.forEach(r => {
+    const recetteDate = new Date(r.date);
+    const recetteWeek = getWeekNumber(recetteDate);
 
-if (r.date === today) totalJour += r.montant;
-if (getWeekNumber(new Date(r.date)) === thisWeek) totalSemaine += r.montant;
-if (r.date.startsWith(thisMonth)) totalMois += r.montant;
-totalRecettes += r.montant;
-});
+    if (r.date === today) totalJour += r.montant;
+    if (getWeekNumber(new Date(r.date)) === thisWeek) totalSemaine += r.montant;
+    if (r.date.startsWith(thisMonth)) totalMois += r.montant;
+    totalRecettes += r.montant;
+  });
 
-// Calcul des totaux des dépenses
-depenses.forEach(d => {
-const depenseDate = new Date(d.date);
-const depenseWeek = getWeekNumber(depenseDate);
+  // Calcul des totaux des dépenses
+  depenses.forEach(d => {
+    const depenseDate = new Date(d.date);
+    const depenseWeek = getWeekNumber(depenseDate);
 
-if (d.date === today) depensesJour += d.montant;
-if (getWeekNumber(new Date(d.date)) === thisWeek) depensesSemaine += d.montant;
-if (d.date.startsWith(thisMonth)) depensesMois += d.montant;
-totalDepenses += d.montant;
-});
+    if (d.date === today) depensesJour += d.montant;
+    if (getWeekNumber(new Date(d.date)) === thisWeek) depensesSemaine += d.montant;
+    if (d.date.startsWith(thisMonth)) depensesMois += d.montant;
+    totalDepenses += d.montant;
+  });
 
-// Mise à jour des totaux dans l'interface
-document.getElementById('totalJour').textContent = totalJour.toLocaleString() + ' XAF';
-document.getElementById('depensesJour').textContent = depensesJour.toLocaleString() + ' XAF';
-document.getElementById('profitJour').textContent = (totalJour - depensesJour).toLocaleString() + ' XAF';
-document.getElementById('totalProfit').textContent = (totalRecettes - totalDepenses).toLocaleString() + ' XAF';
+  // Mise à jour des totaux dans l'interface
+  document.getElementById('totalJour').textContent = totalJour.toLocaleString() + ' XAF';
+  document.getElementById('depensesJour').textContent = depensesJour.toLocaleString() + ' XAF';
+  document.getElementById('profitJour').textContent = (totalJour - depensesJour).toLocaleString() + ' XAF';
+  document.getElementById('totalProfit').textContent = (totalRecettes - totalDepenses).toLocaleString() + ' XAF';
 
-// Mettre à jour le statut de l'objectif journalier
-const dailyTargetStatus = document.getElementById('dailyTargetStatus');
-if (totalJour >= DAILY_TARGET) {
-dailyTargetStatus.innerHTML = `<i class="ph ph-check-circle"></i> Objectif atteint`;
-} else {
-const remaining = DAILY_TARGET - totalJour;
-dailyTargetStatus.innerHTML = `<i class="ph ph-warning"></i> Manque ${remaining.toLocaleString()} XAF`;
-}
+  // Mettre à jour le statut de l'objectif journalier
+  const dailyTargetStatus = document.getElementById('dailyTargetStatus');
+  if (totalJour >= DAILY_TARGET) {
+    dailyTargetStatus.innerHTML = `<i class="ph ph-check-circle"></i> Objectif atteint`;
+  } else {
+    const remaining = DAILY_TARGET - totalJour;
+    dailyTargetStatus.innerHTML = `<i class="ph ph-warning"></i> Manque ${remaining.toLocaleString()} XAF`;
+  }
 }
 
 function getWeekNumber(date) {
-const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
-const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
 function updateLastModified() {
-const now = new Date();
-const options = {
-day: 'numeric',
-month: 'short',
-year: 'numeric',
-hour: '2-digit',
-minute: '2-digit'
-};
-document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', options);
+  const now = new Date();
+  const options = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', options);
 }
 
 function showNotification(message, type = 'success') {
-const notification = document.createElement('div');
-notification.className = 'position-fixed bottom-0 end-0 p-3';
-notification.style.zIndex = '1050';
-notification.innerHTML = `
-<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-${message}
-<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-</div>
-`;
-document.body.appendChild(notification);
+  const notification = document.createElement('div');
+  notification.className = 'position-fixed bottom-0 end-0 p-3';
+  notification.style.zIndex = '1050';
+  notification.innerHTML = `
+    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+  `;
+  document.body.appendChild(notification);
 
-setTimeout(() => {
-notification.remove();
-}, 3000);
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+function showImageModal(imageSrc) {
+  document.getElementById('modalImage').src = imageSrc;
+  imageModal.show();
 }
 
 // Fonctions d'export
 function exportToPDF(type) {
-alert(`Export PDF (${type}) en cours de développement`);
-// Implémentation réelle nécessiterait une librairie comme jsPDF
+  alert(`Export PDF (${type}) en cours de développement`);
+  // Implémentation réelle nécessiterait une librairie comme jsPDF
 }
 
 function exportToExcel(type) {
-let data, fileName;
+  let data, fileName;
 
-if (type === 'recettes') {
-data = recettes.map(r => ({
-Date: r.date,
-Bus: r.matricule,
-'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
-Montant: r.montant,
-Commentaire: r.commentaire || '',
-Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
-}));
-fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
-} else {
-data = depenses.map(d => ({
-Date: d.date,
-Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
-Bus: d.bus || '',
-'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
-Motif: d.motif,
-Montant: d.montant,
-Détails: d.details || ''
-}));
-fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
-}
+  if (type === 'recettes') {
+    data = recettes.map(r => ({
+      Date: r.date,
+      Bus: r.matricule,
+      'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
+      Montant: r.montant,
+      Commentaire: r.commentaire || '',
+      Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
+    }));
+    fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
+  } else {
+    data = depenses.map(d => ({
+      Date: d.date,
+      Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
+      Bus: d.bus || '',
+      'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
+      Motif: d.motif,
+      Montant: d.montant,
+      Détails: d.details || '',
+      'Justificatif': d.justificatif ? 'Oui' : 'Non'
+    }));
+    fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
+  }
 
-const ws = XLSX.utils.json_to_sheet(data);
-const wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, type === 'recettes' ? "Recettes" : "Dépenses");
-XLSX.writeFile(wb, fileName);
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, type === 'recettes' ? "Recettes" : "Dépenses");
+  XLSX.writeFile(wb, fileName);
 }
 
 function exportToCSV(type) {
-let data, fileName;
+  let data, fileName;
 
-if (type === 'recettes') {
-data = recettes.map(r => ({
-Date: r.date,
-Bus: r.matricule,
-'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
-Montant: r.montant,
-Commentaire: r.commentaire || '',
-Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
-}));
-fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
-} else {
-data = depenses.map(d => ({
-Date: d.date,
-Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
-Bus: d.bus || '',
-'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
-Motif: d.motif,
-Montant: d.montant,
-Détails: d.details || ''
-}));
-fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
-}
+  if (type === 'recettes') {
+    data = recettes.map(r => ({
+      Date: r.date,
+      Bus: r.matricule,
+      'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
+      Montant: r.montant,
+      Commentaire: r.commentaire || '',
+      Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
+    }));
+    fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
+  } else {
+    data = depenses.map(d => ({
+      Date: d.date,
+      Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
+      Bus: d.bus || '',
+      'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
+      Motif: d.motif,
+      Montant: d.montant,
+      Détails: d.details || '',
+      'Justificatif': d.justificatif ? 'Oui' : 'Non'
+    }));
+    fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
+  }
 
-const csv = XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(data));
-const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-saveAs(blob, fileName);
+  const csv = XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(data));
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  saveAs(blob, fileName);
 }
 
 // Fonctions pour le calendrier des coches
 function generateCalendar() {
-const monthYear = monthSelect.value;
-if (!monthYear) return;
+  const monthYear = monthSelect.value;
+  const selectedBus = busCalendarSelect.value;
+  
+  if (!monthYear) return;
 
-const [year, month] = monthYear.split('-').map(Number);
-const firstDay = new Date(year, month - 1, 1);
-const lastDay = new Date(year, month, 0);
-const daysInMonth = lastDay.getDate();
-const firstDayOfWeek = firstDay.getDay(); // 0 (dimanche) à 6 (samedi)
+  const [year, month] = monthYear.split('-').map(Number);
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const daysInMonth = lastDay.getDate();
+  const firstDayOfWeek = firstDay.getDay(); // 0 (dimanche) à 6 (samedi)
 
-// Ajustement pour que le lundi soit le premier jour de la semaine
-const adjustedFirstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  // Ajustement pour que le lundi soit le premier jour de la semaine
+  const adjustedFirstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
-const monthName = firstDay.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  const monthName = firstDay.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
 
-let calendarHTML = `
-<div class="card shadow-sm mb-4">
-<div class="card-body">
-<div class="month-header">
-<div class="month-title">${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</div>
-<div class="month-nav">
-<button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(-1)">
-<i class="ph ph-caret-left"></i> Précédent
-</button>
-<button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(1)">
-Suivant <i class="ph ph-caret-right"></i>
-</button>
-</div>
-</div>
-<table class="calendar">
-<thead>
-<tr>
-<th>Lun</th>
-<th>Mar</th>
-<th>Mer</th>
-<th>Jeu</th>
-<th>Ven</th>
-<th>Sam</th>
-<th>Dim</th>
-</tr>
-</thead>
-<tbody>
-`;
+  let calendarHTML = `
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <div class="month-header">
+          <div class="month-title">${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</div>
+          <div class="month-nav">
+            <button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(-1)">
+              <i class="ph ph-caret-left"></i> Précédent
+            </button>
+            <button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(1)">
+              Suivant <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+        </div>
+        <table class="calendar">
+          <thead>
+            <tr>
+              <th>Lun</th>
+              <th>Mar</th>
+              <th>Mer</th>
+              <th>Jeu</th>
+              <th>Ven</th>
+              <th>Sam</th>
+              <th>Dim</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
 
-let day = 1;
-let today = new Date();
-today.setHours(0, 0, 0, 0);
+  let day = 1;
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-for (let i = 0; i < 6; i++) { // 6 semaines max pour couvrir tous les cas
-if (day > daysInMonth) break;
+  for (let i = 0; i < 6; i++) { // 6 semaines max pour couvrir tous les cas
+    if (day > daysInMonth) break;
 
-calendarHTML += '<tr>';
+    calendarHTML += '<tr>';
 
-for (let j = 0; j < 7; j++) {
-if ((i === 0 && j < adjustedFirstDayOfWeek) || day > daysInMonth) {
-// Cellule vide avant le premier jour ou après le dernier jour du mois
-calendarHTML += '<td></td>';
-} else {
-const currentDate = new Date(year, month - 1, day);
-const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-const isToday = currentDate.getTime() === today.getTime();
-const isFuture = currentDate > today;
+    for (let j = 0; j < 7; j++) {
+      if ((i === 0 && j < adjustedFirstDayOfWeek) || day > daysInMonth) {
+        // Cellule vide avant le premier jour ou après le dernier jour du mois
+        calendarHTML += '<td></td>';
+      } else {
+        const currentDate = new Date(year, month - 1, day);
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isToday = currentDate.getTime() === today.getTime();
+        const isFuture = currentDate > today;
 
-// Vérifier l'état des recettes pour ce jour
-const dayStatus = getDayReceiptStatus(dateStr);
+        // Vérifier l'état des recettes pour ce jour et ce bus
+        const dayStatus = getDayReceiptStatus(dateStr, selectedBus);
 
-let badgeClass = '';
-let badgeIcon = '';
+        let badgeClass = '';
+        let badgeIcon = '';
 
-if (isFuture) {
-badgeClass = 'badge-future';
-badgeIcon = '<i class="ph ph-clock"></i>';
-} else {
-switch(dayStatus) {
-case 'complete':
-badgeClass = 'badge-complete';
-badgeIcon = '<i class="ph ph-check"></i>';
-break;
-case 'partial':
-badgeClass = 'badge-partial';
-badgeIcon = '<i class="ph ph-warning"></i>';
-break;
-case 'none':
-badgeClass = 'badge-none';
-badgeIcon = '<i class="ph ph-x"></i>';
-break;
-}
-}
+        if (isFuture) {
+          badgeClass = 'badge-future';
+          badgeIcon = '<i class="ph ph-clock"></i>';
+        } else {
+          switch(dayStatus) {
+            case 'complete':
+              badgeClass = 'badge-complete';
+              badgeIcon = '<i class="ph ph-check"></i>';
+              break;
+            case 'partial':
+              badgeClass = 'badge-partial';
+              badgeIcon = '<i class="ph ph-warning"></i>';
+              break;
+            case 'none':
+              badgeClass = 'badge-none';
+              badgeIcon = '<i class="ph ph-x"></i>';
+              break;
+          }
+        }
 
-calendarHTML += `
-<td ${isToday ? 'class="bg-light"' : ''}>
-<div class="calendar-day">${day}</div>
-<div class="day-badge ${badgeClass}" title="${getDayTooltip(dateStr, dayStatus)}">
-${badgeIcon}
-</div>
-</td>
-`;
-day++;
-}
-}
+        calendarHTML += `
+          <td ${isToday ? 'class="bg-light"' : ''}>
+            <div class="calendar-day">${day}</div>
+            <div class="day-badge ${badgeClass}" title="${getDayTooltip(dateStr, dayStatus, selectedBus)}">
+              ${badgeIcon}
+            </div>
+          </td>
+        `;
+        day++;
+      }
+    }
 
-calendarHTML += '</tr>';
-}
+    calendarHTML += '</tr>';
+  }
 
-calendarHTML += `
-</tbody>
-</table>
-</div>
-</div>
-`;
+  calendarHTML += `
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
 
-calendarContainer.innerHTML = calendarHTML;
+  calendarContainer.innerHTML = calendarHTML;
 }
 
 function navigateMonth(offset) {
-const currentMonth = monthSelect.value;
-if (!currentMonth) return;
+  const currentMonth = monthSelect.value;
+  if (!currentMonth) return;
 
-const [year, month] = currentMonth.split('-').map(Number);
-let newMonth = month + offset;
-let newYear = year;
+  const [year, month] = currentMonth.split('-').map(Number);
+  let newMonth = month + offset;
+  let newYear = year;
 
-if (newMonth > 12) {
-newMonth = 1;
-newYear++;
-} else if (newMonth < 1) {
-newMonth = 12;
-newYear--;
+  if (newMonth > 12) {
+    newMonth = 1;
+    newYear++;
+  } else if (newMonth < 1) {
+    newMonth = 12;
+    newYear--;
+  }
+
+  monthSelect.value = `${newYear}-${String(newMonth).padStart(2, '0')}`;
+  generateCalendar();
 }
 
-monthSelect.value = `${newYear}-${String(newMonth).padStart(2, '0')}`;
-generateCalendar();
+function getDayReceiptStatus(dateStr, selectedBus = 'all') {
+  let dayRecettes = recettes.filter(r => r.date === dateStr);
+  
+  // Filtrer par bus si un bus spécifique est sélectionné
+  if (selectedBus !== 'all') {
+    dayRecettes = dayRecettes.filter(r => r.matricule === selectedBus);
+  }
+
+  const dayDate = new Date(dateStr);
+  const isHoliday = dayDate.getDay() === 0; // Dimanche
+  const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+
+  if (dayRecettes.length === 0) {
+    // Vérifier si la deadline est passée
+    const now = new Date();
+    const deadline = new Date(dateStr);
+    deadline.setHours(DEADLINE_HOUR, DEADLINE_MINUTE, 0, 0);
+
+    return now > deadline ? 'none' : 'future';
+  }
+
+  // Si on filtre par bus, on vérifie simplement si le montant atteint la cible
+  if (selectedBus !== 'all') {
+    const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+    return total >= target ? 'complete' : 'partial';
+  }
+
+  // Pour "Tous les bus", vérifier si tous les bus en service ont déclaré leurs recettes
+  const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
+  const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
+  const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+
+  if (busesWithReceipts.length === activeBuses.length) {
+    return total >= target ? 'complete' : 'partial';
+  } else {
+    return 'partial';
+  }
 }
 
-function getDayReceiptStatus(dateStr) {
-const dayRecettes = recettes.filter(r => r.date === dateStr);
-const dayDate = new Date(dateStr);
-const isHoliday = dayDate.getDay() === 0; // Dimanche
-const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+function getDayTooltip(dateStr, status, selectedBus = 'all') {
+  const dayDate = new Date(dateStr);
+  const isHoliday = dayDate.getDay() === 0; // Dimanche
+  const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+  let dayRecettes = recettes.filter(r => r.date === dateStr);
+  
+  // Filtrer par bus si un bus spécifique est sélectionné
+  if (selectedBus !== 'all') {
+    dayRecettes = dayRecettes.filter(r => r.matricule === selectedBus);
+  }
 
-if (dayRecettes.length === 0) {
-// Vérifier si la deadline est passée
-const now = new Date();
-const deadline = new Date(dateStr);
-deadline.setHours(DEADLINE_HOUR, DEADLINE_MINUTE, 0, 0);
+  const formattedDate = dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
 
-return now > deadline ? 'none' : 'future';
-}
+  if (status === 'future') {
+    return `${formattedDate}\nJour futur`;
+  }
 
-const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+  if (dayRecettes.length === 0) {
+    return `${formattedDate}\nAucune recette déclarée`;
+  }
 
-// Vérifier si tous les bus en service ont déclaré leurs recettes
-const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
-const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
+  const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+  let tooltip = `${formattedDate}\nTotal: ${total.toLocaleString()} XAF / ${target.toLocaleString()} XAF`;
 
-if (busesWithReceipts.length === activeBuses.length) {
-return total >= target ? 'complete' : 'partial';
-} else {
-return 'partial';
-}
-}
+  // Pour "Tous les bus", afficher les bus manquants
+  if (selectedBus === 'all') {
+    const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
+    const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
+    
+    if (busesWithReceipts.length < activeBuses.length) {
+      const missingBuses = activeBuses.filter(b => !busesWithReceipts.includes(b.matricule));
+      tooltip += `\nBus manquants: ${missingBuses.map(b => b.matricule).join(', ')}`;
+    }
+  }
 
-function getDayTooltip(dateStr, status) {
-const dayDate = new Date(dateStr);
-const isHoliday = dayDate.getDay() === 0; // Dimanche
-const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
-const dayRecettes = recettes.filter(r => r.date === dateStr);
-const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
-
-const formattedDate = dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-
-if (status === 'future') {
-return `${formattedDate}\nJour futur`;
-}
-
-if (dayRecettes.length === 0) {
-return `${formattedDate}\nAucune recette déclarée`;
-}
-
-const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
-const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
-
-let tooltip = `${formattedDate}\nTotal: ${total.toLocaleString()} XAF / ${target.toLocaleString()} XAF`;
-
-if (busesWithReceipts.length < activeBuses.length) {
-const missingBuses = activeBuses.filter(b => !busesWithReceipts.includes(b.matricule));
-tooltip += `\nBus manquants: ${missingBuses.map(b => b.matricule).join(', ')}`;
-}
-
-return tooltip;
+  return tooltip;
 }
 
 // Événements
 recetteForm.addEventListener('submit', (e) => {
-e.preventDefault();
-const date = document.getElementById('dateRecette').value;
-const matricule = document.getElementById('matriculeBus').value;
-const montant = parseInt(document.getElementById('montantRecette').value, 10);
-const commentaire = document.getElementById('commentaireRecette').value;
+  e.preventDefault();
+  const date = document.getElementById('dateRecette').value;
+  const matricule = document.getElementById('matriculeBus').value;
+  const montant = parseInt(document.getElementById('montantRecette').value, 10);
+  const commentaire = document.getElementById('commentaireRecette').value;
 
-if (!matricule) {
-showNotification('Veuillez sélectionner un bus valide', 'warning');
-return;
-}
+  if (!matricule) {
+    showNotification('Veuillez sélectionner un bus valide', 'warning');
+    return;
+  }
 
-const newReceipt = { date, matricule, montant, commentaire };
-recettes.push(newReceipt);
-localStorage.setItem('recettes', JSON.stringify(recettes));
+  const newReceipt = { date, matricule, montant, commentaire };
+  recettes.push(newReceipt);
+  localStorage.setItem('recettes', JSON.stringify(recettes));
 
-recetteForm.reset();
-document.getElementById('dateRecette').valueAsDate = new Date();
-afficherRecettes();
-generateCalendar(); // Mettre à jour le calendrier après ajout
-showNotification('Recette enregistrée avec succès');
+  recetteForm.reset();
+  document.getElementById('dateRecette').valueAsDate = new Date();
+  afficherRecettes();
+  generateCalendar(); // Mettre à jour le calendrier après ajout
+  showNotification('Recette enregistrée avec succès');
 
-// Animation pour la nouvelle recette
-const lastCard = recetteList.lastElementChild;
-if (lastCard) {
-lastCard.classList.add('new-entry');
-setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
-}
+  // Animation pour la nouvelle recette
+  const lastCard = recetteList.lastElementChild;
+  if (lastCard) {
+    lastCard.classList.add('new-entry');
+    setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
+  }
 });
 
 depenseForm.addEventListener('submit', (e) => {
-e.preventDefault();
-const date = document.getElementById('dateDepense').value;
-const type = document.getElementById('typeDepense').value;
-const bus = type === 'bus' ? document.getElementById('busDepense').value : null;
-const motif = document.getElementById('motifDepense').value.trim();
-const montant = parseInt(document.getElementById('montantDepense').value, 10);
-const details = document.getElementById('detailsDepense').value.trim();
+  e.preventDefault();
+  const date = document.getElementById('dateDepense').value;
+  const type = document.getElementById('typeDepense').value;
+  const bus = type === 'bus' ? document.getElementById('busDepense').value : null;
+  const motif = document.getElementById('motifDepense').value.trim();
+  const montant = parseInt(document.getElementById('montantDepense').value, 10);
+  const details = document.getElementById('detailsDepense').value.trim();
+  const justificatifInput = document.getElementById('justificatifDepense');
+  
+  if (type === 'bus' && !bus) {
+    showNotification('Veuillez sélectionner un bus pour ce type de dépense', 'warning');
+    return;
+  }
 
-if (type === 'bus' && !bus) {
-showNotification('Veuillez sélectionner un bus pour ce type de dépense', 'warning');
-return;
-}
+  // Gestion de l'image
+  let justificatif = null;
+  if (justificatifInput.files.length > 0) {
+    const file = justificatifInput.files[0];
+    justificatif = URL.createObjectURL(file);
+  }
 
-const newDepense = { date, type, bus, motif, montant, details };
-depenses.push(newDepense);
-localStorage.setItem('depenses', JSON.stringify(depenses));
+  const newDepense = { date, type, bus, motif, montant, details, justificatif };
+  depenses.push(newDepense);
+  localStorage.setItem('depenses', JSON.stringify(depenses));
 
-depenseForm.reset();
-document.getElementById('dateDepense').valueAsDate = new Date();
-document.getElementById('typeDepense').value = '';
-busFieldDepense.classList.add('d-none');
-afficherDepenses();
-showNotification('Dépense enregistrée avec succès');
+  depenseForm.reset();
+  document.getElementById('dateDepense').valueAsDate = new Date();
+  document.getElementById('typeDepense').value = '';
+  busFieldDepense.classList.add('d-none');
+  afficherDepenses();
+  showNotification('Dépense enregistrée avec succès');
 
-// Animation pour la nouvelle dépense
-const lastCard = depenseList.lastElementChild;
-if (lastCard) {
-lastCard.classList.add('new-entry');
-setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
-}
+  // Animation pour la nouvelle dépense
+  const lastCard = depenseList.lastElementChild;
+  if (lastCard) {
+    lastCard.classList.add('new-entry');
+    setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
+  }
 });
 
 searchRecette.addEventListener('input', () => {
-afficherRecettes(searchRecette.value);
+  afficherRecettes(searchRecette.value);
 });
 
 filterBus.addEventListener('change', () => {
-afficherRecettes(searchRecette.value);
+  afficherRecettes(searchRecette.value);
 });
 
 // Gestion du changement de type de dépense dans le formulaire d'édition
 document.getElementById('editDepenseType').addEventListener('change', function() {
-const editBusField = document.getElementById('editBusFieldDepense');
-if (this.value === 'bus') {
-editBusField.classList.remove('d-none');
-} else {
-editBusField.classList.add('d-none');
-}
+  const editBusField = document.getElementById('editBusFieldDepense');
+  if (this.value === 'bus') {
+    editBusField.classList.remove('d-none');
+  } else {
+    editBusField.classList.add('d-none');
+  }
 });
 
 // Initialisation
