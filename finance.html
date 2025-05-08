@@ -18,10 +18,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<!-- Toastr for notifications -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
 <!-- Style amélioré -->
 <style>
 :root {
@@ -433,72 +429,6 @@
   max-width: 100%;
   max-height: 80vh;
 }
-
-/* Styles pour l'onglet Salaires */
-.salary-card {
-  border-left: 4px solid #6f42c1;
-  transition: all var(--transition-speed) ease;
-}
-
-.salary-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.salary-summary {
-  background: linear-gradient(135deg, #6f42c1 0%, #6610f2 100%);
-  color: white;
-}
-
-.salary-summary::before {
-  background: linear-gradient(90deg, #6610f2 0%, #6f42c1 100%);
-}
-
-.working-day {
-  background-color: rgba(25, 135, 84, 0.1);
-  border-left: 3px solid #198754;
-}
-
-.non-working-day {
-  background-color: rgba(220, 53, 69, 0.1);
-  border-left: 3px solid #dc3545;
-}
-
-.salary-details {
-  font-size: 0.9em;
-  color: #6c757d;
-}
-
-.driver-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #dee2e6;
-}
-
-/* Toastr custom */
-.toast {
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-}
-
-.toast-success {
-  background-color: #198754 !important;
-}
-
-.toast-error {
-  background-color: #dc3545 !important;
-}
-
-.toast-info {
-  background-color: #0dcaf0 !important;
-}
-
-.toast-warning {
-  background-color: #ffc107 !important;
-  color: #212529 !important;
-}
 </style>
 </head>
 <body class="light-mode">
@@ -523,6 +453,7 @@
         <li class="nav-item">
           <a class="nav-link" href="bus.html"><i class="ph ph-bus me-1"></i> Gestion des bus</a>
         </li>
+        <!-- Ajoutez d'autres liens de navigation ici si nécessaire -->
       </ul>
       <div class="d-flex align-items-center">
         <span class="me-3 text-muted small">
@@ -593,11 +524,6 @@
         <i class="ph ph-calendar-check me-1"></i> Coches
       </button>
     </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="salaires-tab" data-bs-toggle="tab" data-bs-target="#salaires" type="button" role="tab">
-        <i class="ph ph-money me-1"></i> Salaires
-      </button>
-    </li>
   </ul>
 
   <!-- Contenu des onglets -->
@@ -616,14 +542,12 @@
           </div>
           <div class="col-md-4 mb-3">
             <label for="matriculeBus" class="form-label">Matricule du bus</label>
-            <select class="form-select" id="matriculeBus" required>
-              <option value="">-- Sélectionnez un bus --</option>
-            </select>
+            <select class="form-select" id="matriculeBus" required></select>
           </div>
           <div class="col-md-4 mb-3">
             <label for="montantRecette" class="form-label">Montant versé (XAF)</label>
             <div class="input-group">
-              <input type="number" class="form-control" id="montantRecette" min="0" step="100" required>
+              <input type="number" class="form-control" id="montantRecette" required>
               <span class="input-group-text">XAF</span>
             </div>
             <div class="form-text text-muted">Objectif journalier: 35 000 XAF</div>
@@ -703,7 +627,7 @@
           <div class="col-md-6 mb-3">
             <label for="montantDepense" class="form-label">Montant (XAF)</label>
             <div class="input-group">
-              <input type="number" class="form-control" id="montantDepense" min="0" step="100" required>
+              <input type="number" class="form-control" id="montantDepense" required>
               <span class="input-group-text">XAF</span>
             </div>
           </div>
@@ -747,7 +671,7 @@
       <div id="depenseList" class="mb-5"></div>
     </div>
 
-    <!-- Onglet Coches -->
+    <!-- Nouvel onglet Coches -->
     <div class="tab-pane fade" id="coches" role="tabpanel">
       <h2 class="text-center my-4 text-primary">
         <i class="ph ph-calendar-check fs-2"></i> Suivi des Recettes
@@ -794,110 +718,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Nouvel onglet Salaires -->
-    <div class="tab-pane fade" id="salaires" role="tabpanel">
-      <h2 class="text-center my-4 text-primary">
-        <i class="ph ph-money fs-2"></i> Gestion des Salaires
-      </h2>
-
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card shadow-sm mb-4">
-            <div class="card-body">
-              <h4><i class="ph ph-calculator"></i> Calcul du Salaire</h4>
-              <p class="text-muted">Calcule automatiquement le salaire en fonction des jours travaillés (jours avec recettes)</p>
-              
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="driverSelect" class="form-label">Sélectionnez un chauffeur</label>
-                  <select class="form-select" id="driverSelect" required>
-                    <option value="">-- Choisir un chauffeur --</option>
-                  </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="monthSalarySelect" class="form-label">Mois de calcul</label>
-                  <input type="month" class="form-control" id="monthSalarySelect">
-                </div>
-              </div>
-              
-              <div class="alert alert-info" id="salaryCalculationInfo">
-                <i class="ph ph-info"></i> Sélectionnez un chauffeur et un mois pour calculer le salaire
-              </div>
-              
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5>Résumé du calcul</h5>
-                <button class="btn btn-outline-primary" id="calculateSalaryBtn" disabled>
-                  <i class="ph ph-calculator"></i> Calculer
-                </button>
-              </div>
-              
-              <div id="salaryCalculationResult" class="d-none">
-                <div class="card salary-card mb-3">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div>
-                        <h5 id="driverNameDisplay">Nom du chauffeur</h5>
-                        <small class="text-muted" id="salaryMonthDisplay">Mois</small>
-                      </div>
-                      <div class="text-end">
-                        <h4 class="mb-0" id="calculatedSalary">0 XAF</h4>
-                        <small class="text-muted">Salaire de base: 100 000 XAF</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="card mb-3">
-                  <div class="card-body">
-                    <h6 class="card-title"><i class="ph ph-calendar"></i> Détails des jours travaillés</h6>
-                    <div id="workingDaysDetails" class="mt-2">
-                      <!-- Les jours travaillés seront affichés ici -->
-                    </div>
-                    <div class="mt-3">
-                      <p class="mb-1"><strong>Total jours travaillés:</strong> <span id="totalWorkingDays">0</span> jours</p>
-                      <p class="mb-1"><strong>Total jours non travaillés:</strong> <span id="totalNonWorkingDays">0</span> jours</p>
-                      <p class="mb-0"><strong>Déduction totale:</strong> <span id="totalDeduction">0</span> XAF</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <button class="btn btn-primary w-100" id="paySalaryBtn">
-                  <i class="ph ph-credit-card"></i> Enregistrer le paiement
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-md-6">
-          <div class="card shadow-sm mb-4">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4><i class="ph ph-list-bullets"></i> Historique des paiements</h4>
-                <div class="dropdown no-print">
-                  <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    <i class="ph ph-export"></i> Exporter
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" onclick="exportSalariesToPDF()"><i class="ph ph-file-pdf"></i> PDF</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="exportSalariesToExcel()"><i class="ph ph-file-xls"></i> Excel</a></li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div class="mb-3">
-                <input type="text" class="form-control" id="searchSalary" placeholder="Rechercher un chauffeur...">
-              </div>
-              
-              <div id="salaryHistoryList">
-                <!-- L'historique des paiements sera affiché ici -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </main>
 
@@ -923,7 +743,7 @@
           <div class="mb-3">
             <label for="editRecetteMontant" class="form-label">Montant (XAF)</label>
             <div class="input-group">
-              <input type="number" class="form-control" id="editRecetteMontant" min="0" step="100" required>
+              <input type="number" class="form-control" id="editRecetteMontant" required>
               <span class="input-group-text">XAF</span>
             </div>
           </div>
@@ -976,7 +796,7 @@
           <div class="mb-3">
             <label for="editDepenseMontant" class="form-label">Montant (XAF)</label>
             <div class="input-group">
-              <input type="number" class="form-control" id="editDepenseMontant" min="0" step="100" required>
+              <input type="number" class="form-control" id="editDepenseMontant" required>
               <span class="input-group-text">XAF</span>
             </div>
           </div>
@@ -1034,26 +854,13 @@
 
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="theme.js"></script>
 <script>
 // Constantes
 const DAILY_TARGET = 35000;
 const HOLIDAY_TARGET = 30000;
 const DEADLINE_HOUR = 22; // 22h pour la deadline
 const DEADLINE_MINUTE = 55; // 55 minutes
-const BASE_SALARY = 100000; // Salaire de base des chauffeurs
-
-// Configuration des notifications
-toastr.options = {
-  closeButton: true,
-  progressBar: true,
-  positionClass: "toast-top-right",
-  timeOut: 5000,
-  extendedTimeOut: 2000,
-  showEasing: "swing",
-  hideEasing: "linear",
-  showMethod: "fadeIn",
-  hideMethod: "fadeOut"
-};
 
 // Éléments DOM
 const recetteForm = document.getElementById('recetteForm');
@@ -1069,15 +876,6 @@ const monthSelect = document.getElementById('monthSelect');
 const busCalendarSelect = document.getElementById('busCalendarSelect');
 const calendarContainer = document.getElementById('calendarContainer');
 
-// Nouveaux éléments pour l'onglet Salaires
-const driverSelect = document.getElementById('driverSelect');
-const monthSalarySelect = document.getElementById('monthSalarySelect');
-const calculateSalaryBtn = document.getElementById('calculateSalaryBtn');
-const salaryCalculationResult = document.getElementById('salaryCalculationResult');
-const salaryHistoryList = document.getElementById('salaryHistoryList');
-const paySalaryBtn = document.getElementById('paySalaryBtn');
-const searchSalary = document.getElementById('searchSalary');
-
 // Modals
 const editRecetteModal = new bootstrap.Modal(document.getElementById('editRecetteModal'));
 const editDepenseModal = new bootstrap.Modal(document.getElementById('editDepenseModal'));
@@ -1086,11 +884,10 @@ const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
 // Données
 let recettes = JSON.parse(localStorage.getItem('recettes')) || [];
 let depenses = JSON.parse(localStorage.getItem('depenses')) || [];
-let salaries = JSON.parse(localStorage.getItem('salaries')) || [];
 let currentEditIndex = -1;
 let currentFilter = 'all';
 
-// Récupérer les bus et chauffeurs depuis le localStorage ou une API
+// Récupérer les bus depuis le localStorage ou une API
 function getAvailableBuses() {
   try {
     // Essayer de récupérer depuis le localStorage
@@ -1100,16 +897,15 @@ function getAvailableBuses() {
       return busesFromStorage.map(bus => ({
         matricule: bus.matricule,
         nom: bus.nom,
-        service: bus.service,
-        driver: bus.driver || null
+        service: bus.service
       }));
     }
 
     // Si aucun bus dans le localStorage, utiliser des valeurs par défaut
     return [
-      { matricule: 'AK678AA', nom: 'Bus Principal', service: 'Oui', driver: 'Jean Dupont' },
-      { matricule: 'AK679BB', nom: 'Bus Secondaire', service: 'Oui', driver: 'Marie Martin' },
-      { matricule: 'AK680CC', nom: 'Bus de Réserve', service: 'Non', driver: null }
+      { matricule: 'AK678AA', nom: 'Bus Principal', service: 'Oui' },
+      { matricule: 'AK679BB', nom: 'Bus Secondaire', service: 'Oui' },
+      { matricule: 'AK680CC', nom: 'Bus de Réserve', service: 'Non' }
     ];
   } catch (e) {
     console.error("Erreur lors de la récupération des bus:", e);
@@ -1117,229 +913,152 @@ function getAvailableBuses() {
   }
 }
 
-function getAvailableDrivers() {
-  const buses = getAvailableBuses();
-  const drivers = new Set();
-  
-  buses.forEach(bus => {
-    if (bus.driver && bus.service === 'Oui') {
-      drivers.add(bus.driver);
-    }
+// Initialisation
+function init() {
+  populateBusSelect();
+  populateBusFilter();
+  populateDepenseBusSelect();
+  populateEditBusSelect();
+  populateEditDepenseBusSelect();
+  populateCalendarBusSelect();
+  afficherRecettes();
+  afficherDepenses();
+  updateLastModified();
+
+  // Définir la date du jour par défaut
+  document.getElementById('dateRecette').valueAsDate = new Date();
+  document.getElementById('dateDepense').valueAsDate = new Date();
+
+  // Définir le mois actuel par défaut dans le sélecteur de mois
+  const today = new Date();
+  const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+  monthSelect.value = currentMonth;
+
+  // Générer le calendrier pour le mois en cours
+  generateCalendar();
+
+  // Événement pour sauvegarder les modifications
+  document.getElementById('saveRecetteEdit').addEventListener('click', saveEditedRecette);
+  document.getElementById('saveDepenseEdit').addEventListener('click', saveEditedDepense);
+
+  // Gestion du changement de type de dépense
+  typeDepense.addEventListener('change', () => {
+    busFieldDepense.classList.toggle('d-none', typeDepense.value !== 'bus');
   });
-  
-  return Array.from(drivers);
+
+  // Initialiser les totaux
+  mettreAJourTotaux();
 }
 
-// Fonctions pour remplir les sélecteurs de bus
 function populateBusSelect() {
-  const select = document.getElementById('matriculeBus');
-  select.innerHTML = '<option value="">-- Sélectionnez un bus --</option>';
-  
-  const buses = getAvailableBuses().filter(bus => bus.service === 'Oui');
-  
-  if (buses.length === 0) {
+  const selectBus = document.getElementById('matriculeBus');
+  selectBus.innerHTML = '';
+
+  const availableBuses = getAvailableBuses()
+    .filter(bus => bus.service === 'Oui') // Seulement les bus en service
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  if (availableBuses.length === 0) {
     const option = document.createElement('option');
     option.value = '';
     option.textContent = 'Aucun bus disponible';
     option.disabled = true;
-    select.appendChild(option);
+    selectBus.appendChild(option);
     return;
   }
-  
-  buses.forEach(bus => {
-    const option = document.createElement('option');
-    option.value = bus.matricule;
-    option.textContent = `${bus.matricule} - ${bus.nom} (${bus.driver || 'Pas de chauffeur'})`;
-    select.appendChild(option);
-  });
-}
 
-function populateBusFilter() {
-  const select = document.getElementById('filterBus');
-  select.innerHTML = '<option value="">Tous les bus</option>';
-  
-  const buses = getAvailableBuses().filter(bus => bus.service === 'Oui');
-  
-  buses.forEach(bus => {
+  availableBuses.forEach(bus => {
     const option = document.createElement('option');
     option.value = bus.matricule;
     option.textContent = `${bus.matricule} - ${bus.nom}`;
-    select.appendChild(option);
-  });
-}
-
-function populateDepenseBusSelect() {
-  const select = document.getElementById('busDepense');
-  select.innerHTML = '<option value="">-- Choisir un bus --</option>';
-  
-  const buses = getAvailableBuses();
-  
-  buses.forEach(bus => {
-    const option = document.createElement('option');
-    option.value = bus.matricule;
-    option.textContent = `${bus.matricule} - ${bus.nom}`;
-    select.appendChild(option);
-  });
-}
-
-function populateEditBusSelect() {
-  const select = document.getElementById('editRecetteMatricule');
-  select.innerHTML = '<option value="">-- Sélectionnez un bus --</option>';
-  
-  const buses = getAvailableBuses().filter(bus => bus.service === 'Oui');
-  
-  buses.forEach(bus => {
-    const option = document.createElement('option');
-    option.value = bus.matricule;
-    option.textContent = `${bus.matricule} - ${bus.nom}`;
-    select.appendChild(option);
-  });
-}
-
-function populateEditDepenseBusSelect() {
-  const select = document.getElementById('editBusDepense');
-  select.innerHTML = '<option value="">-- Choisir un bus --</option>';
-  
-  const buses = getAvailableBuses();
-  
-  buses.forEach(bus => {
-    const option = document.createElement('option');
-    option.value = bus.matricule;
-    option.textContent = `${bus.matricule} - ${bus.nom}`;
-    select.appendChild(option);
+    selectBus.appendChild(option);
   });
 }
 
 function populateCalendarBusSelect() {
-  const select = document.getElementById('busCalendarSelect');
-  select.innerHTML = '<option value="all">Tous les bus</option>';
-  
-  const buses = getAvailableBuses().filter(bus => bus.service === 'Oui');
-  
-  buses.forEach(bus => {
+  const selectBus = document.getElementById('busCalendarSelect');
+  // Garder l'option "Tous les bus"
+  while (selectBus.options.length > 1) {
+    selectBus.remove(1);
+  }
+
+  const availableBuses = getAvailableBuses()
+    .filter(bus => bus.service === 'Oui') // Seulement les bus en service
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
     const option = document.createElement('option');
     option.value = bus.matricule;
     option.textContent = `${bus.matricule} - ${bus.nom}`;
-    select.appendChild(option);
+    selectBus.appendChild(option);
   });
 }
 
-function populateDriverSelect() {
-  const select = document.getElementById('driverSelect');
-  select.innerHTML = '<option value="">-- Choisir un chauffeur --</option>';
-  
-  const drivers = getAvailableDrivers();
-  
-  if (drivers.length === 0) {
+function populateDepenseBusSelect() {
+  const selectBus = document.getElementById('busDepense');
+  selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
+
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
     const option = document.createElement('option');
-    option.value = '';
-    option.textContent = 'Aucun chauffeur disponible';
-    option.disabled = true;
-    select.appendChild(option);
-    return;
-  }
-  
-  drivers.forEach(driver => {
-    const option = document.createElement('option');
-    option.value = driver;
-    option.textContent = driver;
-    select.appendChild(option);
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
   });
 }
 
-// Formatage des dates
-function formatDate(dateString) {
-  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString('fr-FR', options);
+function populateEditDepenseBusSelect() {
+  const selectBus = document.getElementById('editBusDepense');
+  selectBus.innerHTML = '<option value="">-- Choisir un bus --</option>';
+
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
-// Affichage des notifications
-function showNotification(message, type = 'success') {
-  toastr[type](message);
+function populateBusFilter() {
+  filterBus.innerHTML = '<option value="">Tous les bus</option>';
+
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    filterBus.appendChild(option);
+  });
 }
 
-// Gestion des formulaires
-function handleRecetteSubmit(e) {
-  e.preventDefault();
-  
-  const date = document.getElementById('dateRecette').value;
-  const matricule = document.getElementById('matriculeBus').value;
-  const montant = parseFloat(document.getElementById('montantRecette').value);
-  const commentaire = document.getElementById('commentaireRecette').value;
-  
-  if (!date || !matricule || isNaN(montant)) {
-    showNotification('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-  
-  const newRecette = {
-    id: Date.now(),
-    date,
-    matricule,
-    montant,
-    commentaire,
-    createdAt: new Date().toISOString()
-  };
-  
-  recettes.push(newRecette);
-  localStorage.setItem('recettes', JSON.stringify(recettes));
-  
-  showNotification('Recette enregistrée avec succès', 'success');
-  afficherRecettes();
-  mettreAJourTotaux();
-  recetteForm.reset();
-  document.getElementById('dateRecette').valueAsDate = new Date();
+function populateEditBusSelect() {
+  const selectBus = document.getElementById('editRecetteMatricule');
+  selectBus.innerHTML = '';
+
+  const availableBuses = getAvailableBuses()
+    .sort((a, b) => a.matricule.localeCompare(b.matricule));
+
+  availableBuses.forEach(bus => {
+    const option = document.createElement('option');
+    option.value = bus.matricule;
+    option.textContent = `${bus.matricule} - ${bus.nom}`;
+    selectBus.appendChild(option);
+  });
 }
 
-function handleDepenseSubmit(e) {
-  e.preventDefault();
-  
-  const date = document.getElementById('dateDepense').value;
-  const type = document.getElementById('typeDepense').value;
-  const bus = type === 'bus' ? document.getElementById('busDepense').value : null;
-  const motif = document.getElementById('motifDepense').value;
-  const montant = parseFloat(document.getElementById('montantDepense').value);
-  const details = document.getElementById('detailsDepense').value;
-  const justificatif = document.getElementById('justificatifDepense').files[0];
-  
-  if (!date || !type || !motif || isNaN(montant)) {
-    showNotification('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-  
-  if (type === 'bus' && !bus) {
-    showNotification('Veuillez sélectionner un bus', 'error');
-    return;
-  }
-  
-  const newDepense = {
-    id: Date.now(),
-    date,
-    type,
-    bus,
-    motif,
-    montant,
-    details,
-    justificatif: justificatif ? justificatif.name : null,
-    isSalary: false,
-    createdAt: new Date().toISOString()
-  };
-  
-  depenses.push(newDepense);
-  localStorage.setItem('depenses', JSON.stringify(depenses));
-  
-  showNotification('Dépense enregistrée avec succès', 'success');
-  afficherDepenses();
-  mettreAJourTotaux();
-  depenseForm.reset();
-  document.getElementById('dateDepense').valueAsDate = new Date();
-  busFieldDepense.classList.add('d-none');
-}
-
-// Affichage des recettes
 function afficherRecettes(filter = '') {
   recetteList.innerHTML = '';
-  
+
+  const busFilter = filterBus.value;
+  const searchTerm = filter.toLowerCase();
+
   if (recettes.length === 0) {
     recetteList.innerHTML = `
       <div class="alert alert-info text-center">
@@ -1348,80 +1067,95 @@ function afficherRecettes(filter = '') {
     `;
     return;
   }
-  
-  const searchTerm = filter.toLowerCase();
-  const busFilter = document.getElementById('filterBus').value;
-  
-  let filteredRecettes = recettes
-    .filter(r => 
-      r.matricule.toLowerCase().includes(searchTerm) || 
-      r.commentaire?.toLowerCase().includes(searchTerm) ||
-      r.montant.toString().includes(searchTerm)
-    );
-  
-  if (busFilter) {
-    filteredRecettes = filteredRecettes.filter(r => r.matricule === busFilter);
-  }
-  
-  filteredRecettes.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+
+  // Filtrer et trier par date (récent en premier)
+  const filteredRecettes = recettes
+    .filter(r => {
+      const matchesBus = busFilter ? r.matricule === busFilter : true;
+      const matchesSearch = searchTerm ?
+        r.matricule.toLowerCase().includes(searchTerm) ||
+        (r.commentaire && r.commentaire.toLowerCase().includes(searchTerm)) : true;
+      return matchesBus && matchesSearch;
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
   if (filteredRecettes.length === 0) {
     recetteList.innerHTML = `
       <div class="alert alert-warning text-center">
-        <i class="ph ph-warning"></i> Aucune recette trouvée
+        <i class="ph ph-warning"></i> Aucun résultat trouvé
       </div>
     `;
     return;
   }
-  
+
+  // Utilisation d'un fragment pour améliorer les performances
   const fragment = document.createDocumentFragment();
-  
+
   filteredRecettes.forEach((recette, index) => {
-    const bus = getAvailableBuses().find(b => b.matricule === recette.matricule);
-    const busName = bus ? bus.nom : 'Inconnu';
-    const driverName = bus?.driver || 'Non attribué';
-    
     const card = document.createElement('div');
-    card.className = `card mb-3 p-3 receipt-card ${recette.montant >= DAILY_TARGET ? 'receipt-normal' : recette.montant >= DAILY_TARGET * 0.5 ? 'receipt-high' : 'receipt-low'}`;
-    
+    let cardClass = 'receipt-normal';
+
+    // Déterminer si c'est un jour férié/dimanche
+    const date = new Date(recette.date);
+    const isHoliday = date.getDay() === 0; // Dimanche
+    const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+
+    if (recette.montant < target) {
+      cardClass = 'receipt-low';
+    } else if (recette.montant > target * 1.2) {
+      cardClass = 'receipt-high';
+    }
+
+    card.className = `card mb-3 p-3 ${cardClass} receipt-card`;
+
+    // Récupérer le nom du bus depuis la liste des bus disponibles
+    const busInfo = getAvailableBuses().find(b => b.matricule === recette.matricule) || {};
+    const busName = busInfo.nom || 'Bus inconnu';
+
+    // Indicateur d'objectif
+    const targetIndicator = recette.montant >= target ?
+      `<span class="target-indicator target-met" title="Objectif atteint"><i class="ph ph-check"></i></span>` :
+      `<span class="target-indicator target-not-met" title="Objectif non atteint"><i class="ph ph-x"></i></span>`;
+
     card.innerHTML = `
-      <div class="receipt-card-header">
+      <div class="d-flex justify-content-between align-items-center">
         <div>
           <h5 class="mb-1">
-            <i class="ph ph-bus"></i> ${recette.matricule} - ${busName}
+            <i class="ph ph-bus text-primary"></i> ${recette.matricule} (${busName})
+            ${targetIndicator}
           </h5>
           <small class="text-muted">${formatDate(recette.date)}</small>
         </div>
         <div class="text-end">
           <h4 class="mb-0">${recette.montant.toLocaleString()} XAF</h4>
-          <small>${driverName}</small>
+          <small class="text-muted">Objectif: ${target.toLocaleString()} XAF</small>
         </div>
       </div>
       ${recette.commentaire ? `
         <div class="comment-bubble mt-2">
-          <p class="mb-0">${recette.commentaire}</p>
+          <i class="ph ph-note-pencil"></i> ${recette.commentaire}
         </div>
       ` : ''}
-      <div class="d-flex justify-content-end mt-3">
-        <button class="action-btn edit-btn no-print" onclick="editerRecette(${index})" title="Modifier">
-          <i class="ph ph-pencil-simple"></i>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="action-btn edit-btn no-print" onclick="openEditRecetteModal(${index})" title="Modifier">
+          <i class="ph ph-pencil"></i>
         </button>
         <button class="action-btn delete-btn no-print" onclick="supprimerRecette(${index})" title="Supprimer">
           <i class="ph ph-trash"></i>
         </button>
       </div>
     `;
-    
+
     fragment.appendChild(card);
   });
-  
+
   recetteList.appendChild(fragment);
+  mettreAJourTotaux();
 }
 
-// Affichage des dépenses
-function afficherDepenses(filter = '') {
+function afficherDepenses() {
   depenseList.innerHTML = '';
-  
+
   if (depenses.length === 0) {
     depenseList.innerHTML = `
       <div class="alert alert-info text-center">
@@ -1430,652 +1164,326 @@ function afficherDepenses(filter = '') {
     `;
     return;
   }
-  
-  let filteredDepenses = [...depenses];
-  
+
+  // Filtrer selon le filtre actif
+  let filteredDepenses = depenses;
   if (currentFilter !== 'all') {
-    filteredDepenses = filteredDepenses.filter(d => d.type === currentFilter);
+    filteredDepenses = depenses.filter(d => d.type === currentFilter);
   }
-  
+
+  // Trier par date (récent en premier)
   filteredDepenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
+
   if (filteredDepenses.length === 0) {
     depenseList.innerHTML = `
       <div class="alert alert-warning text-center">
-        <i class="ph ph-warning"></i> Aucune dépense trouvée
+        <i class="ph ph-warning"></i> Aucune dépense trouvée pour ce filtre
       </div>
     `;
     return;
   }
-  
+
+  // Utilisation d'un fragment pour améliorer les performances
   const fragment = document.createDocumentFragment();
-  
+
   filteredDepenses.forEach((depense, index) => {
-    const bus = depense.bus ? getAvailableBuses().find(b => b.matricule === depense.bus) : null;
-    const busName = bus ? `${bus.matricule} - ${bus.nom}` : 'N/A';
-    
     const card = document.createElement('div');
     card.className = 'card mb-3 p-3 expense-item';
-    
+
+    // Récupérer le nom du bus si c'est une dépense liée à un bus
+    const busInfo = depense.bus ? getAvailableBuses().find(b => b.matricule === depense.bus) || {} : {};
+    const busName = busInfo.nom || '';
+
+    // Afficher le justificatif s'il existe
+    let justificatifHTML = '';
+    if (depense.justificatif) {
+      justificatifHTML = `
+        <div class="justificatif-container mt-2">
+          <p class="mb-1"><i class="ph ph-image"></i> Justificatif joint:</p>
+          <img src="${depense.justificatif}" class="justificatif-image" onclick="showImageModal('${depense.justificatif}')" 
+               alt="Justificatif de dépense" title="Cliquez pour agrandir">
+        </div>
+      `;
+    }
+
     card.innerHTML = `
       <div class="d-flex justify-content-between align-items-center">
         <div>
           <h5 class="mb-1">
-            <i class="ph ph-arrow-down-left"></i> ${depense.motif}
+            <i class="ph ph-arrow-down-left text-danger"></i> ${depense.motif}
+            <small class="text-muted">(${depense.type === 'bus' ? 'Bus: ' + depense.bus + (busName ? ' (' + busName + ')' : '') : 'Entreprise'})</small>
           </h5>
           <small class="text-muted">${formatDate(depense.date)}</small>
-          <div class="expense-details mt-2">
-            <p class="mb-1"><strong>Type:</strong> ${depense.type === 'bus' ? 'Bus (' + busName + ')' : 'Entreprise'}</p>
-            ${depense.details ? `<p class="mb-0">${depense.details}</p>` : ''}
-          </div>
+          ${depense.details ? `
+            <div class="expense-details mt-2">
+              <i class="ph ph-info"></i> ${depense.details}
+            </div>
+          ` : ''}
+          ${justificatifHTML}
         </div>
         <div class="text-end">
-          <h4 class="mb-0">${depense.montant.toLocaleString()} XAF</h4>
-          <small>${depense.type === 'bus' ? 'Bus' : 'Entreprise'}</small>
+          <h4 class="mb-0 text-danger">${depense.montant.toLocaleString()} XAF</h4>
         </div>
       </div>
-      ${depense.justificatif ? `
-        <div class="justificatif-container">
-          <p class="mb-1"><strong>Justificatif:</strong></p>
-          <button class="btn btn-sm btn-outline-primary" onclick="afficherJustificatif('${depense.justificatif}')">
-            <i class="ph ph-file-image"></i> Voir le justificatif
-          </button>
-        </div>
-      ` : ''}
-      <div class="d-flex justify-content-end mt-3">
-        <button class="action-btn edit-btn no-print" onclick="editerDepense(${index})" title="Modifier">
-          <i class="ph ph-pencil-simple"></i>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="action-btn edit-btn no-print" onclick="openEditDepenseModal(${index})" title="Modifier">
+          <i class="ph ph-pencil"></i>
         </button>
         <button class="action-btn delete-btn no-print" onclick="supprimerDepense(${index})" title="Supprimer">
           <i class="ph ph-trash"></i>
         </button>
       </div>
     `;
-    
+
     fragment.appendChild(card);
   });
-  
+
   depenseList.appendChild(fragment);
-}
-
-// Gestion des salaires
-function updateCalculateButtonState() {
-  calculateSalaryBtn.disabled = !(driverSelect.value && monthSalarySelect.value);
-}
-
-function calculateSalary() {
-  const driver = driverSelect.value;
-  const monthYear = monthSalarySelect.value;
-  
-  if (!driver || !monthYear) return;
-  
-  const [year, month] = monthYear.split('-').map(Number);
-  const firstDay = new Date(year, month - 1, 1);
-  const lastDay = new Date(year, month, 0);
-  const daysInMonth = lastDay.getDate();
-  
-  // Trouver les bus associés à ce chauffeur
-  const busesForDriver = getAvailableBuses().filter(bus => bus.driver === driver && bus.service === 'Oui');
-  
-  if (busesForDriver.length === 0) {
-    showNotification('Aucun bus en service trouvé pour ce chauffeur', 'warning');
-    return;
-  }
-  
-  // Récupérer les matricules des bus associés
-  const busMatricules = busesForDriver.map(bus => bus.matricule);
-  
-  // Trouver tous les jours avec recettes pour ces bus
-  const workingDays = new Set();
-  const monthStr = monthYear + '-';
-  
-  recettes.forEach(recette => {
-    if (recette.date.startsWith(monthStr)) {
-      if (busMatricules.includes(recette.matricule)) {
-        const day = recette.date.split('-')[2];
-        workingDays.add(day);
-      }
-    }
-  });
-  
-  const totalWorkingDays = workingDays.size;
-  const totalNonWorkingDays = daysInMonth - totalWorkingDays;
-  const deductionPerDay = Math.floor(BASE_SALARY / daysInMonth);
-  const totalDeduction = totalNonWorkingDays * deductionPerDay;
-  const finalSalary = BASE_SALARY - totalDeduction;
-  
-  // Afficher les résultats
-  document.getElementById('driverNameDisplay').textContent = driver;
-  document.getElementById('salaryMonthDisplay').textContent = firstDay.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-  document.getElementById('calculatedSalary').textContent = finalSalary.toLocaleString() + ' XAF';
-  document.getElementById('totalWorkingDays').textContent = totalWorkingDays;
-  document.getElementById('totalNonWorkingDays').textContent = totalNonWorkingDays;
-  document.getElementById('totalDeduction').textContent = totalDeduction.toLocaleString();
-  
-  // Afficher les détails des jours travaillés
-  const workingDaysDetails = document.getElementById('workingDaysDetails');
-  workingDaysDetails.innerHTML = '';
-  
-  if (totalWorkingDays === 0) {
-    workingDaysDetails.innerHTML = '<p class="text-muted">Aucun jour travaillé ce mois-ci</p>';
-  } else {
-    const sortedDays = Array.from(workingDays).sort((a, b) => a - b);
-    const fragment = document.createDocumentFragment();
-    
-    sortedDays.forEach(day => {
-      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const date = new Date(dateStr);
-      const formattedDate = date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
-      
-      const dayElement = document.createElement('div');
-      dayElement.className = 'd-flex justify-content-between align-items-center p-2 working-day mb-2 rounded';
-      dayElement.innerHTML = `
-        <div>
-          <i class="ph ph-check-circle text-success"></i>
-          <span class="ms-2">${formattedDate}</span>
-        </div>
-        <small class="text-muted">Jour travaillé</small>
-      `;
-      
-      fragment.appendChild(dayElement);
-    });
-    
-    workingDaysDetails.appendChild(fragment);
-  }
-  
-  // Afficher la section des résultats
-  salaryCalculationResult.classList.remove('d-none');
-}
-
-function paySalary() {
-  const driver = driverSelect.value;
-  const monthYear = monthSalarySelect.value;
-  const finalSalary = parseInt(document.getElementById('calculatedSalary').textContent.replace(/\D/g, ''), 10);
-  
-  if (!driver || !monthYear || isNaN(finalSalary)) {
-    showNotification('Veuillez d\'abord calculer le salaire', 'warning');
-    return;
-  }
-  
-  const today = new Date().toISOString().split('T')[0];
-  const motif = `Salaire ${driver} - ${monthYear}`;
-  
-  const newDepense = {
-    id: Date.now(),
-    date: today,
-    type: 'entreprise',
-    bus: null,
-    motif: motif,
-    montant: finalSalary,
-    details: `Paiement du salaire pour ${driver} pour le mois ${monthYear}`,
-    justificatif: null,
-    isSalary: true,
-    driver: driver,
-    month: monthYear,
-    createdAt: new Date().toISOString()
-  };
-  
-  depenses.push(newDepense);
-  localStorage.setItem('depenses', JSON.stringify(depenses));
-  
-  // Ajouter à l'historique des salaires
-  const salaryRecord = {
-    id: Date.now(),
-    date: today,
-    driver: driver,
-    month: monthYear,
-    amount: finalSalary,
-    workingDays: parseInt(document.getElementById('totalWorkingDays').textContent, 10),
-    nonWorkingDays: parseInt(document.getElementById('totalNonWorkingDays').textContent, 10),
-    deduction: parseInt(document.getElementById('totalDeduction').textContent.replace(/\D/g, ''), 10),
-    createdAt: new Date().toISOString()
-  };
-  
-  salaries.push(salaryRecord);
-  localStorage.setItem('salaries', JSON.stringify(salaries));
-  
-  showNotification('Paiement du salaire enregistré avec succès', 'success');
-  afficherDepenses();
-  afficherHistoriqueSalaires();
   mettreAJourTotaux();
-  
-  // Réinitialiser le formulaire
-  salaryCalculationResult.classList.add('d-none');
-  driverSelect.value = '';
-  monthSalarySelect.value = monthYear; // Garder le même mois sélectionné
-  calculateSalaryBtn.disabled = true;
 }
 
-function afficherHistoriqueSalaires(filter = '') {
-  salaryHistoryList.innerHTML = '';
-  
-  if (salaries.length === 0) {
-    salaryHistoryList.innerHTML = `
-      <div class="alert alert-info text-center">
-        <i class="ph ph-info"></i> Aucun paiement de salaire enregistré
-      </div>
-    `;
-    return;
-  }
-  
-  const searchTerm = filter.toLowerCase();
-  const filteredSalaries = salaries
-    .filter(s => s.driver.toLowerCase().includes(searchTerm))
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  if (filteredSalaries.length === 0) {
-    salaryHistoryList.innerHTML = `
-      <div class="alert alert-warning text-center">
-        <i class="ph ph-warning"></i> Aucun résultat trouvé
-      </div>
-    `;
-    return;
-  }
-  
-  const fragment = document.createDocumentFragment();
-  
-  filteredSalaries.forEach((salary, index) => {
-    const card = document.createElement('div');
-    card.className = 'card mb-3 p-3 salary-card';
-    
-    const [year, month] = salary.month.split('-');
-    const monthName = new Date(year, month - 1, 1).toLocaleDateString('fr-FR', { month: 'long' });
-    
-    card.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1">
-            <i class="ph ph-user-circle"></i> ${salary.driver}
-          </h5>
-          <small class="text-muted">${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</small>
-          <div class="salary-details mt-2">
-            <p class="mb-1"><i class="ph ph-calendar-check"></i> ${salary.workingDays} jours travaillés / ${salary.workingDays + salary.nonWorkingDays} jours</p>
-            <p class="mb-0"><i class="ph ph-currency-circle-dollar"></i> Déduction: ${salary.deduction.toLocaleString()} XAF</p>
-          </div>
-        </div>
-        <div class="text-end">
-          <h4 class="mb-0">${salary.amount.toLocaleString()} XAF</h4>
-          <small class="text-muted">${formatDate(salary.date)}</small>
-        </div>
-      </div>
-      <div class="d-flex justify-content-end mt-2">
-        <button class="action-btn delete-btn no-print" onclick="supprimerSalaire(${index})" title="Supprimer">
-          <i class="ph ph-trash"></i>
-        </button>
-      </div>
-    `;
-    
-    fragment.appendChild(card);
-  });
-  
-  salaryHistoryList.appendChild(fragment);
+function filtrerDepenses(type) {
+  currentFilter = type;
+  afficherDepenses();
 }
 
-function supprimerSalaire(index) {
-  if (confirm("Voulez-vous vraiment supprimer cet enregistrement de salaire ? Cette action supprimera également la dépense correspondante.")) {
-    const salary = salaries[index];
-    
-    // Supprimer la dépense correspondante
-    const depenseIndex = depenses.findIndex(d => d.isSalary && d.month === salary.month && d.driver === salary.driver);
-    if (depenseIndex !== -1) {
-      depenses.splice(depenseIndex, 1);
-      localStorage.setItem('depenses', JSON.stringify(depenses));
-    }
-    
-    salaries.splice(index, 1);
-    localStorage.setItem('salaries', JSON.stringify(salaries));
-    afficherHistoriqueSalaires(searchSalary.value);
-    afficherDepenses();
-    mettreAJourTotaux();
-    showNotification('Enregistrement de salaire supprimé', 'danger');
-  }
-}
-
-// Gestion des modifications
-function editerRecette(index) {
-  const recette = recettes[index];
+function openEditRecetteModal(index) {
   currentEditIndex = index;
-  
-  document.getElementById('editRecetteId').value = recette.id;
+  const recette = recettes[index];
+
+  document.getElementById('editRecetteId').value = index;
   document.getElementById('editRecetteDate').value = recette.date;
+  document.getElementById('editRecetteMatricule').value = recette.matricule;
   document.getElementById('editRecetteMontant').value = recette.montant;
   document.getElementById('editRecetteCommentaire').value = recette.commentaire || '';
-  
-  // Sélectionner le bon bus dans le select
-  const select = document.getElementById('editRecetteMatricule');
-  for (let i = 0; i < select.options.length; i++) {
-    if (select.options[i].value === recette.matricule) {
-      select.selectedIndex = i;
-      break;
-    }
-  }
-  
+
   editRecetteModal.show();
 }
 
-function saveEditedRecette() {
-  const id = parseInt(document.getElementById('editRecetteId').value);
-  const date = document.getElementById('editRecetteDate').value;
-  const matricule = document.getElementById('editRecetteMatricule').value;
-  const montant = parseFloat(document.getElementById('editRecetteMontant').value);
-  const commentaire = document.getElementById('editRecetteCommentaire').value;
-  
-  if (!date || !matricule || isNaN(montant)) {
-    showNotification('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-  
-  const recetteIndex = recettes.findIndex(r => r.id === id);
-  if (recetteIndex === -1) {
-    showNotification('Recette introuvable', 'error');
-    return;
-  }
-  
-  recettes[recetteIndex] = {
-    ...recettes[recetteIndex],
-    date,
-    matricule,
-    montant,
-    commentaire
-  };
-  
-  localStorage.setItem('recettes', JSON.stringify(recettes));
-  editRecetteModal.hide();
-  afficherRecettes();
-  mettreAJourTotaux();
-  showNotification('Recette modifiée avec succès', 'success');
-}
-
-function editerDepense(index) {
-  const depense = depenses[index];
+function openEditDepenseModal(index) {
   currentEditIndex = index;
-  
-  document.getElementById('editDepenseId').value = depense.id;
+  const depense = depenses[index];
+
+  document.getElementById('editDepenseId').value = index;
   document.getElementById('editDepenseDate').value = depense.date;
   document.getElementById('editDepenseType').value = depense.type;
   document.getElementById('editDepenseMotif').value = depense.motif;
   document.getElementById('editDepenseMontant').value = depense.montant;
   document.getElementById('editDepenseDetails').value = depense.details || '';
-  
+
   // Gérer le champ bus
-  const busField = document.getElementById('editBusFieldDepense');
+  const editBusField = document.getElementById('editBusFieldDepense');
   if (depense.type === 'bus') {
-    busField.classList.remove('d-none');
-    const select = document.getElementById('editBusDepense');
-    for (let i = 0; i < select.options.length; i++) {
-      if (select.options[i].value === depense.bus) {
-        select.selectedIndex = i;
-        break;
-      }
-    }
+    editBusField.classList.remove('d-none');
+    document.getElementById('editBusDepense').value = depense.bus || '';
   } else {
-    busField.classList.add('d-none');
+    editBusField.classList.add('d-none');
   }
-  
+
   editDepenseModal.show();
 }
 
-function saveEditedDepense() {
-  const id = parseInt(document.getElementById('editDepenseId').value);
-  const date = document.getElementById('editDepenseDate').value;
-  const type = document.getElementById('editDepenseType').value;
-  const bus = type === 'bus' ? document.getElementById('editBusDepense').value : null;
-  const motif = document.getElementById('editDepenseMotif').value;
-  const montant = parseFloat(document.getElementById('editDepenseMontant').value);
-  const details = document.getElementById('editDepenseDetails').value;
-  const justificatif = document.getElementById('editDepenseJustificatif').files[0];
-  
-  if (!date || !type || !motif || isNaN(montant)) {
-    showNotification('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-  
-  if (type === 'bus' && !bus) {
-    showNotification('Veuillez sélectionner un bus', 'error');
-    return;
-  }
-  
-  const depenseIndex = depenses.findIndex(d => d.id === id);
-  if (depenseIndex === -1) {
-    showNotification('Dépense introuvable', 'error');
-    return;
-  }
-  
-  depenses[depenseIndex] = {
-    ...depenses[depenseIndex],
-    date,
-    type,
-    bus,
-    motif,
-    montant,
-    details,
-    justificatif: justificatif ? justificatif.name : depenses[depenseIndex].justificatif
+function saveEditedRecette() {
+  const index = currentEditIndex;
+  if (index === -1 || index >= recettes.length) return;
+
+  const editedRecette = {
+    date: document.getElementById('editRecetteDate').value,
+    matricule: document.getElementById('editRecetteMatricule').value,
+    montant: parseInt(document.getElementById('editRecetteMontant').value, 10),
+    commentaire: document.getElementById('editRecetteCommentaire').value
   };
-  
+
+  recettes[index] = editedRecette;
+  localStorage.setItem('recettes', JSON.stringify(recettes));
+
+  editRecetteModal.hide();
+  afficherRecettes(searchRecette.value);
+  generateCalendar(); // Mettre à jour le calendrier après modification
+  showNotification('Recette modifiée avec succès', 'success');
+}
+
+function saveEditedDepense() {
+  const index = currentEditIndex;
+  if (index === -1 || index >= depenses.length) return;
+
+  const editedDepense = {
+    date: document.getElementById('editDepenseDate').value,
+    type: document.getElementById('editDepenseType').value,
+    bus: document.getElementById('editDepenseType').value === 'bus' ? document.getElementById('editBusDepense').value : null,
+    motif: document.getElementById('editDepenseMotif').value,
+    montant: parseInt(document.getElementById('editDepenseMontant').value, 10),
+    details: document.getElementById('editDepenseDetails').value,
+    justificatif: depenses[index].justificatif || null // Conserver l'ancien justificatif
+  };
+
+  // Gestion du nouveau justificatif
+  const justificatifInput = document.getElementById('editDepenseJustificatif');
+  if (justificatifInput.files.length > 0) {
+    const file = justificatifInput.files[0];
+    editedDepense.justificatif = URL.createObjectURL(file);
+  }
+
+  depenses[index] = editedDepense;
   localStorage.setItem('depenses', JSON.stringify(depenses));
+
   editDepenseModal.hide();
   afficherDepenses();
-  mettreAJourTotaux();
   showNotification('Dépense modifiée avec succès', 'success');
 }
 
-// Suppression des éléments
+function formatDate(dateString) {
+  const options = {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  };
+  return new Date(dateString).toLocaleDateString('fr-FR', options);
+}
+
 function supprimerRecette(index) {
   if (confirm("Voulez-vous vraiment supprimer cette recette ?")) {
     recettes.splice(index, 1);
     localStorage.setItem('recettes', JSON.stringify(recettes));
-    afficherRecettes();
-    mettreAJourTotaux();
-    showNotification('Recette supprimée', 'danger');
+    afficherRecettes(searchRecette.value);
+    generateCalendar(); // Mettre à jour le calendrier après suppression
+    showNotification('Recette supprimée avec succès', 'danger');
   }
 }
 
 function supprimerDepense(index) {
   if (confirm("Voulez-vous vraiment supprimer cette dépense ?")) {
+    // Libérer l'URL de l'image si elle existe
+    if (depenses[index].justificatif) {
+      URL.revokeObjectURL(depenses[index].justificatif);
+    }
     depenses.splice(index, 1);
     localStorage.setItem('depenses', JSON.stringify(depenses));
     afficherDepenses();
-    mettreAJourTotaux();
-    showNotification('Dépense supprimée', 'danger');
+    showNotification('Dépense supprimée avec succès', 'danger');
   }
 }
 
-// Mise à jour des totaux
 function mettreAJourTotaux() {
-  // Date d'aujourd'hui au format YYYY-MM-DD
   const today = new Date().toISOString().split('T')[0];
-  
-  // Calcul des recettes du jour
-  const recettesAujourdhui = recettes
-    .filter(r => r.date === today)
-    .reduce((sum, r) => sum + r.montant, 0);
-  
-  // Calcul des dépenses du jour
-  const depensesAujourdhui = depenses
-    .filter(d => d.date === today)
-    .reduce((sum, d) => sum + d.montant, 0);
-  
-  // Calcul du bénéfice du jour
-  const profitAujourdhui = recettesAujourdhui - depensesAujourdhui;
-  
-  // Calcul du bénéfice total
-  const totalRecettes = recettes.reduce((sum, r) => sum + r.montant, 0);
-  const totalDepenses = depenses.reduce((sum, d) => sum + d.montant, 0);
-  const totalProfit = totalRecettes - totalDepenses;
-  
-  // Mise à jour de l'interface
-  document.getElementById('totalJour').textContent = recettesAujourdhui.toLocaleString() + ' XAF';
-  document.getElementById('depensesJour').textContent = depensesAujourdhui.toLocaleString() + ' XAF';
-  document.getElementById('profitJour').textContent = profitAujourdhui.toLocaleString() + ' XAF';
-  document.getElementById('totalProfit').textContent = totalProfit.toLocaleString() + ' XAF';
-  
-  // Mise à jour du statut de l'objectif journalier
-  const targetStatus = document.getElementById('dailyTargetStatus');
-  if (recettesAujourdhui >= DAILY_TARGET) {
-    targetStatus.innerHTML = '<i class="ph ph-check-circle"></i> Objectif atteint';
-    targetStatus.className = 'text-success';
-  } else if (recettesAujourdhui > 0) {
-    const percentage = Math.round((recettesAujourdhui / DAILY_TARGET) * 100);
-    targetStatus.innerHTML = `<i class="ph ph-warning"></i> ${percentage}% de l'objectif`;
-    targetStatus.className = 'text-warning';
+  const thisMonth = today.slice(0, 7);
+  const thisWeek = getWeekNumber(new Date());
+
+  let totalJour = 0, totalSemaine = 0, totalMois = 0, totalRecettes = 0;
+  let depensesJour = 0, depensesSemaine = 0, depensesMois = 0, totalDepenses = 0;
+
+  // Calcul des totaux des recettes
+  recettes.forEach(r => {
+    const recetteDate = new Date(r.date);
+    const recetteWeek = getWeekNumber(recetteDate);
+
+    if (r.date === today) totalJour += r.montant;
+    if (getWeekNumber(new Date(r.date)) === thisWeek) totalSemaine += r.montant;
+    if (r.date.startsWith(thisMonth)) totalMois += r.montant;
+    totalRecettes += r.montant;
+  });
+
+  // Calcul des totaux des dépenses
+  depenses.forEach(d => {
+    const depenseDate = new Date(d.date);
+    const depenseWeek = getWeekNumber(depenseDate);
+
+    if (d.date === today) depensesJour += d.montant;
+    if (getWeekNumber(new Date(d.date)) === thisWeek) depensesSemaine += d.montant;
+    if (d.date.startsWith(thisMonth)) depensesMois += d.montant;
+    totalDepenses += d.montant;
+  });
+
+  // Mise à jour des totaux dans l'interface
+  document.getElementById('totalJour').textContent = totalJour.toLocaleString() + ' XAF';
+  document.getElementById('depensesJour').textContent = depensesJour.toLocaleString() + ' XAF';
+  document.getElementById('profitJour').textContent = (totalJour - depensesJour).toLocaleString() + ' XAF';
+  document.getElementById('totalProfit').textContent = (totalRecettes - totalDepenses).toLocaleString() + ' XAF';
+
+  // Mettre à jour le statut de l'objectif journalier
+  const dailyTargetStatus = document.getElementById('dailyTargetStatus');
+  if (totalJour >= DAILY_TARGET) {
+    dailyTargetStatus.innerHTML = `<i class="ph ph-check-circle"></i> Objectif atteint`;
   } else {
-    targetStatus.innerHTML = '<i class="ph ph-x-circle"></i> Objectif non atteint';
-    targetStatus.className = 'text-danger';
+    const remaining = DAILY_TARGET - totalJour;
+    dailyTargetStatus.innerHTML = `<i class="ph ph-warning"></i> Manque ${remaining.toLocaleString()} XAF`;
   }
 }
 
-// Gestion du calendrier
-function generateCalendar() {
-  const monthYear = document.getElementById('monthSelect').value;
-  const busMatricule = document.getElementById('busCalendarSelect').value;
-  
-  if (!monthYear) {
-    showNotification('Veuillez sélectionner un mois', 'warning');
-    return;
-  }
-  
-  const [year, month] = monthYear.split('-').map(Number);
-  const firstDay = new Date(year, month - 1, 1);
-  const lastDay = new Date(year, month, 0);
-  const daysInMonth = lastDay.getDate();
-  const firstDayOfWeek = firstDay.getDay(); // 0 (dimanche) à 6 (samedi)
-  
-  // Filtrer les recettes pour le mois et bus sélectionné
-  const monthStr = monthYear + '-';
-  let filteredRecettes = recettes.filter(r => r.date.startsWith(monthStr));
-  
-  if (busMatricule !== 'all') {
-    filteredRecettes = filteredRecettes.filter(r => r.matricule === busMatricule);
-  }
-  
-  // Créer un objet pour stocker les recettes par jour
-  const recettesByDay = {};
-  filteredRecettes.forEach(r => {
-    const day = r.date.split('-')[2];
-    if (!recettesByDay[day]) {
-      recettesByDay[day] = [];
-    }
-    recettesByDay[day].push(r);
-  });
-  
-  // Générer le calendrier
-  let calendarHTML = `
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <div class="month-header">
-          <h4 class="month-title">${firstDay.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</h4>
-        </div>
-        <table class="calendar">
-          <thead>
-            <tr>
-              <th>Dim</th>
-              <th>Lun</th>
-              <th>Mar</th>
-              <th>Mer</th>
-              <th>Jeu</th>
-              <th>Ven</th>
-              <th>Sam</th>
-            </tr>
-          </thead>
-          <tbody>
-  `;
-  
-  let day = 1;
-  let currentDate = new Date(year, month - 1, 1);
-  
-  for (let i = 0; i < 6; i++) { // 6 lignes max pour couvrir tous les mois
-    if (day > daysInMonth) break;
-    
-    calendarHTML += '<tr>';
-    
-    for (let j = 0; j < 7; j++) { // 7 jours par semaine
-      if ((i === 0 && j < firstDayOfWeek) || day > daysInMonth) {
-        // Cellule vide avant le premier jour ou après le dernier jour du mois
-        calendarHTML += '<td></td>';
-      } else {
-        const dayStr = String(day).padStart(2, '0');
-        const dateStr = `${year}-${String(month).padStart(2, '0')}-${dayStr}`;
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Déterminer le statut du jour
-        let status = 'none';
-        let tooltip = 'Pas de recette';
-        
-        if (recettesByDay[dayStr]) {
-          const total = recettesByDay[dayStr].reduce((sum, r) => sum + r.montant, 0);
-          if (total >= DAILY_TARGET) {
-            status = 'complete';
-            tooltip = `Recette complète: ${total.toLocaleString()} XAF`;
-          } else {
-            status = 'partial';
-            tooltip = `Recette partielle: ${total.toLocaleString()} XAF`;
-          }
-        } else if (dateStr > today) {
-          status = 'future';
-          tooltip = 'Jour futur';
-        }
-        
-        calendarHTML += `
-          <td title="${tooltip}">
-            <span class="calendar-day">${day}</span>
-            <span class="day-badge badge-${status}">
-              ${status === 'complete' ? '✓' : status === 'partial' ? '~' : status === 'future' ? '' : '✗'}
-            </span>
-          </td>
-        `;
-        day++;
-      }
-    }
-    
-    calendarHTML += '</tr>';
-  }
-  
-  calendarHTML += `
-          </tbody>
-        </table>
-      </div>
+function getWeekNumber(date) {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+function updateLastModified() {
+  const now = new Date();
+  const options = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', options);
+}
+
+function showNotification(message, type = 'success') {
+  const notification = document.createElement('div');
+  notification.className = 'position-fixed bottom-0 end-0 p-3';
+  notification.style.zIndex = '1050';
+  notification.innerHTML = `
+    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
     </div>
   `;
-  
-  calendarContainer.innerHTML = calendarHTML;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 
-// Export des données
+function showImageModal(imageSrc) {
+  document.getElementById('modalImage').src = imageSrc;
+  imageModal.show();
+}
+
+// Fonctions d'export
 function exportToPDF(type) {
-  showNotification('Export PDF en cours de développement', 'info');
+  alert(`Export PDF (${type}) en cours de développement`);
+  // Implémentation réelle nécessiterait une librairie comme jsPDF
 }
 
 function exportToExcel(type) {
   let data, fileName;
-  
+
   if (type === 'recettes') {
     data = recettes.map(r => ({
-      Date: formatDate(r.date),
-      Matricule: r.matricule,
+      Date: r.date,
+      Bus: r.matricule,
+      'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
       Montant: r.montant,
       Commentaire: r.commentaire || '',
-      'Date d\'enregistrement': formatDate(r.createdAt)
+      Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
     }));
     fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
   } else {
-    data = depenses.filter(d => !d.isSalary).map(d => ({
-      Date: formatDate(d.date),
+    data = depenses.map(d => ({
+      Date: d.date,
       Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
-      Bus: d.bus || 'N/A',
+      Bus: d.bus || '',
+      'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
       Motif: d.motif,
       Montant: d.montant,
       Détails: d.details || '',
-      Justificatif: d.justificatif || 'Non',
-      'Date d\'enregistrement': formatDate(d.createdAt)
+      'Justificatif': d.justificatif ? 'Oui' : 'Non'
     }));
     fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`;
   }
-  
-  if (data.length === 0) {
-    showNotification(`Aucune donnée à exporter pour les ${type}`, 'warning');
-    return;
-  }
-  
+
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, type === 'recettes' ? "Recettes" : "Dépenses");
@@ -2084,154 +1492,341 @@ function exportToExcel(type) {
 
 function exportToCSV(type) {
   let data, fileName;
-  
+
   if (type === 'recettes') {
     data = recettes.map(r => ({
-      Date: formatDate(r.date),
-      Matricule: r.matricule,
+      Date: r.date,
+      Bus: r.matricule,
+      'Nom Bus': (getAvailableBuses().find(b => b.matricule === r.matricule) || {}).nom || 'Inconnu',
       Montant: r.montant,
       Commentaire: r.commentaire || '',
-      'Date d\'enregistrement': formatDate(r.createdAt)
+      Statut: r.montant >= (new Date(r.date).getDay() === 0 ? HOLIDAY_TARGET : DAILY_TARGET) ? 'Atteint' : 'Non atteint'
     }));
     fileName = `recettes_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
   } else {
-    data = depenses.filter(d => !d.isSalary).map(d => ({
-      Date: formatDate(d.date),
+    data = depenses.map(d => ({
+      Date: d.date,
       Type: d.type === 'bus' ? 'Bus' : 'Entreprise',
-      Bus: d.bus || 'N/A',
+      Bus: d.bus || '',
+      'Nom Bus': d.bus ? (getAvailableBuses().find(b => b.matricule === d.bus) || {}).nom || 'Inconnu' : '',
       Motif: d.motif,
       Montant: d.montant,
       Détails: d.details || '',
-      Justificatif: d.justificatif || 'Non',
-      'Date d\'enregistrement': formatDate(d.createdAt)
+      'Justificatif': d.justificatif ? 'Oui' : 'Non'
     }));
     fileName = `depenses_ml_transport_${new Date().toISOString().slice(0,10)}.csv`;
   }
-  
-  if (data.length === 0) {
-    showNotification(`Aucune donnée à exporter pour les ${type}`, 'warning');
-    return;
-  }
-  
+
   const csv = XLSX.utils.sheet_to_csv(XLSX.utils.json_to_sheet(data));
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   saveAs(blob, fileName);
 }
 
-function exportSalariesToPDF() {
-  showNotification('Export PDF des salaires en cours de développement', 'info');
+// Fonctions pour le calendrier des coches
+function generateCalendar() {
+  const monthYear = monthSelect.value;
+  const selectedBus = busCalendarSelect.value;
+  
+  if (!monthYear) return;
+
+  const [year, month] = monthYear.split('-').map(Number);
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const daysInMonth = lastDay.getDate();
+  const firstDayOfWeek = firstDay.getDay(); // 0 (dimanche) à 6 (samedi)
+
+  // Ajustement pour que le lundi soit le premier jour de la semaine
+  const adjustedFirstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+
+  const monthName = firstDay.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+  let calendarHTML = `
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <div class="month-header">
+          <div class="month-title">${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</div>
+          <div class="month-nav">
+            <button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(-1)">
+              <i class="ph ph-caret-left"></i> Précédent
+            </button>
+            <button class="btn btn-sm btn-outline-primary" onclick="navigateMonth(1)">
+              Suivant <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+        </div>
+        <table class="calendar">
+          <thead>
+            <tr>
+              <th>Lun</th>
+              <th>Mar</th>
+              <th>Mer</th>
+              <th>Jeu</th>
+              <th>Ven</th>
+              <th>Sam</th>
+              <th>Dim</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+  let day = 1;
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < 6; i++) { // 6 semaines max pour couvrir tous les cas
+    if (day > daysInMonth) break;
+
+    calendarHTML += '<tr>';
+
+    for (let j = 0; j < 7; j++) {
+      if ((i === 0 && j < adjustedFirstDayOfWeek) || day > daysInMonth) {
+        // Cellule vide avant le premier jour ou après le dernier jour du mois
+        calendarHTML += '<td></td>';
+      } else {
+        const currentDate = new Date(year, month - 1, day);
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isToday = currentDate.getTime() === today.getTime();
+        const isFuture = currentDate > today;
+
+        // Vérifier l'état des recettes pour ce jour et ce bus
+        const dayStatus = getDayReceiptStatus(dateStr, selectedBus);
+
+        let badgeClass = '';
+        let badgeIcon = '';
+
+        if (isFuture) {
+          badgeClass = 'badge-future';
+          badgeIcon = '<i class="ph ph-clock"></i>';
+        } else {
+          switch(dayStatus) {
+            case 'complete':
+              badgeClass = 'badge-complete';
+              badgeIcon = '<i class="ph ph-check"></i>';
+              break;
+            case 'partial':
+              badgeClass = 'badge-partial';
+              badgeIcon = '<i class="ph ph-warning"></i>';
+              break;
+            case 'none':
+              badgeClass = 'badge-none';
+              badgeIcon = '<i class="ph ph-x"></i>';
+              break;
+          }
+        }
+
+        calendarHTML += `
+          <td ${isToday ? 'class="bg-light"' : ''}>
+            <div class="calendar-day">${day}</div>
+            <div class="day-badge ${badgeClass}" title="${getDayTooltip(dateStr, dayStatus, selectedBus)}">
+              ${badgeIcon}
+            </div>
+          </td>
+        `;
+        day++;
+      }
+    }
+
+    calendarHTML += '</tr>';
+  }
+
+  calendarHTML += `
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  calendarContainer.innerHTML = calendarHTML;
 }
 
-function exportSalariesToExcel() {
-  if (salaries.length === 0) {
-    showNotification('Aucun salaire à exporter', 'warning');
+function navigateMonth(offset) {
+  const currentMonth = monthSelect.value;
+  if (!currentMonth) return;
+
+  const [year, month] = currentMonth.split('-').map(Number);
+  let newMonth = month + offset;
+  let newYear = year;
+
+  if (newMonth > 12) {
+    newMonth = 1;
+    newYear++;
+  } else if (newMonth < 1) {
+    newMonth = 12;
+    newYear--;
+  }
+
+  monthSelect.value = `${newYear}-${String(newMonth).padStart(2, '0')}`;
+  generateCalendar();
+}
+
+function getDayReceiptStatus(dateStr, selectedBus = 'all') {
+  let dayRecettes = recettes.filter(r => r.date === dateStr);
+  
+  // Filtrer par bus si un bus spécifique est sélectionné
+  if (selectedBus !== 'all') {
+    dayRecettes = dayRecettes.filter(r => r.matricule === selectedBus);
+  }
+
+  const dayDate = new Date(dateStr);
+  const isHoliday = dayDate.getDay() === 0; // Dimanche
+  const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+
+  if (dayRecettes.length === 0) {
+    // Vérifier si la deadline est passée
+    const now = new Date();
+    const deadline = new Date(dateStr);
+    deadline.setHours(DEADLINE_HOUR, DEADLINE_MINUTE, 0, 0);
+
+    return now > deadline ? 'none' : 'future';
+  }
+
+  // Si on filtre par bus, on vérifie simplement si le montant atteint la cible
+  if (selectedBus !== 'all') {
+    const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+    return total >= target ? 'complete' : 'partial';
+  }
+
+  // Pour "Tous les bus", vérifier si tous les bus en service ont déclaré leurs recettes
+  const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
+  const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
+  const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+
+  if (busesWithReceipts.length === activeBuses.length) {
+    return total >= target ? 'complete' : 'partial';
+  } else {
+    return 'partial';
+  }
+}
+
+function getDayTooltip(dateStr, status, selectedBus = 'all') {
+  const dayDate = new Date(dateStr);
+  const isHoliday = dayDate.getDay() === 0; // Dimanche
+  const target = isHoliday ? HOLIDAY_TARGET : DAILY_TARGET;
+  let dayRecettes = recettes.filter(r => r.date === dateStr);
+  
+  // Filtrer par bus si un bus spécifique est sélectionné
+  if (selectedBus !== 'all') {
+    dayRecettes = dayRecettes.filter(r => r.matricule === selectedBus);
+  }
+
+  const formattedDate = dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  if (status === 'future') {
+    return `${formattedDate}\nJour futur`;
+  }
+
+  if (dayRecettes.length === 0) {
+    return `${formattedDate}\nAucune recette déclarée`;
+  }
+
+  const total = dayRecettes.reduce((sum, r) => sum + r.montant, 0);
+  let tooltip = `${formattedDate}\nTotal: ${total.toLocaleString()} XAF / ${target.toLocaleString()} XAF`;
+
+  // Pour "Tous les bus", afficher les bus manquants
+  if (selectedBus === 'all') {
+    const activeBuses = getAvailableBuses().filter(b => b.service === 'Oui');
+    const busesWithReceipts = [...new Set(dayRecettes.map(r => r.matricule))];
+    
+    if (busesWithReceipts.length < activeBuses.length) {
+      const missingBuses = activeBuses.filter(b => !busesWithReceipts.includes(b.matricule));
+      tooltip += `\nBus manquants: ${missingBuses.map(b => b.matricule).join(', ')}`;
+    }
+  }
+
+  return tooltip;
+}
+
+// Événements
+recetteForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const date = document.getElementById('dateRecette').value;
+  const matricule = document.getElementById('matriculeBus').value;
+  const montant = parseInt(document.getElementById('montantRecette').value, 10);
+  const commentaire = document.getElementById('commentaireRecette').value;
+
+  if (!matricule) {
+    showNotification('Veuillez sélectionner un bus valide', 'warning');
     return;
   }
+
+  const newReceipt = { date, matricule, montant, commentaire };
+  recettes.push(newReceipt);
+  localStorage.setItem('recettes', JSON.stringify(recettes));
+
+  recetteForm.reset();
+  document.getElementById('dateRecette').valueAsDate = new Date();
+  afficherRecettes();
+  generateCalendar(); // Mettre à jour le calendrier après ajout
+  showNotification('Recette enregistrée avec succès');
+
+  // Animation pour la nouvelle recette
+  const lastCard = recetteList.lastElementChild;
+  if (lastCard) {
+    lastCard.classList.add('new-entry');
+    setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
+  }
+});
+
+depenseForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const date = document.getElementById('dateDepense').value;
+  const type = document.getElementById('typeDepense').value;
+  const bus = type === 'bus' ? document.getElementById('busDepense').value : null;
+  const motif = document.getElementById('motifDepense').value.trim();
+  const montant = parseInt(document.getElementById('montantDepense').value, 10);
+  const details = document.getElementById('detailsDepense').value.trim();
+  const justificatifInput = document.getElementById('justificatifDepense');
   
-  const data = salaries.map(s => ({
-    Date: formatDate(s.date),
-    Chauffeur: s.driver,
-    Mois: s.month,
-    'Jours travaillés': s.workingDays,
-    'Jours non travaillés': s.nonWorkingDays,
-    Déduction: s.deduction,
-    'Salaire payé': s.amount,
-    'Salaire de base': BASE_SALARY,
-    'Date d\'enregistrement': formatDate(s.createdAt)
-  }));
-  
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Salaires");
-  XLSX.writeFile(wb, `salaires_ml_transport_${new Date().toISOString().slice(0,10)}.xlsx`);
-}
+  if (type === 'bus' && !bus) {
+    showNotification('Veuillez sélectionner un bus pour ce type de dépense', 'warning');
+    return;
+  }
 
-// Autres fonctions utilitaires
-function afficherJustificatif(nomFichier) {
-  // Dans une vraie application, vous récupéreriez l'image depuis un serveur
-  // Ici nous affichons juste un message car nous n'avons pas de système de stockage
-  showNotification(`Justificatif: ${nomFichier} (fonctionnalité complète à implémenter avec un backend)`, 'info');
-}
+  // Gestion de l'image
+  let justificatif = null;
+  if (justificatifInput.files.length > 0) {
+    const file = justificatifInput.files[0];
+    justificatif = URL.createObjectURL(file);
+  }
 
-function updateLastModified() {
-  const lastModified = new Date(document.lastModified);
-  document.getElementById('lastUpdate').textContent = lastModified.toLocaleDateString('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
+  const newDepense = { date, type, bus, motif, montant, details, justificatif };
+  depenses.push(newDepense);
+  localStorage.setItem('depenses', JSON.stringify(depenses));
 
-function filtrerDepenses(type) {
-  currentFilter = type;
+  depenseForm.reset();
+  document.getElementById('dateDepense').valueAsDate = new Date();
+  document.getElementById('typeDepense').value = '';
+  busFieldDepense.classList.add('d-none');
   afficherDepenses();
-}
+  showNotification('Dépense enregistrée avec succès');
+
+  // Animation pour la nouvelle dépense
+  const lastCard = depenseList.lastElementChild;
+  if (lastCard) {
+    lastCard.classList.add('new-entry');
+    setTimeout(() => lastCard.classList.remove('new-entry'), 1000);
+  }
+});
+
+searchRecette.addEventListener('input', () => {
+  afficherRecettes(searchRecette.value);
+});
+
+filterBus.addEventListener('change', () => {
+  afficherRecettes(searchRecette.value);
+});
+
+// Gestion du changement de type de dépense dans le formulaire d'édition
+document.getElementById('editDepenseType').addEventListener('change', function() {
+  const editBusField = document.getElementById('editBusFieldDepense');
+  if (this.value === 'bus') {
+    editBusField.classList.remove('d-none');
+  } else {
+    editBusField.classList.add('d-none');
+  }
+});
 
 // Initialisation
-function init() {
-  // Remplir les sélecteurs
-  populateBusSelect();
-  populateBusFilter();
-  populateDepenseBusSelect();
-  populateEditBusSelect();
-  populateEditDepenseBusSelect();
-  populateCalendarBusSelect();
-  populateDriverSelect();
-  
-  // Définir la date du jour par défaut
-  const today = new Date();
-  document.getElementById('dateRecette').valueAsDate = today;
-  document.getElementById('dateDepense').valueAsDate = today;
-  
-  // Définir le mois actuel par défaut
-  const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-  monthSelect.value = currentMonth;
-  monthSalarySelect.value = currentMonth;
-  
-  // Afficher les données
-  afficherRecettes();
-  afficherDepenses();
-  afficherHistoriqueSalaires();
-  generateCalendar();
-  mettreAJourTotaux();
-  
-  // Événements
-  recetteForm.addEventListener('submit', handleRecetteSubmit);
-  depenseForm.addEventListener('submit', handleDepenseSubmit);
-  
-  typeDepense.addEventListener('change', function() {
-    busFieldDepense.classList.toggle('d-none', this.value !== 'bus');
-  });
-  
-  document.getElementById('editDepenseType').addEventListener('change', function() {
-    document.getElementById('editBusFieldDepense').classList.toggle('d-none', this.value !== 'bus');
-  });
-  
-  document.getElementById('saveRecetteEdit').addEventListener('click', saveEditedRecette);
-  document.getElementById('saveDepenseEdit').addEventListener('click', saveEditedDepense);
-  
-  searchRecette.addEventListener('input', function() {
-    afficherRecettes(this.value);
-  });
-  
-  filterBus.addEventListener('change', function() {
-    afficherRecettes();
-  });
-  
-  driverSelect.addEventListener('change', updateCalculateButtonState);
-  monthSalarySelect.addEventListener('change', updateCalculateButtonState);
-  calculateSalaryBtn.addEventListener('click', calculateSalary);
-  paySalaryBtn.addEventListener('click', paySalary);
-  searchSalary.addEventListener('input', function() {
-    afficherHistoriqueSalaires(this.value);
-  });
-  
-  updateLastModified();
-}
-
-// Démarrer l'application
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
